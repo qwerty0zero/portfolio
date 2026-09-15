@@ -1,22 +1,88 @@
-## Development
+# AGENTS.md — Landing Page SSG (Astro)
 
-When starting the dev server, use background mode:
+Этот репозиторий содержит статичный лендинг (SSG) на Astro. Агент обязан строго следовать правилам архитектуры, дизайн-системе проекта и использовать исключительно пакетный менеджер `pnpm`.
 
+---
+
+## 1. Архитектурный контракт и правила SSG
+
+- **Пакетный менеджер:** Только `pnpm`. Использование `npm`, `yarn` или `bun` строго запрещено. Файл `pnpm-lock.yaml` должен поддерживаться в актуальном состоянии.
+- **Zero JS by default:** Все секции лендинга (Hero, Features, Social Proof, FAQ, Footer) реализуются исключительно как нативные `.astro` компоненты с нулевым клиентским JavaScript.
+- **Дизайн-контракт:** Все отступы, цвета, типографика и радиусы скруглений берутся строго из `DESIGN.md` в корне проекта.
+- **Клиентские острова (Islands Architecture):** Интерактивные компоненты на фреймворках (React, Vue и др.) создаются только при объективной необходимости:
+  - `client:load` — строго запрещен, кроме критических интерактивных элементов первого экрана (Hero).
+  - `client:visible` — директива по умолчанию для всех интерактивных секций ниже первого экрана.
+  - `client:idle` — для виджетов аналитики или второстепенного интерактива.
+- **Оптимизация медиа:** Запрещено использовать голый тег `<img>`. Все изображения рендерятся через компонент `astro:assets` (`<Image />` или `<Picture />`) с обязательными атрибутами `alt`, `width` и `height`.
+- **Семантика и SEO:** Использовать ровно один `<h1>` на страницу, логическую структуру тегов (`<header>`, `<main>`, `<section>`, `<footer>`), семантические кнопки (`<button>`, `<a>`) и атрибуты доступности (`aria-*`).
+
+---
+
+## 2. Команды окружения и пайплайн валидации
+
+### Dev-сервер (фоновый режим)
+
+Запуск и управление локальным dev-сервером выполняется через встроенный background-режим:
+
+```bash
+pnpm astro dev --background    # Запуск сервера в фоне
+pnpm astro dev status          # Проверка состояния сервера и порта
+pnpm astro dev logs            # Просмотр логов сервера
+pnpm astro dev stop            # Остановка фонового сервера
 ```
-astro dev --background
+
+### Пайплайн проверки кода (Обязательно перед завершением задачи)
+
+Перед отчетом о выполненной задаче агент обязан выполнить полный цикл валидации:
+
+```bash
+pnpm run lint                  # Статический анализ кода
+pnpm run format                # Проверка форматирования (или автоисправление)
+pnpm run typecheck             # Проверка типов (pnpm astro check / tsc --noEmit)
 ```
 
-Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
+Если любая из команд завершается с ошибкой, агент обязан исправить проблему до сдачи работы.
 
-## Documentation
+---
 
-Full documentation: https://docs.astro.build
+## 3. Ссылки на документацию
 
-Consult these guides before working on related tasks:
+Перед выполнением специализированных задач сверяйтесь с официальными гайдами Astro:
 
-- [Adding pages, dynamic routes, or middleware](https://docs.astro.build/en/guides/routing/)
-- [Working with Astro components](https://docs.astro.build/en/basics/astro-components/)
-- [Using React, Vue, Svelte, or other framework components](https://docs.astro.build/en/guides/framework-components/)
-- [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
-- [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
-- [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
+- **Общая документация:** https://docs.astro.build
+- **Маршрутизация и страницы:** https://docs.astro.build/en/guides/routing/
+- **Специфика Astro-компонентов:** https://docs.astro.build/en/basics/astro-components/
+- **UI-фреймворки и острова:** https://docs.astro.build/en/guides/framework-components/
+- **Коллекции контента (Content Collections):** https://docs.astro.build/en/guides/content-collections/
+- **Стилизация и Tailwind:** https://docs.astro.build/en/guides/styling/
+- **Интернационализация (i18n):** https://docs.astro.build/en/guides/internationalization/
+
+---
+
+## 4. Структура проекта
+
+```text
+├── public/              # Статичные ассеты (favicons, robots.txt)
+├── src/
+│   ├── assets/          # Оптимизируемые изображения и SVG
+│   ├── components/
+│   │   ├── ui/          # Базовые UI-элементы (кнопки, бейджи, карточки)
+│   │   └── sections/    # Секции лендинга (Hero.astro, Features.astro, FAQ.astro)
+│   ├── layouts/         # Базовый Layout.astro (head, мета-теги, Open Graph)
+│   ├── pages/           # index.astro и статичные маршруты
+│   └── styles/          # Глобальные стили и токены
+├── DESIGN.md            # Контракт дизайн-системы и токенов
+├── AGENTS.md            # Инструкция для ИИ-агента
+├── package.json
+└── pnpm-lock.yaml
+```
+
+---
+
+## 5. Ограничения (Guardrails)
+
+1. **Запрет сторонних пакетных менеджеров:** Запрещено выполнять команды через `npm`, `npx`, `yarn` или `bun`. Только `pnpm` и `pnpm dlx`.
+2. **Конфигурационные файлы:** Запрещено изменять `astro.config.mjs`, `tailwind.config.*`, `tsconfig.json` и файлы линтера/форматтера без прямого запроса пользователя.
+3. **Husky и Git Hooks:** Все коммиты валидируются pre-commit хуками. Запрещено использовать флаг `--no-verify`.
+4. **Зависимости:** Запрещено устанавливать новые библиотеки без согласования.
+5. **Формат коммитов:** При коммитах использовать строго Conventional Commits (`feat:`, `fix:`, `refactor:`, `style:`, `chore:`).
