@@ -9,8 +9,9 @@
     "astro": "astro",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
-    "fmt": "oxfmt",
-    "fmt:check": "oxfmt --check",
+    "format": "biome format --write",
+    "format:check": "biome format",
+    "fmt": "biome format --write",
     "biome:check": "biome check",
     "biome:fix": "biome check --write",
     "typecheck": "astro check",
@@ -24,20 +25,15 @@
     "@biomejs/biome": "2.5.13",
     "husky": "^9.1.7",
     "lint-staged": "^17.5.1",
-    "oxfmt": "^0.68.0",
     "oxlint": "^1.83.0",
     "typescript": "~5.9.3"
   },
   "lint-staged": {
-    "*.astro": [
-      "biome format --write --no-errors-on-unmatched"
-    ],
     "*.{js,jsx,ts,tsx}": [
-      "oxlint --fix",
-      "oxfmt --write"
+      "oxlint --fix"
     ],
-    "*.{css,scss,json,md,mjs}": [
-      "oxfmt --write"
+    "*.{astro,js,jsx,ts,tsx,mjs,json,css}": [
+      "biome format --write --no-errors-on-unmatched"
     ]
   },
   "engines": {

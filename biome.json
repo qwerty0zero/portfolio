@@ -6,13 +6,14 @@
     "useIgnoreFile": true
   },
   "files": {
-    "ignoreUnknown": false,
-    "includes": ["**/*.astro"]
+    "ignoreUnknown": true
   },
   "formatter": {
-    "enabled": false,
+    "enabled": true,
+    "lineEnding": "lf",
     "lineWidth": 80,
-    "indentStyle": "tab"
+    "indentStyle": "space",
+    "indentWidth": 2
   },
   "linter": {
     "enabled": false
