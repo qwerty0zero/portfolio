@@ -1,6 +1,8 @@
 ---
 import { getEntry } from "astro:content";
+import Hero from "@components/sections/Hero.astro";
 import { defaultLang, type Lang, languages } from "@i18n/languages";
+import { useTranslations } from "@i18n/utils";
 import Layout from "@layouts/Layout.astro";
 
 export async function getStaticPaths() {
@@ -19,9 +21,12 @@ const currentLang: Lang =
 	lang && lang in languages ? (lang as Lang) : defaultLang;
 
 const homeEntry = await getEntry("pages", `${currentLang}/home`);
-const pageTitle = homeEntry?.data.title || "Main page";
+const pageTitle = homeEntry?.data.title || "Portfolio";
+const t = useTranslations(currentLang);
 ---
 
-<Layout title={pageTitle} lang={currentLang}>
-	<h1>{pageTitle}</h1>
+<Layout title={`${pageTitle}`} lang={currentLang}>
+	<main id="main-content">
+		<Hero role={t("hero.role")} scrollCueText={t("hero.scroll")} />
+	</main>
 </Layout>

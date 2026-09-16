@@ -13,6 +13,8 @@ export const ui = {
     "project.meta.github": "Репозиторий",
     "project.back": "Назад на главную",
     "footer.rights": "Все права защищены",
+    "hero.role": "Software Developer",
+    "hero.scroll": "Скролл",
   },
   en: {
     "nav.home": "Home",
@@ -26,6 +28,8 @@ export const ui = {
     "project.meta.github": "Repository",
     "project.back": "Back to Home",
     "footer.rights": "All rights reserved",
+    "hero.role": "Software Developer",
+    "hero.scroll": "Scroll",
   },
   pl: {
     "nav.home": "Główna",
@@ -39,6 +43,8 @@ export const ui = {
     "project.meta.github": "Repozytorium",
     "project.back": "Powrót do strony głównej",
     "footer.rights": "Wszelkie prawa zastrzeżone",
+    "hero.role": "Software Developer",
+    "hero.scroll": "Przewiń",
   },
   uk: {
     "nav.home": "Головна",
@@ -52,6 +58,8 @@ export const ui = {
     "project.meta.github": "Репозиторій",
     "project.back": "Назад на головну",
     "footer.rights": "Усі права захищені",
+    "hero.role": "Software Developer",
+    "hero.scroll": "Скрол",
   },
 } as const;
 
