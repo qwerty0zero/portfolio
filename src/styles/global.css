@@ -266,7 +266,7 @@ html.dark,
     --accent-hover: oklch(0.69 0.21 31.49);
     --accent-foreground: oklch(0.985 0.004 87.47);
     --accent-subtle: oklch(0.6329 0.2075 31.49 / 16%);
-    --accent-muted: oklch(63.384% 0.20668 31.708 / 0.164);
+    --accent-muted: oklch(63.384% 0.20668 31.708 / 0.699);
 
     --background: oklch(0.1448 0 0);
     --background-secondary: oklch(0.18 0 0);
