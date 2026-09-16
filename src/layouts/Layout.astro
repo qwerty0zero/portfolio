@@ -1,29 +1,71 @@
 ---
-import "../styles/global.css";
+import "@styles/global.css";
+import { defaultLang, type Lang, languages } from "@i18n/languages";
+import { useTranslatedPath } from "@i18n/utils";
 
 interface Props {
 	title?: string;
+	lang?: Lang;
 }
 
-const { title = "Portfolio" } = Astro.props;
+const { title = "Portfolio", lang = defaultLang } = Astro.props;
+const canonicalURL = new URL(
+	Astro.url.pathname,
+	Astro.site || "https://example.com",
+);
 ---
 
 <!doctype html>
-<html lang="ru">
+<html lang={lang} dir="ltr">
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>{title}</title>
+		<link rel="canonical" href={canonicalURL} />
+
+		{/* i18n Alternate Links */}
+		{
+			Object.keys(languages).map((code) => {
+				const localeCode = code as Lang;
+				const localePath = useTranslatedPath(localeCode)(
+					Astro.url.pathname.replace(/^\/(en|pl|uk)/, "") || "/",
+				);
+				return (
+					<link
+						rel="alternate"
+						hreflang={localeCode}
+						href={new URL(localePath, Astro.site || "https://example.com")}
+					/>
+				);
+			})
+		}
+		<link
+			rel="alternate"
+			hreflang="x-default"
+			href={new URL(
+				useTranslatedPath(defaultLang)(
+					Astro.url.pathname.replace(/^\/(en|pl|uk)/, "") || "/",
+				),
+				Astro.site || "https://example.com",
+			)}
+		/>
+
+		{/* Anti-FOUC Theme Initialization Script */}
 		<script is:inline>
 			(() => {
-				const storedTheme = typeof localStorage !== 'undefined' ? localStorage.getItem('theme') : null;
+				const storedTheme =
+					typeof localStorage !== "undefined"
+						? localStorage.getItem("theme")
+						: null;
 				const userTheme =
-					storedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-				if (userTheme === 'dark') {
-					document.documentElement.classList.add('dark');
+					storedTheme ||
+					(window.matchMedia("(prefers-color-scheme: dark)").matches
+						? "dark"
+						: "light");
+				if (userTheme === "dark") {
+					document.documentElement.classList.add("dark");
 				} else {
-					document.documentElement.classList.remove('dark');
+					document.documentElement.classList.remove("dark");
 				}
 			})();
 		</script>
@@ -32,4 +74,3 @@ const { title = "Portfolio" } = Astro.props;
 		<slot />
 	</body>
 </html>
-

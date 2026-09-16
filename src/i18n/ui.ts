@@ -1,0 +1,58 @@
+import { defaultLang } from "./languages";
+
+export const ui = {
+  ru: {
+    "nav.home": "Главная",
+    "nav.projects": "Проекты",
+    "nav.contact": "Контакты",
+    "theme.toggle": "Переключить тему",
+    "project.meta.year": "Год",
+    "project.meta.role": "Роль",
+    "project.meta.stack": "Технологии",
+    "project.meta.live": "Сайт проекта",
+    "project.meta.github": "Репозиторий",
+    "project.back": "Назад на главную",
+    "footer.rights": "Все права защищены",
+  },
+  en: {
+    "nav.home": "Home",
+    "nav.projects": "Projects",
+    "nav.contact": "Contact",
+    "theme.toggle": "Toggle theme",
+    "project.meta.year": "Year",
+    "project.meta.role": "Role",
+    "project.meta.stack": "Technologies",
+    "project.meta.live": "Live Preview",
+    "project.meta.github": "Repository",
+    "project.back": "Back to Home",
+    "footer.rights": "All rights reserved",
+  },
+  pl: {
+    "nav.home": "Główna",
+    "nav.projects": "Projekty",
+    "nav.contact": "Kontakt",
+    "theme.toggle": "Zmień motyw",
+    "project.meta.year": "Rok",
+    "project.meta.role": "Rola",
+    "project.meta.stack": "Technologie",
+    "project.meta.live": "Zobacz projekt",
+    "project.meta.github": "Repozytorium",
+    "project.back": "Powrót do strony głównej",
+    "footer.rights": "Wszelkie prawa zastrzeżone",
+  },
+  uk: {
+    "nav.home": "Головна",
+    "nav.projects": "Проєкти",
+    "nav.contact": "Контакти",
+    "theme.toggle": "Змінити тему",
+    "project.meta.year": "Рік",
+    "project.meta.role": "Роль",
+    "project.meta.stack": "Технології",
+    "project.meta.live": "Сайт проєкту",
+    "project.meta.github": "Репозиторій",
+    "project.back": "Назад на головну",
+    "footer.rights": "Усі права захищені",
+  },
+} as const;
+
+export type UIKey = keyof (typeof ui)[typeof defaultLang];
