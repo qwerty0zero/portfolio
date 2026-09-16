@@ -32,7 +32,7 @@
       "oxlint --fix",
       "oxfmt --write"
     ],
-    "*.{css,scss,json,md}": [
+    "*.{css,scss,json,md,mjs}": [
       "oxfmt --write"
     ]
   },
