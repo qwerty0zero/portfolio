@@ -11,21 +11,25 @@
     "lint:fix": "oxlint --fix",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
+    "biome:check": "biome check",
+    "biome:fix": "biome check --write",
+    "typecheck": "astro check",
     "prepare": "husky"
   },
   "dependencies": {
     "astro": "^7.3.2"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
     "@biomejs/biome": "2.5.13",
     "husky": "^9.1.7",
     "lint-staged": "^17.5.1",
     "oxfmt": "^0.68.0",
-    "oxlint": "^1.83.0"
+    "oxlint": "^1.83.0",
+    "typescript": "~5.9.3"
   },
   "lint-staged": {
     "*.astro": [
-      "oxlint --fix",
       "biome format --write --no-errors-on-unmatched"
     ],
     "*.{js,jsx,ts,tsx}": [
