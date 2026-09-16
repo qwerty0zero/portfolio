@@ -46,9 +46,8 @@ pnpm run lint
 # 2. Проверка форматирования (oxfmt)
 pnpm run fmt:check
 
-# 3. Валидация сборки SSG и типов (astro build / astro check)
-pnpm run build
-# При установленном @astrojs/check также запускается: pnpm astro check
+# 3. Проверка типов и синтаксиса Astro (astro check)
+pnpm run typecheck
 ```
 
 > [!IMPORTANT]
@@ -57,7 +56,6 @@ pnpm run build
 >   1. Агент обязан локализовать и исправить ошибку в коде (например, выполнить `pnpm run lint:fix` или `pnpm run fmt`, исправить несоответствие типов).
 >   2. Повторно запустить валидационный цикл до достижения **100% прохождения без ошибок и предупреждений**.
 >   3. Только после этого задача считается выполненной.
-> - Помните, что согласно AGENTS.md установка новых пакетов (например, `@astrojs/check`) требует согласования с пользователем. Не запускайте команды в интерактивном режиме установки сторонних зависимостей.
 
 ---
 
@@ -71,4 +69,4 @@ pnpm run build
 - ✅ **Результаты консольных проверок**:
   - `pnpm run lint` -> Passed
   - `pnpm run fmt:check` -> Passed
-  - `pnpm astro check` -> Passed (0 errors, 0 warnings)
+  - `pnpm run typecheck` -> Passed (0 errors, 0 warnings)
