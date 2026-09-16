@@ -326,7 +326,7 @@ body {
   color: var(--text);
   line-height: 1.5;
   transition: var(--transition-theme);
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Headings with typography token */
