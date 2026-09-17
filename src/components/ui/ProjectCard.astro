@@ -9,7 +9,7 @@ export interface Props {
 	title: string;
 	category: string;
 	description: string;
-	stack: string[];
+	stack?: string[];
 	year: string;
 	slug: string;
 	githubUrl?: string;
@@ -24,7 +24,7 @@ const {
 	title,
 	category,
 	description,
-	stack,
+	stack = [],
 	year,
 	githubUrl,
 	liveUrl,
@@ -55,11 +55,13 @@ const formattedIndex = String(index).padStart(2, "0");
 	</div>
 
 	<div class="card-footer">
-		<div class="card-stack" aria-label="Технологический стек">
-			{stack.map((tech) => (
-				<span class="stack-tag">{tech}</span>
-			))}
-		</div>
+		{stack && stack.length > 0 && (
+			<div class="card-stack" aria-label="Технологический стек">
+				{stack.map((tech) => (
+					<span class="stack-tag">{tech}</span>
+				))}
+			</div>
+		)}
 
 		<div class="card-actions">
 			<Button href={projectUrl} variant="primary" class="primary-action">
