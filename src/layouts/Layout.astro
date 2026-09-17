@@ -1,5 +1,6 @@
 ---
 import "@styles/global.css";
+import SmoothScroll from "@components/common/SmoothScroll.astro";
 import { defaultLang, type Lang, languages } from "@i18n/languages";
 import { useTranslatedPath } from "@i18n/utils";
 
@@ -110,6 +111,7 @@ const preloadedFonts = fontsPreloadMap[lang] ?? fontsPreloadMap[defaultLang];
 		</script>
 	</head>
 	<body>
+		<SmoothScroll />
 		<div class="layout-wrapper">
 			<slot />
 		</div>
