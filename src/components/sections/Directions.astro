@@ -35,33 +35,40 @@ const {
 	class:list={["directions-section", className]}
 	aria-labelledby="directions-heading"
 >
-	<!-- Animated Background Canvas Placeholder -->
-	<div class="directions-bg-canvas" aria-hidden="true">
-		<div class="cyber-grid-overlay"></div>
-		<div class="scanlines-overlay"></div>
-		<div class="glowing-orb glowing-orb--1"></div>
-		<div class="glowing-orb glowing-orb--2"></div>
-	</div>
+	<!-- Full viewport sticky stage containing pinned background and header -->
+	<div class="directions-sticky-stage">
+		<!-- Animated Background Canvas Placeholder -->
+		<div class="directions-bg-canvas" aria-hidden="true">
+			<div class="cyber-grid-overlay"></div>
+			<div class="scanlines-overlay"></div>
+			<div class="glowing-orb glowing-orb--1"></div>
+			<div class="glowing-orb glowing-orb--2"></div>
+		</div>
 
-	<div class="directions-container">
-		<header class="directions-header">
-			<span class="directions-badge">{badge}</span>
-			<h2 id="directions-heading" class="directions-title">
-				{title}
-			</h2>
-			<p class="directions-lead">{lead}</p>
-		</header>
+		<div class="directions-container">
+			<!-- Pinned Section Header (Always visible throughout scrolling the whole section) -->
+			<header class="directions-header">
+				<span class="directions-badge">{badge}</span>
+				<h2 id="directions-heading" class="directions-title">
+					{title}
+				</h2>
+				<p class="directions-lead">{lead}</p>
+			</header>
 
-		<!-- Stacking Sticky Cards Track -->
-		<div class="directions-stack-track">
-			{directions.map((direction, idx) => (
-				<div
-					class="direction-card-wrapper"
-					style={`--card-index: ${idx};`}
-				>
-					<DirectionCard {...direction} />
+			<!-- Stacking Cards Viewport on Desktop -->
+			<div class="directions-cards-viewport">
+				<!-- Stacking Sticky Cards Track -->
+				<div class="directions-stack-track">
+					{directions.map((direction, idx) => (
+						<div
+							class="direction-card-wrapper"
+							style={`--card-index: ${idx};`}
+						>
+							<DirectionCard {...direction} />
+						</div>
+					))}
 				</div>
-			))}
+			</div>
 		</div>
 	</div>
 </section>
@@ -73,7 +80,21 @@ const {
 		background-color: var(--background);
 		border-top: 1px solid var(--border);
 		box-sizing: border-box;
-		overflow: clip;
+		/* Height gives enough scroll track for all 3 cards to stack cleanly */
+		min-height: 280vh;
+	}
+
+	/* Fixed/Sticky stage spanning 100vh/100dvh */
+	.directions-sticky-stage {
+		position: sticky;
+		top: 0;
+		height: 100vh;
+		height: 100dvh;
+		width: 100%;
+		overflow: hidden;
+		display: flex;
+		align-items: center;
+		box-sizing: border-box;
 	}
 
 	/* Animated Background Placeholder */
@@ -93,8 +114,8 @@ const {
 			linear-gradient(to bottom, var(--border-dim) 1px, transparent 1px);
 		background-size: 48px 48px;
 		opacity: 0.45;
-		mask-image: radial-gradient(circle at 50% 40%, black 20%, transparent 80%);
-		-webkit-mask-image: radial-gradient(circle at 50% 40%, black 20%, transparent 80%);
+		mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 80%);
+		-webkit-mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 80%);
 	}
 
 	.scanlines-overlay {
@@ -113,25 +134,25 @@ const {
 	.glowing-orb {
 		position: absolute;
 		border-radius: var(--radius-full);
-		filter: blur(80px);
+		filter: blur(90px);
 		pointer-events: none;
 		opacity: 0.12;
 	}
 
 	.glowing-orb--1 {
-		width: 400px;
-		height: 400px;
-		top: 20%;
-		left: 10%;
+		width: 450px;
+		height: 450px;
+		top: 15%;
+		left: 5%;
 		background: var(--accent);
 		animation: pulse-slow 8s ease-in-out infinite alternate;
 	}
 
 	.glowing-orb--2 {
-		width: 350px;
-		height: 350px;
-		bottom: 15%;
-		right: 15%;
+		width: 400px;
+		height: 400px;
+		bottom: 10%;
+		right: 10%;
 		background: var(--accent);
 		animation: pulse-slow 10s ease-in-out infinite alternate-reverse;
 	}
@@ -143,7 +164,7 @@ const {
 		}
 		100% {
 			transform: scale(1.15) translate3d(20px, -20px, 0);
-			opacity: 0.16;
+			opacity: 0.18;
 		}
 	}
 
@@ -151,18 +172,25 @@ const {
 		position: relative;
 		z-index: 1;
 		width: 100%;
-		max-width: 1200px;
+		max-width: 1360px;
 		margin-inline: auto;
-		padding: var(--space-20) var(--space-8) var(--space-24);
+		padding: var(--space-8) var(--space-12);
 		box-sizing: border-box;
+		display: grid;
+		grid-template-columns: minmax(320px, 1fr) minmax(0, 1.4fr);
+		gap: var(--space-12);
+		align-items: center;
+		height: 100%;
 	}
 
+	/* Pinned Left Header: stays fixed & fully visible during the entire scroll sequence */
 	.directions-header {
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-4);
-		max-width: 800px;
-		margin-bottom: var(--space-16);
+		gap: var(--space-5);
+		position: sticky;
+		top: 0;
+		align-self: center;
 	}
 
 	.directions-badge {
@@ -176,7 +204,7 @@ const {
 
 	.directions-title {
 		font-family: var(--font-heading);
-		font-size: clamp(2.25rem, 4.5vw, 3.75rem);
+		font-size: clamp(2.25rem, 4vw, 3.75rem);
 		line-height: 1.1;
 		color: var(--text);
 		text-transform: uppercase;
@@ -185,48 +213,76 @@ const {
 
 	.directions-lead {
 		font-family: var(--font-body);
-		font-size: clamp(1.125rem, 1.4vw, 1.35rem);
+		font-size: clamp(1.125rem, 1.35vw, 1.35rem);
 		line-height: 1.55;
 		color: var(--text-dim);
 		margin: 0;
 	}
 
-	/* Sticky Stacking Track */
-	.directions-stack-track {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-8);
+	/* Right Cards Container */
+	.directions-cards-viewport {
 		position: relative;
 		width: 100%;
+		height: min(580px, 75vh);
+		display: flex;
+		align-items: center;
 	}
 
-	/* On desktop, cards stick and stack on top of each other leaving part of previous cards visible */
+	.directions-stack-track {
+		position: relative;
+		width: 100%;
+		height: 100%;
+	}
+
+	/* Stacking Cards positioned absolute with sticky scroll calculations */
 	@media (min-width: 769px) {
-		.directions-stack-track {
-			gap: var(--space-12);
-		}
-
 		.direction-card-wrapper {
-			position: sticky;
-			top: calc(10vh + (var(--card-index) * 36px));
+			position: absolute;
+			inset-inline: 0;
+			top: calc(var(--card-index) * 44px);
 			z-index: calc(var(--card-index) + 1);
-			transform-origin: center top;
-			transition: transform var(--transition-fast);
+			transition:
+				transform 300ms cubic-bezier(0.2, 0, 0, 1),
+				opacity 300ms ease;
+			will-change: transform;
 		}
 	}
 
+	/* Mobile layout */
 	@media (max-width: 768px) {
+		.directions-section {
+			min-height: auto;
+		}
+
+		.directions-sticky-stage {
+			position: static;
+			height: auto;
+			overflow: visible;
+			padding-block: var(--space-12);
+		}
+
 		.directions-container {
-			padding: var(--space-12) var(--space-4) var(--space-16);
+			display: flex;
+			flex-direction: column;
+			gap: var(--space-8);
+			padding: 0 var(--space-4);
+			height: auto;
 		}
 
 		.directions-header {
-			margin-bottom: var(--space-8);
+			position: static;
 			gap: var(--space-3);
 		}
 
+		.directions-cards-viewport {
+			height: auto;
+		}
+
 		.directions-stack-track {
+			display: flex;
+			flex-direction: column;
 			gap: var(--space-6);
+			height: auto;
 		}
 
 		.direction-card-wrapper {
@@ -236,3 +292,59 @@ const {
 		}
 	}
 </style>
+
+<script>
+	function setupDirectionsScroll() {
+		const section = document.querySelector<HTMLElement>(".directions-section");
+		const cards = document.querySelectorAll<HTMLElement>(
+			".directions-stack-track .direction-card-wrapper",
+		);
+
+		if (!section || cards.length === 0) return;
+		const currentSection = section;
+
+		function onScroll() {
+			if (window.innerWidth <= 768) {
+				cards.forEach((card) => {
+					card.style.transform = "none";
+				});
+				return;
+			}
+
+			const rect = currentSection.getBoundingClientRect();
+			const totalScrollable = currentSection.offsetHeight - window.innerHeight;
+			if (totalScrollable <= 0) return;
+
+			// Progress from 0 to 1 as the section is scrolled through
+			const progress = Math.min(Math.max(-rect.top / totalScrollable, 0), 1);
+			const totalCards = cards.length;
+
+			cards.forEach((card, idx) => {
+				if (idx === 0) {
+					card.style.transform = "translate3d(0, 0, 0)";
+					return;
+				}
+
+				// Threshold when this card starts entering and stacks onto previous ones
+				const startEntering = (idx - 0.6) / (totalCards - 0.5);
+				const finishEntering = idx / (totalCards - 0.5);
+
+				const cardProgress = Math.min(
+					Math.max((progress - startEntering) / (finishEntering - startEntering), 0),
+					1,
+				);
+
+				// Start 120% below and slide up cleanly into its stacked position
+				const translateY = (1 - cardProgress) * 120;
+				card.style.transform = `translate3d(0, ${translateY}%, 0)`;
+			});
+		}
+
+		window.addEventListener("scroll", onScroll, { passive: true });
+		window.addEventListener("resize", onScroll, { passive: true });
+		onScroll();
+	}
+
+	setupDirectionsScroll();
+	document.addEventListener("astro:page-load", setupDirectionsScroll);
+</script>
