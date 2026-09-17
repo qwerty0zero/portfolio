@@ -1,5 +1,6 @@
 ---
 import { getEntry } from "astro:content";
+import About from "@components/sections/About.astro";
 import Hero from "@components/sections/Hero.astro";
 import { defaultLang, type Lang, languages } from "@i18n/languages";
 import { useTranslations } from "@i18n/utils";
@@ -28,5 +29,13 @@ const t = useTranslations(currentLang);
 <Layout title={`${pageTitle}`} lang={currentLang}>
 	<main id="main-content">
 		<Hero role={t("hero.role")} scrollCueText={t("hero.scroll")} />
+		<About
+			title={t("about.title")}
+			leadText={t("about.lead")}
+			text={t("about.text")}
+			authorName="ihor kuhel"
+			authorRole={t("hero.role")}
+			lang={currentLang}
+		/>
 	</main>
 </Layout>

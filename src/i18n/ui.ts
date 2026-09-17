@@ -15,6 +15,10 @@ export const ui = {
     "footer.rights": "Все права защищены",
     "hero.role": "Software Developer",
     "hero.scroll": "Скролл",
+    "about.title": "Обо мне",
+    "about.lead": "Инженерный подход, чистая архитектура и внимание к деталям.",
+    "about.text":
+      "Я специализируюсь на создании высокопроизводительных веб-приложений и интерфейсов с акцентом на скорость, доступность и надежность. Разрабатываю масштабируемые решения с продуманной структурой и современным стеком технологий.",
   },
   en: {
     "nav.home": "Home",
@@ -30,6 +34,11 @@ export const ui = {
     "footer.rights": "All rights reserved",
     "hero.role": "Software Developer",
     "hero.scroll": "Scroll",
+    "about.title": "About Me",
+    "about.lead":
+      "Engineering approach, clean architecture, and precision in every detail.",
+    "about.text":
+      "I specialize in building high-performance web applications and interfaces focused on speed, accessibility, and resilience. Designing scalable digital products with robust architecture and modern tech stack.",
   },
   pl: {
     "nav.home": "Główna",
@@ -45,6 +54,11 @@ export const ui = {
     "footer.rights": "Wszelkie prawa zastrzeżone",
     "hero.role": "Software Developer",
     "hero.scroll": "Przewiń",
+    "about.title": "O mnie",
+    "about.lead":
+      "Inżynierskie podejście, czysta architektura i dbałość o detale.",
+    "about.text":
+      "Specjalizuję się w tworzeniu wydajnych aplikacji i interfejsów internetowych, stawiając na szybkość, dostępność i niezawodność. Projektuję skalowalne rozwiązania oparte na solidnej architekturze i nowoczesnym stosie technologicznym.",
   },
   uk: {
     "nav.home": "Головна",
@@ -60,6 +74,11 @@ export const ui = {
     "footer.rights": "Усі права захищені",
     "hero.role": "Software Developer",
     "hero.scroll": "Скрол",
+    "about.title": "Про мене",
+    "about.lead":
+      "Інженерний підхід, чиста архітектура та увага до кожної деталі.",
+    "about.text":
+      "Спеціалізуюся на розробці високопродуктивних вебзастосунків та інтерфейсів з фокусом на швидкість, доступність і надійність. Створюю масштабовані рішення з продуманою структурою та сучасним стеком.",
   },
 } as const;
 
