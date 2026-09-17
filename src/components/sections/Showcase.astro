@@ -1,5 +1,6 @@
 ---
 import type { ShowcaseTabItem } from "@/content.config";
+import { resolveBenchmarkMetrics } from "@/data/benchmarks";
 import Badge from "@components/ui/Badge.astro";
 import BenchmarkChart from "@components/ui/BenchmarkChart.astro";
 import ShowcaseTabs from "@components/ui/ShowcaseTabs.astro";
@@ -44,59 +45,67 @@ const {
 			<!-- Right Content Column -->
 			<div class="showcase-panels-col">
 				<div class="showcase-panels-wrapper">
-					{tabs.map((tab, index) => (
-						<article
-							role="tabpanel"
-							id={`showcase-panel-${index}`}
-							aria-labelledby={`showcase-tab-${index}`}
-							class:list={["showcase-panel", { "is-active": index === 0 }]}
-							tabindex={index === 0 ? 0 : -1}
-							hidden={index !== 0}
-						>
-							<div class="panel-header">
-								<span class="panel-tag">{tab.index} / 03</span>
-								<h3 class="panel-heading">{tab.heading}</h3>
-							</div>
-
-							<p class="panel-text">{tab.text}</p>
-
-							{/* Tab 1: Engineering Manifesto principles */}
-							{index === 0 && (
-								<div class="manifesto-card">
-									<div class="manifesto-header">
-										<span class="manifesto-badge">CORE PRINCIPLES</span>
-									</div>
-									<ul class="manifesto-list">
-										<li>
-											<strong class="manifesto-highlight">Zero Third-Party UI:</strong> Полная архитектурная свобода без ограничений готовых дизайн-систем.
-										</li>
-										<li>
-											<strong class="manifesto-highlight">Strict Geometry:</strong> Бескомпромиссная сетка, выверенные пропорции и прямолинейные формы.
-										</li>
-										<li>
-											<strong class="manifesto-highlight">Extreme Speed:</strong> Оптимизация каждого байта в критическом пути рендеринга.
-										</li>
-									</ul>
+					{
+						tabs.map((tab, index) => (
+							<article
+								role="tabpanel"
+								id={`showcase-panel-${index}`}
+								aria-labelledby={`showcase-tab-${index}`}
+								class:list={["showcase-panel", { "is-active": index === 0 }]}
+								tabindex={index === 0 ? 0 : -1}
+								aria-hidden={index === 0 ? "false" : "true"}
+							>
+								<div class="panel-header">
+									<span class="panel-tag">{tab.index} / 03</span>
+									<h3 class="panel-heading">{tab.heading}</h3>
 								</div>
-							)}
 
-							{/* Tab 2: Benchmark Chart */}
-							{tab.metrics && <BenchmarkChart metrics={tab.metrics} />}
+								<p class="panel-text">{tab.text}</p>
 
-							{/* Tab 3: AI Highlights */}
-							{tab.highlights && (
-								<div class="highlights-grid">
-									{tab.highlights.map((item) => (
-										<div class="highlight-card">
-											<span class="highlight-badge">{item.badge}</span>
-											<h4 class="highlight-title">{item.title}</h4>
-											<p class="highlight-desc">{item.description}</p>
+								{/* Tab 1: Engineering Manifesto principles */}
+								{tab.manifesto && (
+									<div class="manifesto-card">
+										<div class="manifesto-header">
+											<span class="manifesto-badge">{tab.manifesto.badge}</span>
 										</div>
-									))}
-								</div>
-							)}
-						</article>
-					))}
+										<ul class="manifesto-list">
+											{tab.manifesto.items.map((item) => (
+												<li>
+													<strong class="manifesto-highlight">
+														{item.highlight}
+													</strong>{" "}
+													{item.text}
+												</li>
+											))}
+										</ul>
+									</div>
+								)}
+
+								{/* Tab 2: Benchmark Chart */}
+								{tab.metrics && (
+									<BenchmarkChart
+										metrics={resolveBenchmarkMetrics(tab.metrics)}
+										badge={tab.benchmarkMeta?.badge}
+										title={tab.benchmarkMeta?.title}
+										note={tab.benchmarkMeta?.note}
+									/>
+								)}
+
+								{/* Tab 3: AI Highlights */}
+								{tab.highlights && (
+									<div class="highlights-grid">
+										{tab.highlights.map((item) => (
+											<div class="highlight-card">
+												<span class="highlight-badge">{item.badge}</span>
+												<h4 class="highlight-title">{item.title}</h4>
+												<p class="highlight-desc">{item.description}</p>
+											</div>
+										))}
+									</div>
+								)}
+							</article>
+						))
+					}
 				</div>
 			</div>
 		</div>
@@ -117,19 +126,14 @@ const {
 
 		if (tabs.length === 0 || panels.length === 0) return;
 
-		const tabsContainer = section.querySelector<HTMLElement>(".showcase-tabs");
 		const panelsWrapper = section.querySelector<HTMLElement>(
 			".showcase-panels-wrapper",
-		);
-		const interactiveTargets = [tabsContainer, panelsWrapper].filter(
-			(el): el is HTMLElement => el !== null,
 		);
 
 		let currentIndex = 0;
 		let isTransitioning = false;
 		let isPaused = false;
 		let isVisible = false;
-		let isHovered = false;
 		let isStarted = false;
 		let timerId: ReturnType<typeof setTimeout> | null = null;
 		let startTime = 0;
@@ -155,6 +159,26 @@ const {
 			return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 		}
 
+		function isCursorOnActiveTarget(): boolean {
+			const activeTab = tabs[currentIndex];
+			const isTabHovered = activeTab ? activeTab.matches(":hover") : false;
+			const isPanelHovered = panelsWrapper
+				? panelsWrapper.matches(":hover")
+				: false;
+			return isTabHovered || isPanelHovered;
+		}
+
+		function isCursorOnActiveFocus(): boolean {
+			const activeTab = tabs[currentIndex];
+			const isTabFocused = activeTab
+				? activeTab.matches(":focus-within")
+				: false;
+			const isPanelFocused = panelsWrapper
+				? panelsWrapper.matches(":focus-within")
+				: false;
+			return isTabFocused || isPanelFocused;
+		}
+
 		function pauseTimer() {
 			if (isPaused || timerId === null) return;
 			isPaused = true;
@@ -169,7 +193,14 @@ const {
 		}
 
 		function resumeTimer() {
-			if (!isPaused || !isVisible || isHovered || isReducedMotion()) return;
+			if (
+				!isPaused ||
+				!isVisible ||
+				isCursorOnActiveTarget() ||
+				isCursorOnActiveFocus() ||
+				isReducedMotion()
+			)
+				return;
 			isPaused = false;
 
 			const currentTab = tabs[currentIndex];
@@ -201,8 +232,8 @@ const {
 
 			if (!isVisible || isReducedMotion()) return;
 
-			if (isHovered) {
-				// If currently hovering tab or content, keep paused at 0%
+			if (isCursorOnActiveTarget() || isCursorOnActiveFocus()) {
+				// If cursor is already on the active tab or panel content, pause immediately
 				isPaused = true;
 				if (currentTab) {
 					currentTab.classList.add("is-paused");
@@ -239,8 +270,8 @@ const {
 			}
 			if (prevPanel) {
 				prevPanel.classList.remove("is-active");
-				prevPanel.hidden = true;
 				prevPanel.setAttribute("tabindex", "-1");
+				prevPanel.setAttribute("aria-hidden", "true");
 			}
 
 			// Activate new
@@ -255,10 +286,9 @@ const {
 			}
 
 			if (nextPanel) {
-				nextPanel.hidden = false;
-				void nextPanel.offsetWidth; // Trigger reflow for fade-in
 				nextPanel.classList.add("is-active");
 				nextPanel.setAttribute("tabindex", "0");
+				nextPanel.setAttribute("aria-hidden", "false");
 			}
 
 			setTimeout(() => {
@@ -296,45 +326,103 @@ const {
 			});
 		});
 
-		// Targeted pause only on tabs or panel content
-		const onMouseEnter = () => {
-			isHovered = true;
-			pauseTimer();
-		};
+		// Tab-level listeners: only pause if hovering the CURRENTLY ACTIVE tab!
+		const tabCleanupFns: (() => void)[] = [];
 
-		const onMouseLeave = (e: MouseEvent) => {
-			const related = e.relatedTarget as Node | null;
-			const stillInside = interactiveTargets.some((el) => el.contains(related));
-			if (stillInside) return;
-			isHovered = false;
-			resumeTimer();
-		};
+		tabs.forEach((tab, index) => {
+			const onTabEnter = () => {
+				if (index === currentIndex) {
+					pauseTimer();
+				}
+			};
 
-		const onFocusIn = () => {
-			isHovered = true;
-			pauseTimer();
-		};
+			const onTabLeave = (e: MouseEvent) => {
+				if (index === currentIndex) {
+					const related = e.relatedTarget as Node | null;
+					if (panelsWrapper?.contains(related)) {
+						return; // Moved from active tab to panel content, keep paused
+					}
+					resumeTimer();
+				}
+			};
 
-		const onFocusOut = (e: FocusEvent) => {
-			const related = e.relatedTarget as Node | null;
-			const stillInside = interactiveTargets.some((el) => el.contains(related));
-			if (stillInside) return;
-			isHovered = false;
-			resumeTimer();
-		};
+			const onTabFocusIn = () => {
+				if (index === currentIndex) {
+					pauseTimer();
+				}
+			};
 
-		interactiveTargets.forEach((target) => {
-			target.addEventListener("mouseenter", onMouseEnter);
-			target.addEventListener("mouseleave", onMouseLeave);
-			target.addEventListener("focusin", onFocusIn);
-			target.addEventListener("focusout", onFocusOut);
+			const onTabFocusOut = (e: FocusEvent) => {
+				if (index === currentIndex) {
+					const related = e.relatedTarget as Node | null;
+					if (panelsWrapper?.contains(related)) return;
+					resumeTimer();
+				}
+			};
+
+			tab.addEventListener("mouseenter", onTabEnter);
+			tab.addEventListener("mouseleave", onTabLeave);
+			tab.addEventListener("focusin", onTabFocusIn);
+			tab.addEventListener("focusout", onTabFocusOut);
+
+			tabCleanupFns.push(() => {
+				tab.removeEventListener("mouseenter", onTabEnter);
+				tab.removeEventListener("mouseleave", onTabLeave);
+				tab.removeEventListener("focusin", onTabFocusIn);
+				tab.removeEventListener("focusout", onTabFocusOut);
+			});
 		});
+
+		// Panel-level listeners: hovering the panel content pauses the active tab timer
+		let cleanupPanels: (() => void) | null = null;
+
+		if (panelsWrapper) {
+			const onPanelEnter = () => {
+				pauseTimer();
+			};
+
+			const onPanelLeave = (e: MouseEvent) => {
+				const related = e.relatedTarget as Node | null;
+				const activeTab = tabs[currentIndex];
+				if (activeTab?.contains(related)) {
+					return; // Moved to active tab, keep paused
+				}
+				resumeTimer();
+			};
+
+			const onPanelFocusIn = () => {
+				pauseTimer();
+			};
+
+			const onPanelFocusOut = (e: FocusEvent) => {
+				const related = e.relatedTarget as Node | null;
+				const activeTab = tabs[currentIndex];
+				if (activeTab?.contains(related)) return;
+				resumeTimer();
+			};
+
+			panelsWrapper.addEventListener("mouseenter", onPanelEnter);
+			panelsWrapper.addEventListener("mouseleave", onPanelLeave);
+			panelsWrapper.addEventListener("focusin", onPanelFocusIn);
+			panelsWrapper.addEventListener("focusout", onPanelFocusOut);
+
+			cleanupPanels = () => {
+				panelsWrapper.removeEventListener("mouseenter", onPanelEnter);
+				panelsWrapper.removeEventListener("mouseleave", onPanelLeave);
+				panelsWrapper.removeEventListener("focusin", onPanelFocusIn);
+				panelsWrapper.removeEventListener("focusout", onPanelFocusOut);
+			};
+		}
 
 		// Visibility change (tab inactive)
 		const onVisibilityChange = () => {
 			if (document.hidden) {
 				pauseTimer();
-			} else if (isVisible && !isHovered) {
+			} else if (
+				isVisible &&
+				!isCursorOnActiveTarget() &&
+				!isCursorOnActiveFocus()
+			) {
 				resumeTimer();
 			}
 		};
@@ -350,7 +438,10 @@ const {
 							if (!isStarted) {
 								isStarted = true;
 								startTimer(TIMER_DURATION);
-							} else if (!isHovered) {
+							} else if (
+								!isCursorOnActiveTarget() &&
+								!isCursorOnActiveFocus()
+							) {
 								resumeTimer();
 							}
 						} else {
@@ -364,16 +455,60 @@ const {
 
 		observer.observe(section);
 
+		function updateMaxHeight() {
+			if (!panelsWrapper || panels.length === 0) return;
+			let maxHeight = 0;
+			for (const panel of panels) {
+				const h = panel.offsetHeight;
+				if (h > maxHeight) {
+					maxHeight = h;
+				}
+			}
+			if (maxHeight > 0) {
+				panelsWrapper.style.minHeight = `${maxHeight}px`;
+			}
+		}
+
+		// Initial height calculation
+		updateMaxHeight();
+
+		// Recalculate when web fonts finish loading
+		if ("fonts" in document) {
+			document.fonts.ready.then(() => {
+				updateMaxHeight();
+			});
+		}
+
+		// ResizeObserver to track layout changes smoothly
+		let resizeObserver: ResizeObserver | null = null;
+		if (typeof ResizeObserver !== "undefined") {
+			resizeObserver = new ResizeObserver(() => {
+				updateMaxHeight();
+			});
+			for (const panel of panels) {
+				resizeObserver.observe(panel);
+			}
+		}
+
+		// Window resize listener
+		let resizeRaf: number | null = null;
+		const onResize = () => {
+			if (resizeRaf !== null) cancelAnimationFrame(resizeRaf);
+			resizeRaf = requestAnimationFrame(() => {
+				updateMaxHeight();
+			});
+		};
+		window.addEventListener("resize", onResize, { passive: true });
+
 		// Cleanup on Astro transitions / page navigation
 		function cleanup() {
 			clearTimer();
 			observer.disconnect();
-			interactiveTargets.forEach((target) => {
-				target.removeEventListener("mouseenter", onMouseEnter);
-				target.removeEventListener("mouseleave", onMouseLeave);
-				target.removeEventListener("focusin", onFocusIn);
-				target.removeEventListener("focusout", onFocusOut);
-			});
+			resizeObserver?.disconnect();
+			if (resizeRaf !== null) cancelAnimationFrame(resizeRaf);
+			window.removeEventListener("resize", onResize);
+			tabCleanupFns.forEach((fn) => fn());
+			cleanupPanels?.();
 			document.removeEventListener("visibilitychange", onVisibilityChange);
 		}
 
@@ -446,20 +581,32 @@ const {
 	.showcase-panels-wrapper {
 		position: relative;
 		min-height: 480px;
+		transition: min-height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
 	.showcase-panel {
-		display: none;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		display: flex;
 		flex-direction: column;
 		gap: var(--space-6);
 		opacity: 0;
-		transform: translateY(6px);
-		transition: opacity 0.3s ease, transform 0.3s ease;
+		visibility: hidden;
+		pointer-events: none;
+		transform: translateY(8px);
+		transition:
+			opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+			transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+			visibility 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+		box-sizing: border-box;
 	}
 
 	.showcase-panel.is-active {
-		display: flex;
 		opacity: 1;
+		visibility: visible;
+		pointer-events: auto;
 		transform: translateY(0);
 	}
 
@@ -567,7 +714,9 @@ const {
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-2);
-		transition: border-color 0.2s ease, background-color 0.2s ease;
+		transition:
+			border-color 0.2s ease,
+			background-color 0.2s ease;
 	}
 
 	.highlight-card:hover {
@@ -607,10 +756,6 @@ const {
 
 		.showcase-nav-col {
 			position: static;
-		}
-
-		.showcase-panels-wrapper {
-			min-height: auto;
 		}
 	}
 
