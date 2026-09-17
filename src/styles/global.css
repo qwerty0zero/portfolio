@@ -174,6 +174,15 @@
   --transition-theme:
     background-color 200ms ease, color 200ms ease, border-color 200ms ease;
 
+  /* Window / Controls Tokens (macOS style window controls) */
+  --window-control-close: oklch(0.63 0.22 25);
+  --window-control-close-hover: oklch(0.55 0.23 25);
+  --window-control-minimize: oklch(0.82 0.17 80);
+  --window-control-minimize-hover: oklch(0.74 0.18 80);
+  --window-control-maximize: oklch(0.76 0.18 140);
+  --window-control-maximize-hover: oklch(0.68 0.19 140);
+  --window-control-symbol: oklch(0.15 0 0 / 70%);
+
   /* Color Tokens: Light Theme (Inverted OKLCH palette) */
   color-scheme: light;
   --accent: oklch(0.6 0.2075 31.49);
@@ -226,6 +235,14 @@ html.dark,
   --accent-subtle: oklch(0.6329 0.2075 31.49 / 16%);
   --accent-muted: oklch(63.384% 0.20668 31.708);
 
+  --window-control-close: oklch(0.63 0.22 25);
+  --window-control-close-hover: oklch(0.55 0.23 25);
+  --window-control-minimize: oklch(0.82 0.17 80);
+  --window-control-minimize-hover: oklch(0.74 0.18 80);
+  --window-control-maximize: oklch(0.76 0.18 140);
+  --window-control-maximize-hover: oklch(0.68 0.19 140);
+  --window-control-symbol: oklch(0.15 0 0 / 70%);
+
   --background: oklch(0.1448 0 0);
   --background-secondary: oklch(0.18 0 0);
   --background-tertiary: oklch(0.21 0 0);
@@ -267,6 +284,14 @@ html.dark,
     --accent-foreground: oklch(0.985 0.004 87.47);
     --accent-subtle: oklch(0.6329 0.2075 31.49 / 16%);
     --accent-muted: oklch(63.384% 0.20668 31.708 / 0.699);
+
+    --window-control-close: oklch(0.63 0.22 25);
+    --window-control-close-hover: oklch(0.55 0.23 25);
+    --window-control-minimize: oklch(0.82 0.17 80);
+    --window-control-minimize-hover: oklch(0.74 0.18 80);
+    --window-control-maximize: oklch(0.76 0.18 140);
+    --window-control-maximize-hover: oklch(0.68 0.19 140);
+    --window-control-symbol: oklch(0.15 0 0 / 70%);
 
     --background: oklch(0.1448 0 0);
     --background-secondary: oklch(0.18 0 0);
