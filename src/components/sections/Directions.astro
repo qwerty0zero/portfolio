@@ -35,7 +35,7 @@ const {
 	class:list={["directions-section", className]}
 	aria-labelledby="directions-heading"
 >
-	<!-- Full viewport sticky stage containing pinned background and header -->
+	<!-- Full viewport sticky stage containing pinned background, header, and stacking cards -->
 	<div class="directions-sticky-stage">
 		<!-- Animated Background Canvas Placeholder -->
 		<div class="directions-bg-canvas" aria-hidden="true">
@@ -46,16 +46,18 @@ const {
 		</div>
 
 		<div class="directions-container">
-			<!-- Pinned Section Header (Always visible throughout scrolling the whole section) -->
+			<!-- Pinned Top Section Header (Placed directly above the cards, visible during the entire scroll sequence) -->
 			<header class="directions-header">
-				<span class="directions-badge">{badge}</span>
-				<h2 id="directions-heading" class="directions-title">
-					{title}
-				</h2>
+				<div class="header-top-row">
+					<span class="directions-badge">{badge}</span>
+					<h2 id="directions-heading" class="directions-title">
+						{title}
+					</h2>
+				</div>
 				<p class="directions-lead">{lead}</p>
 			</header>
 
-			<!-- Stacking Cards Viewport on Desktop -->
+			<!-- Stacking Cards Viewport beneath the header -->
 			<div class="directions-cards-viewport">
 				<!-- Stacking Sticky Cards Track -->
 				<div class="directions-stack-track">
@@ -80,7 +82,7 @@ const {
 		background-color: var(--background);
 		border-top: 1px solid var(--border);
 		box-sizing: border-box;
-		/* Height gives enough scroll track for all 3 cards to stack cleanly */
+		/* Height gives enough scroll distance for all 3 cards to stack cleanly */
 		min-height: 280vh;
 	}
 
@@ -94,6 +96,7 @@ const {
 		overflow: hidden;
 		display: flex;
 		align-items: center;
+		justify-content: center;
 		box-sizing: border-box;
 	}
 
@@ -172,25 +175,30 @@ const {
 		position: relative;
 		z-index: 1;
 		width: 100%;
-		max-width: 1360px;
+		max-width: 1100px;
 		margin-inline: auto;
-		padding: var(--space-8) var(--space-12);
+		padding: var(--space-8) var(--space-8);
 		box-sizing: border-box;
-		display: grid;
-		grid-template-columns: minmax(320px, 1fr) minmax(0, 1.4fr);
-		gap: var(--space-12);
-		align-items: center;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
 		height: 100%;
+		gap: var(--space-8);
 	}
 
-	/* Pinned Left Header: stays fixed & fully visible during the entire scroll sequence */
+	/* Top Section Header: Pinned directly above the cards */
 	.directions-header {
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-5);
-		position: sticky;
-		top: 0;
-		align-self: center;
+		gap: var(--space-3);
+		width: 100%;
+	}
+
+	.header-top-row {
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-6);
+		flex-wrap: wrap;
 	}
 
 	.directions-badge {
@@ -204,7 +212,7 @@ const {
 
 	.directions-title {
 		font-family: var(--font-heading);
-		font-size: clamp(2.25rem, 4vw, 3.75rem);
+		font-size: clamp(2rem, 3.5vw, 3rem);
 		line-height: 1.1;
 		color: var(--text);
 		text-transform: uppercase;
@@ -213,19 +221,18 @@ const {
 
 	.directions-lead {
 		font-family: var(--font-body);
-		font-size: clamp(1.125rem, 1.35vw, 1.35rem);
-		line-height: 1.55;
+		font-size: clamp(1.0625rem, 1.25vw, 1.25rem);
+		line-height: 1.5;
 		color: var(--text-dim);
 		margin: 0;
+		max-width: 900px;
 	}
 
-	/* Right Cards Container */
+	/* Cards Container underneath the header */
 	.directions-cards-viewport {
 		position: relative;
 		width: 100%;
-		height: min(580px, 75vh);
-		display: flex;
-		align-items: center;
+		height: 440px;
 	}
 
 	.directions-stack-track {
@@ -234,16 +241,14 @@ const {
 		height: 100%;
 	}
 
-	/* Stacking Cards positioned absolute with sticky scroll calculations */
+	/* Stacking Cards on Desktop */
 	@media (min-width: 769px) {
 		.direction-card-wrapper {
 			position: absolute;
 			inset-inline: 0;
-			top: calc(var(--card-index) * 44px);
+			top: calc(var(--card-index) * 36px);
 			z-index: calc(var(--card-index) + 1);
-			transition:
-				transform 300ms cubic-bezier(0.2, 0, 0, 1),
-				opacity 300ms ease;
+			transition: transform 300ms cubic-bezier(0.2, 0, 0, 1);
 			will-change: transform;
 		}
 	}
@@ -262,16 +267,14 @@ const {
 		}
 
 		.directions-container {
-			display: flex;
-			flex-direction: column;
-			gap: var(--space-8);
 			padding: 0 var(--space-4);
+			gap: var(--space-6);
 			height: auto;
 		}
 
-		.directions-header {
-			position: static;
-			gap: var(--space-3);
+		.header-top-row {
+			flex-direction: column;
+			gap: var(--space-2);
 		}
 
 		.directions-cards-viewport {
