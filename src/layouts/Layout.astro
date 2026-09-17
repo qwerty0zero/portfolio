@@ -110,6 +110,29 @@ const preloadedFonts = fontsPreloadMap[lang] ?? fontsPreloadMap[defaultLang];
 		</script>
 	</head>
 	<body>
-		<slot />
+		<div class="layout-wrapper">
+			<slot />
+		</div>
 	</body>
 </html>
+
+<style>
+	.layout-wrapper {
+		width: calc(100% - 10vw);
+		max-width: 1920px;
+		margin-inline: auto;
+		min-height: 100vh;
+		min-height: 100dvh;
+		border-left: 1px solid var(--border);
+		border-right: 1px solid var(--border);
+		position: relative;
+	}
+
+	@media (max-width: 768px) {
+		.layout-wrapper {
+			width: 100%;
+			border-left: none;
+			border-right: none;
+		}
+	}
+</style>
