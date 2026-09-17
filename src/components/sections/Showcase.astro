@@ -117,12 +117,24 @@ const {
 
 		if (tabs.length === 0 || panels.length === 0) return;
 
+		const tabsContainer = section.querySelector<HTMLElement>(".showcase-tabs");
+		const panelsWrapper = section.querySelector<HTMLElement>(
+			".showcase-panels-wrapper",
+		);
+		const interactiveTargets = [tabsContainer, panelsWrapper].filter(
+			(el): el is HTMLElement => el !== null,
+		);
+
 		let currentIndex = 0;
 		let isTransitioning = false;
-		let timerId: ReturnType<typeof setTimeout> | null = null;
+		let isPaused = false;
 		let isVisible = false;
 		let isHovered = false;
+		let isStarted = false;
+		let timerId: ReturnType<typeof setTimeout> | null = null;
+		let startTime = 0;
 		const TIMER_DURATION = 10000; // 10s auto-switch
+		let remainingTime = TIMER_DURATION;
 		const TRANSITION_DURATION = 200; // 200ms animation guard
 
 		function clearTimer() {
@@ -133,38 +145,83 @@ const {
 		}
 
 		function restartTimerAnimation(tabEl: HTMLElement) {
-			tabEl.classList.remove("is-timing");
+			tabEl.classList.remove("is-timing", "is-paused");
 			// Force DOM reflow to restart CSS animation
 			void tabEl.offsetWidth;
 			tabEl.classList.add("is-timing");
-		}
-
-		function startTimer() {
-			clearTimer();
-			if (!isVisible || isHovered || isReducedMotion()) return;
-
-			const currentTab = tabs[currentIndex];
-			if (currentTab) {
-				restartTimerAnimation(currentTab);
-			}
-
-			timerId = setTimeout(() => {
-				const nextIndex = (currentIndex + 1) % tabs.length;
-				switchTab(nextIndex, false);
-			}, TIMER_DURATION);
 		}
 
 		function isReducedMotion(): boolean {
 			return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 		}
 
+		function pauseTimer() {
+			if (isPaused || timerId === null) return;
+			isPaused = true;
+			const elapsed = performance.now() - startTime;
+			remainingTime = Math.max(0, remainingTime - elapsed);
+			clearTimer();
+
+			const currentTab = tabs[currentIndex];
+			if (currentTab) {
+				currentTab.classList.add("is-paused");
+			}
+		}
+
+		function resumeTimer() {
+			if (!isPaused || !isVisible || isHovered || isReducedMotion()) return;
+			isPaused = false;
+
+			const currentTab = tabs[currentIndex];
+			if (currentTab) {
+				currentTab.classList.remove("is-paused");
+			}
+
+			if (remainingTime <= 50) {
+				const nextIndex = (currentIndex + 1) % tabs.length;
+				switchTab(nextIndex, false);
+			} else {
+				startTime = performance.now();
+				timerId = setTimeout(() => {
+					const nextIndex = (currentIndex + 1) % tabs.length;
+					switchTab(nextIndex, false);
+				}, remainingTime);
+			}
+		}
+
+		function startTimer(duration = TIMER_DURATION) {
+			clearTimer();
+			isPaused = false;
+			remainingTime = duration;
+
+			const currentTab = tabs[currentIndex];
+			if (currentTab) {
+				restartTimerAnimation(currentTab);
+			}
+
+			if (!isVisible || isReducedMotion()) return;
+
+			if (isHovered) {
+				// If currently hovering tab or content, keep paused at 0%
+				isPaused = true;
+				if (currentTab) {
+					currentTab.classList.add("is-paused");
+				}
+				return;
+			}
+
+			startTime = performance.now();
+			timerId = setTimeout(() => {
+				const nextIndex = (currentIndex + 1) % tabs.length;
+				switchTab(nextIndex, false);
+			}, remainingTime);
+		}
+
 		function switchTab(newIndex: number, isManual = true) {
 			if (newIndex === currentIndex && isManual) {
 				// Clicked on same tab: reset timer only
 				clearTimer();
-				const currentTab = tabs[currentIndex];
-				if (currentTab) restartTimerAnimation(currentTab);
-				startTimer();
+				startTimer(TIMER_DURATION);
 				return;
 			}
 
@@ -195,7 +252,6 @@ const {
 				nextTab.classList.add("is-active");
 				nextTab.setAttribute("aria-selected", "true");
 				nextTab.setAttribute("tabindex", "0");
-				restartTimerAnimation(nextTab);
 			}
 
 			if (nextPanel) {
@@ -207,7 +263,7 @@ const {
 
 			setTimeout(() => {
 				isTransitioning = false;
-				startTimer();
+				startTimer(TIMER_DURATION);
 			}, TRANSITION_DURATION);
 		}
 
@@ -240,30 +296,46 @@ const {
 			});
 		});
 
-		// Pause on hover
+		// Targeted pause only on tabs or panel content
 		const onMouseEnter = () => {
 			isHovered = true;
-			clearTimer();
-			const currentTab = tabs[currentIndex];
-			if (currentTab) currentTab.classList.add("is-paused");
+			pauseTimer();
 		};
 
-		const onMouseLeave = () => {
+		const onMouseLeave = (e: MouseEvent) => {
+			const related = e.relatedTarget as Node | null;
+			const stillInside = interactiveTargets.some((el) => el.contains(related));
+			if (stillInside) return;
 			isHovered = false;
-			const currentTab = tabs[currentIndex];
-			if (currentTab) currentTab.classList.remove("is-paused");
-			startTimer();
+			resumeTimer();
 		};
 
-		section.addEventListener("mouseenter", onMouseEnter);
-		section.addEventListener("mouseleave", onMouseLeave);
+		const onFocusIn = () => {
+			isHovered = true;
+			pauseTimer();
+		};
+
+		const onFocusOut = (e: FocusEvent) => {
+			const related = e.relatedTarget as Node | null;
+			const stillInside = interactiveTargets.some((el) => el.contains(related));
+			if (stillInside) return;
+			isHovered = false;
+			resumeTimer();
+		};
+
+		interactiveTargets.forEach((target) => {
+			target.addEventListener("mouseenter", onMouseEnter);
+			target.addEventListener("mouseleave", onMouseLeave);
+			target.addEventListener("focusin", onFocusIn);
+			target.addEventListener("focusout", onFocusOut);
+		});
 
 		// Visibility change (tab inactive)
 		const onVisibilityChange = () => {
 			if (document.hidden) {
-				clearTimer();
+				pauseTimer();
 			} else if (isVisible && !isHovered) {
-				startTimer();
+				resumeTimer();
 			}
 		};
 		document.addEventListener("visibilitychange", onVisibilityChange);
@@ -275,14 +347,19 @@ const {
 					if (entry.target === section) {
 						isVisible = entry.isIntersecting;
 						if (isVisible) {
-							startTimer();
+							if (!isStarted) {
+								isStarted = true;
+								startTimer(TIMER_DURATION);
+							} else if (!isHovered) {
+								resumeTimer();
+							}
 						} else {
-							clearTimer();
+							pauseTimer();
 						}
 					}
 				}
 			},
-			{ threshold: 0.25 },
+			{ threshold: 0.2 },
 		);
 
 		observer.observe(section);
@@ -291,8 +368,12 @@ const {
 		function cleanup() {
 			clearTimer();
 			observer.disconnect();
-			section?.removeEventListener("mouseenter", onMouseEnter);
-			section?.removeEventListener("mouseleave", onMouseLeave);
+			interactiveTargets.forEach((target) => {
+				target.removeEventListener("mouseenter", onMouseEnter);
+				target.removeEventListener("mouseleave", onMouseLeave);
+				target.removeEventListener("focusin", onFocusIn);
+				target.removeEventListener("focusout", onFocusOut);
+			});
 			document.removeEventListener("visibilitychange", onVisibilityChange);
 		}
 

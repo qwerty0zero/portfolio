@@ -102,8 +102,9 @@ const { tabs, class: className = "" } = Astro.props;
 		animation: timerProgressVertical 10s linear forwards;
 	}
 
-	.showcase-tab.is-paused .tab-timer-progress {
-		animation-play-state: paused;
+	.showcase-tab.is-paused .tab-timer-progress,
+	.showcase-tab.is-active.is-timing.is-paused .tab-timer-progress {
+		animation-play-state: paused !important;
 	}
 
 	@keyframes timerProgressVertical {
@@ -175,6 +176,11 @@ const { tabs, class: className = "" } = Astro.props;
 
 		.showcase-tab.is-active.is-timing .tab-timer-progress {
 			animation: timerProgressHorizontal 10s linear forwards;
+		}
+
+		.showcase-tab.is-paused .tab-timer-progress,
+		.showcase-tab.is-active.is-timing.is-paused .tab-timer-progress {
+			animation-play-state: paused !important;
 		}
 
 		@keyframes timerProgressHorizontal {
