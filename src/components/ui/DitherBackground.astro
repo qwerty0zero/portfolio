@@ -39,8 +39,14 @@ const {
 	data-wave-speed={waveSpeed}
 	data-wave-frequency={waveFrequency}
 	data-wave-amplitude={waveAmplitude}
-	data-wave-color={typeof waveColor === "string" ? waveColor : JSON.stringify(waveColor)}
-	data-bg-color={typeof backgroundColor === "string" ? backgroundColor : JSON.stringify(backgroundColor)}
+	data-wave-color={
+		typeof waveColor === "string" ? waveColor : JSON.stringify(waveColor)
+	}
+	data-bg-color={
+		typeof backgroundColor === "string"
+			? backgroundColor
+			: JSON.stringify(backgroundColor)
+	}
 	data-color-num={colorNum}
 	data-pixel-size={pixelSize}
 	data-disable-animation={disableAnimation ? "true" : "false"}
@@ -157,19 +163,6 @@ const {
 		return fbm(p + fbm(p2));
 	}
 
-	vec3 dither(vec2 screenCoord, vec3 color) {
-		vec2 scaledCoord = floor(screenCoord / pixelSize);
-		int x = int(mod(scaledCoord.x, 8.0));
-		int y = int(mod(scaledCoord.y, 8.0));
-		float threshold = bayerMatrix8x8[y * 8 + x] - 0.25;
-		float stepVal = 1.0 / (colorNum - 1.0);
-		color += threshold * stepVal;
-		float luminance = dot(color, vec3(0.2126, 0.7152, 0.0722));
-		float bias = mix(0.2, 0.0, smoothstep(0.45, 0.8, luminance));
-		color = clamp(color - bias, 0.0, 1.0);
-		return floor(color * (colorNum - 1.0) + 0.5) / (colorNum - 1.0);
-	}
-
 	void main() {
 		vec2 pixelCoord = floor(gl_FragCoord.xy / pixelSize) * pixelSize;
 		vec2 uv = pixelCoord / resolution.xy;
@@ -186,8 +179,17 @@ const {
 			f -= 0.5 * effect;
 		}
 
-		vec3 col = mix(backgroundColor, waveColor, clamp(f, 0.0, 1.0));
-		col = dither(gl_FragCoord.xy, col);
+		vec2 scaledCoord = floor(gl_FragCoord.xy / pixelSize);
+		int x = int(mod(scaledCoord.x, 8.0));
+		int y = int(mod(scaledCoord.y, 8.0));
+		float threshold = bayerMatrix8x8[y * 8 + x] - 0.5;
+
+		// Multi-level ordered dithering between backgroundColor and waveColor
+		float levels = max(colorNum - 1.0, 1.0);
+		float ditherFactor = clamp(f + (threshold / levels), 0.0, 1.0);
+		float quantized = floor(ditherFactor * levels + 0.5) / levels;
+
+		vec3 col = mix(backgroundColor, waveColor, quantized);
 
 		fragColor = vec4(col, 1.0);
 	}`;
@@ -202,10 +204,7 @@ const {
 		gl.shaderSource(shader, source);
 		gl.compileShader(shader);
 		if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-			console.error(
-				"Shader compilation error:",
-				gl.getShaderInfoLog(shader),
-			);
+			console.error("Shader compilation error:", gl.getShaderInfoLog(shader));
 			gl.deleteShader(shader);
 			return null;
 		}
@@ -296,8 +295,7 @@ const {
 	}
 
 	function initDitherInstance(wrapper: HTMLElement) {
-		const canvas =
-			wrapper.querySelector<HTMLCanvasElement>(".dither-canvas");
+		const canvas = wrapper.querySelector<HTMLCanvasElement>(".dither-canvas");
 		if (!canvas) return;
 
 		const gl = canvas.getContext("webgl2", {
@@ -309,9 +307,7 @@ const {
 		});
 
 		if (!gl) {
-			console.warn(
-				"WebGL2 is not supported. Dither background disabled.",
-			);
+			console.warn("WebGL2 is not supported. Dither background disabled.");
 			return;
 		}
 
@@ -344,10 +340,7 @@ const {
 		const uWaveFrequency = gl.getUniformLocation(program, "waveFrequency");
 		const uWaveAmplitude = gl.getUniformLocation(program, "waveAmplitude");
 		const uWaveColor = gl.getUniformLocation(program, "waveColor");
-		const uBackgroundColor = gl.getUniformLocation(
-			program,
-			"backgroundColor",
-		);
+		const uBackgroundColor = gl.getUniformLocation(program, "backgroundColor");
 		const uMousePos = gl.getUniformLocation(program, "mousePos");
 		const uEnableMouse = gl.getUniformLocation(
 			program,
@@ -359,12 +352,8 @@ const {
 
 		// Parse initial props
 		const waveSpeed = parseFloat(wrapper.dataset.waveSpeed || "0.05");
-		const waveFrequency = parseFloat(
-			wrapper.dataset.waveFrequency || "3.0",
-		);
-		const waveAmplitude = parseFloat(
-			wrapper.dataset.waveAmplitude || "0.3",
-		);
+		const waveFrequency = parseFloat(wrapper.dataset.waveFrequency || "3.0");
+		const waveAmplitude = parseFloat(wrapper.dataset.waveAmplitude || "0.3");
 		const colorNum = parseFloat(wrapper.dataset.colorNum || "4.0");
 		const pixelSize = parseFloat(wrapper.dataset.pixelSize || "2.0");
 		const mouseRadius = parseFloat(wrapper.dataset.mouseRadius || "1.0");
@@ -409,10 +398,7 @@ const {
 			width = Math.max(1, Math.floor(rect.width * dpr));
 			height = Math.max(1, Math.floor(rect.height * dpr));
 
-			if (
-				canvas &&
-				(canvas.width !== width || canvas.height !== height)
-			) {
+			if (canvas && (canvas.width !== width || canvas.height !== height)) {
 				canvas.width = width;
 				canvas.height = height;
 				if (gl) {
@@ -442,9 +428,7 @@ const {
 		}
 
 		// Animation loop & IntersectionObserver
-		const motionQuery = window.matchMedia(
-			"(prefers-reduced-motion: reduce)",
-		);
+		const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 		let prefersReducedMotion = motionQuery.matches;
 		motionQuery.addEventListener("change", (e) => {
 			prefersReducedMotion = e.matches;
@@ -514,9 +498,7 @@ const {
 			attributeFilter: ["class", "data-theme", "style"],
 		});
 
-		const colorSchemeQuery = window.matchMedia(
-			"(prefers-color-scheme: dark)",
-		);
+		const colorSchemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
 		colorSchemeQuery.addEventListener("change", () => {
 			updateColors();
 			if (!rafId) renderFrame(0);
@@ -527,14 +509,12 @@ const {
 	}
 
 	function setupAllDithers() {
-		document
-			.querySelectorAll<HTMLElement>(".dither-wrapper")
-			.forEach((el) => {
-				if (!el.dataset.ditherInitialized) {
-					el.dataset.ditherInitialized = "true";
-					initDitherInstance(el);
-				}
-			});
+		document.querySelectorAll<HTMLElement>(".dither-wrapper").forEach((el) => {
+			if (!el.dataset.ditherInitialized) {
+				el.dataset.ditherInitialized = "true";
+				initDitherInstance(el);
+			}
+		});
 	}
 
 	if (document.readyState === "loading") {
