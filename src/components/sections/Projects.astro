@@ -1,0 +1,306 @@
+---
+import ProjectCard from "../ui/ProjectCard.astro";
+
+export interface ProjectItem {
+	title: string;
+	category: string;
+	description: string;
+	stack: string[];
+	year: string;
+	slug: string;
+	githubUrl?: string;
+	liveUrl?: string;
+}
+
+export interface Props {
+	badge: string;
+	title: string;
+	description: string;
+	domains: string[];
+	projects: ProjectItem[];
+	viewCaseLabel: string;
+	lang: string;
+	id?: string;
+	class?: string;
+}
+
+const {
+	badge,
+	title,
+	description,
+	domains,
+	projects,
+	viewCaseLabel,
+	lang,
+	id = "projects",
+	class: className = "",
+} = Astro.props;
+
+const langPrefix = lang === "ru" ? "" : `/${lang}`;
+---
+
+<section
+	id={id}
+	class:list={["projects-section", className]}
+	aria-labelledby="projects-heading"
+>
+	<div class="projects-sticky-track" data-sticky-track>
+		<div class="projects-sticky-container" data-sticky-container>
+			<div class="projects-track" data-projects-track>
+				<!-- Intro Panel (First ~50-60vw) -->
+				<header class="projects-intro-panel">
+					<span class="intro-badge">{badge}</span>
+					<h2 id="projects-heading" class="intro-title">
+						{title}
+					</h2>
+					<p class="intro-description">{description}</p>
+
+					<div class="domains-container">
+						<span class="domains-label">Core Domains:</span>
+						<div class="domains-chips">
+							{domains.map((domain) => (
+								<span class="domain-chip">{domain}</span>
+							))}
+						</div>
+					</div>
+				</header>
+
+				<!-- Project Cards List -->
+				<div class="projects-cards-list">
+					{projects.map((project, index) => (
+						<ProjectCard
+							index={index + 1}
+							title={project.title}
+							category={project.category}
+							description={project.description}
+							stack={project.stack}
+							year={project.year}
+							slug={project.slug}
+							githubUrl={project.githubUrl}
+							liveUrl={project.liveUrl}
+							viewCaseLabel={viewCaseLabel}
+							projectUrl={`${langPrefix}/projects/${project.slug}`}
+						/>
+					))}
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	function setupHorizontalScroll() {
+		const trackSection = document.querySelector<HTMLElement>(
+			"[data-sticky-track]",
+		);
+		const stickyContainer = document.querySelector<HTMLElement>(
+			"[data-sticky-container]",
+		);
+		const scrollTrack = document.querySelector<HTMLElement>(
+			"[data-projects-track]",
+		);
+
+		if (!trackSection || !stickyContainer || !scrollTrack) return;
+
+		const currentTrackSection = trackSection;
+		const currentStickyContainer = stickyContainer;
+		const currentScrollTrack = scrollTrack;
+
+		function getMaxScrollDistance(): number {
+			const scrollWidth = currentScrollTrack.scrollWidth;
+			const containerWidth = currentStickyContainer.clientWidth;
+			return Math.max(0, scrollWidth - containerWidth);
+		}
+
+		function updateScrollDimensions() {
+			if (window.innerWidth <= 768) {
+				currentTrackSection.style.height = "auto";
+				currentScrollTrack.style.transform = "none";
+				return;
+			}
+
+			const maxScroll = getMaxScrollDistance();
+			// Total height of track = viewport height + exact scroll distance + 100px buffer for complete viewing
+			currentTrackSection.style.height = `${window.innerHeight + maxScroll + 100}px`;
+		}
+
+		function onScroll() {
+			if (window.innerWidth <= 768) return;
+
+			const rect = currentTrackSection.getBoundingClientRect();
+			const maxScroll = getMaxScrollDistance();
+			const totalScrollableDistance =
+				currentTrackSection.offsetHeight - window.innerHeight;
+
+			if (totalScrollableDistance <= 0) return;
+
+			const progress = Math.min(
+				Math.max(-rect.top / totalScrollableDistance, 0),
+				1,
+			);
+
+			currentScrollTrack.style.transform = `translate3d(-${progress * maxScroll}px, 0, 0)`;
+		}
+
+		window.addEventListener("resize", updateScrollDimensions, {
+			passive: true,
+		});
+		window.addEventListener("scroll", onScroll, { passive: true });
+
+		updateScrollDimensions();
+		onScroll();
+	}
+
+	// Initialize on load and on Astro view transitions
+	setupHorizontalScroll();
+	document.addEventListener("astro:page-load", setupHorizontalScroll);
+</script>
+
+<style>
+	.projects-section {
+		position: relative;
+		width: 100%;
+		background-color: var(--background);
+		border-top: 1px solid var(--border);
+		box-sizing: border-box;
+	}
+
+	.projects-sticky-track {
+		position: relative;
+		width: 100%;
+	}
+
+	.projects-sticky-container {
+		position: sticky;
+		top: 0;
+		height: 100vh;
+		width: 100%;
+		overflow: hidden;
+		display: flex;
+		align-items: center;
+		box-sizing: border-box;
+	}
+
+	.projects-track {
+		display: flex;
+		align-items: center;
+		gap: var(--space-8);
+		padding-left: var(--space-12);
+		padding-right: var(--space-16);
+		height: 100%;
+		box-sizing: border-box;
+		will-change: transform;
+	}
+
+	.projects-intro-panel {
+		width: clamp(380px, 36vw, 540px);
+		flex-shrink: 0;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: var(--space-6);
+		padding-right: var(--space-8);
+	}
+
+	.intro-badge {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--accent);
+		font-weight: 700;
+	}
+
+	.intro-title {
+		font-family: var(--font-heading);
+		font-size: clamp(2.25rem, 4.5vw, 4rem);
+		line-height: 1.1;
+		color: var(--text);
+		text-transform: uppercase;
+		margin: 0;
+	}
+
+	.intro-description {
+		font-family: var(--font-body);
+		font-size: clamp(1.125rem, 1.4vw, 1.25rem);
+		line-height: 1.55;
+		color: var(--text-dim);
+		margin: 0;
+	}
+
+	.domains-container {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+		margin-top: var(--space-4);
+	}
+
+	.domains-label {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--text-muted);
+	}
+
+	.domains-chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2);
+	}
+
+	.domain-chip {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--text);
+		background-color: var(--background-secondary);
+		border: 1px solid var(--border);
+		padding: 4px 10px;
+		letter-spacing: 0.04em;
+	}
+
+	.projects-cards-list {
+		display: flex;
+		align-items: center;
+		gap: var(--space-8);
+		height: 100%;
+		padding-block: var(--space-12);
+		box-sizing: border-box;
+	}
+
+	@media (max-width: 768px) {
+		.projects-sticky-container {
+			position: static;
+			height: auto;
+			overflow: visible;
+			padding-block: var(--space-12);
+		}
+
+		.projects-track {
+			flex-direction: column;
+			align-items: stretch;
+			gap: var(--space-8);
+			padding: 0 var(--space-4);
+			transform: none !important;
+		}
+
+		.projects-intro-panel {
+			width: 100%;
+			padding-right: 0;
+		}
+
+		.projects-cards-list {
+			flex-direction: row;
+			overflow-x: auto;
+			scroll-snap-type: x mandatory;
+			-webkit-overflow-scrolling: touch;
+			padding-block: var(--space-4);
+			padding-inline: 0;
+			gap: var(--space-4);
+		}
+
+		.projects-cards-list > :global(*) {
+			scroll-snap-align: start;
+		}
+	}
+</style>

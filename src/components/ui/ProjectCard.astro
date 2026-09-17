@@ -1,0 +1,304 @@
+---
+export interface Props {
+	index: number;
+	title: string;
+	category: string;
+	description: string;
+	stack: string[];
+	year: string;
+	slug: string;
+	githubUrl?: string;
+	liveUrl?: string;
+	viewCaseLabel: string;
+	projectUrl: string;
+	class?: string;
+}
+
+const {
+	index,
+	title,
+	category,
+	description,
+	stack,
+	year,
+	githubUrl,
+	liveUrl,
+	viewCaseLabel,
+	projectUrl,
+	class: className = "",
+} = Astro.props;
+
+const formattedIndex = String(index).padStart(2, "0");
+---
+
+<article class:list={["project-card", className]}>
+	<div class="card-header">
+		<div class="card-meta">
+			<span class="card-index">{formattedIndex}</span>
+			<span class="card-category">{category}</span>
+		</div>
+		<span class="card-year">{year}</span>
+	</div>
+
+	<div class="card-body">
+		<h3 class="card-title">
+			<a href={projectUrl} class="card-title-link">
+				{title}
+			</a>
+		</h3>
+		<p class="card-description">{description}</p>
+	</div>
+
+	<div class="card-footer">
+		<div class="card-stack" aria-label="Технологический стек">
+			{stack.map((tech) => (
+				<span class="stack-tag">{tech}</span>
+			))}
+		</div>
+
+		<div class="card-actions">
+			<a href={projectUrl} class="action-btn primary-action">
+				<span>{viewCaseLabel}</span>
+				<svg
+					width="14"
+					height="14"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					aria-hidden="true"
+				>
+					<path d="M5 12h14M12 5l7 7-7 7"></path>
+				</svg>
+			</a>
+
+			{liveUrl && (
+				<a
+					href={liveUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="action-btn icon-action"
+					aria-label="Live Demo"
+				>
+					<svg
+						width="14"
+						height="14"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						aria-hidden="true"
+					>
+						<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+						<polyline points="15 3 21 3 21 9"></polyline>
+						<line x1="10" y1="14" x2="21" y2="3"></line>
+					</svg>
+				</a>
+			)}
+
+			{githubUrl && (
+				<a
+					href={githubUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="action-btn icon-action"
+					aria-label="GitHub Repository"
+				>
+					<svg
+						width="14"
+						height="14"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						aria-hidden="true"
+					>
+						<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+					</svg>
+				</a>
+			)}
+		</div>
+	</div>
+</article>
+
+<style>
+	.project-card {
+		width: clamp(340px, 28vw, 420px);
+		height: 100%;
+		background-color: var(--background-secondary);
+		border: 1px solid var(--border);
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		padding: var(--space-8);
+		flex-shrink: 0;
+		transition:
+			border-color var(--transition-fast),
+			background-color var(--transition-fast);
+	}
+
+	.project-card:hover {
+		border-color: var(--border-strong);
+		background-color: var(--background-elevated);
+	}
+
+	.card-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		border-bottom: 1px solid var(--border-dim);
+		padding-bottom: var(--space-4);
+	}
+
+	.card-meta {
+		display: flex;
+		align-items: center;
+		gap: var(--space-3);
+	}
+
+	.card-index {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		color: var(--accent);
+		font-weight: 700;
+	}
+
+	.card-category {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--text-muted);
+	}
+
+	.card-year {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		color: var(--text-dim);
+	}
+
+	.card-body {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+		margin-block: var(--space-6);
+	}
+
+	.card-title {
+		font-family: var(--font-heading);
+		font-size: 1.5rem;
+		line-height: 1.25;
+		margin: 0;
+		text-transform: uppercase;
+	}
+
+	.card-title-link {
+		color: var(--text);
+		text-decoration: none;
+		transition: color var(--transition-fast);
+	}
+
+	.card-title-link:hover {
+		color: var(--accent);
+	}
+
+	.card-description {
+		font-family: var(--font-body);
+		font-size: 1.0625rem;
+		line-height: 1.5;
+		color: var(--text-dim);
+		margin: 0;
+	}
+
+	.card-footer {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+		border-top: 1px solid var(--border-dim);
+		padding-top: var(--space-4);
+	}
+
+	.card-stack {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2);
+	}
+
+	.stack-tag {
+		font-family: var(--font-mono);
+		font-size: 0.6875rem;
+		color: var(--text-dim);
+		background-color: var(--background-tertiary);
+		border: 1px solid var(--border);
+		padding: 2px 8px;
+		letter-spacing: 0.02em;
+	}
+
+	.card-actions {
+		display: flex;
+		align-items: center;
+		gap: var(--space-3);
+	}
+
+	.action-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		text-decoration: none;
+		height: 40px;
+		box-sizing: border-box;
+		border: 1px solid var(--border);
+		transition:
+			background-color var(--transition-fast),
+			border-color var(--transition-fast),
+			color var(--transition-fast);
+	}
+
+	.primary-action {
+		flex: 1;
+		gap: var(--space-2);
+		background-color: var(--background-tertiary);
+		color: var(--text);
+		padding: 0 var(--space-4);
+		font-weight: 500;
+	}
+
+	.primary-action:hover {
+		background-color: var(--accent);
+		border-color: var(--accent);
+		color: var(--accent-foreground);
+	}
+
+	.icon-action {
+		width: 40px;
+		color: var(--text-dim);
+		background-color: var(--background-tertiary);
+	}
+
+	.icon-action:hover {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+
+	@media (max-width: 768px) {
+		.project-card {
+			width: 82vw;
+			max-width: 360px;
+			max-height: none;
+			padding: var(--space-6);
+		}
+
+		.card-title {
+			font-size: 1.25rem;
+		}
+
+		.card-description {
+			font-size: 0.9375rem;
+		}
+	}
+</style>
