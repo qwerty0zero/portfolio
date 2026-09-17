@@ -1,4 +1,4 @@
-import { defaultLang } from "./languages";
+import { defaultLang } from "@i18n/languages";
 
 export const ui = {
   ru: {
