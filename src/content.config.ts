@@ -23,6 +23,37 @@ export const directionItemSchema = z.object({
 
 export type DirectionItem = z.infer<typeof directionItemSchema>;
 
+export const benchmarkMetricSchema = z.object({
+  label: z.string(),
+  astroVal: z.string(),
+  nextVal: z.string(),
+  unit: z.string().optional(),
+  astroPercent: z.number().min(0).max(100),
+  nextPercent: z.number().min(0).max(100),
+});
+
+export type BenchmarkMetric = z.infer<typeof benchmarkMetricSchema>;
+
+export const highlightItemSchema = z.object({
+  badge: z.string(),
+  title: z.string(),
+  description: z.string(),
+});
+
+export type HighlightItem = z.infer<typeof highlightItemSchema>;
+
+export const showcaseTabItemSchema = z.object({
+  id: z.string(),
+  index: z.string(),
+  tabTitle: z.string(),
+  heading: z.string(),
+  text: z.string(),
+  metrics: z.array(benchmarkMetricSchema).optional(),
+  highlights: z.array(highlightItemSchema).optional(),
+});
+
+export type ShowcaseTabItem = z.infer<typeof showcaseTabItemSchema>;
+
 const home = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/home" }),
   schema: z.object({
@@ -48,6 +79,9 @@ const home = defineCollection({
     // Projects section fields
     description: z.string().optional(),
     domains: z.array(z.string()).optional(),
+
+    // Showcase section fields
+    tabs: z.array(showcaseTabItemSchema).optional(),
   }),
 });
 

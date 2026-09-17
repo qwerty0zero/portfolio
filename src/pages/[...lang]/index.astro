@@ -4,6 +4,7 @@ import About from "@components/sections/About.astro";
 import Directions from "@components/sections/Directions.astro";
 import Hero from "@components/sections/Hero.astro";
 import Projects from "@components/sections/Projects.astro";
+import Showcase from "@components/sections/Showcase.astro";
 import { defaultLang, type Lang, languages } from "@i18n/languages";
 import { useTranslations } from "@i18n/utils";
 import Layout from "@layouts/Layout.astro";
@@ -31,6 +32,7 @@ const [
 	aboutEntry,
 	directionsEntry,
 	projectsEntry,
+	showcaseEntry,
 	allProjects,
 ] = await Promise.all([
 	getEntry("pages", `${currentLang}/home`),
@@ -38,6 +40,7 @@ const [
 	getEntry("home", `${currentLang}/about`),
 	getEntry("home", `${currentLang}/directions`),
 	getEntry("home", `${currentLang}/projects`),
+	getEntry("home", `${currentLang}/showcase`),
 	getCollection("projects"),
 ]);
 
@@ -66,6 +69,7 @@ const heroData = heroEntry?.data;
 const aboutData = aboutEntry?.data;
 const directionsData = directionsEntry?.data;
 const projectsData = projectsEntry?.data;
+const showcaseData = showcaseEntry?.data;
 ---
 
 <Layout title={`${pageTitle}`} lang={currentLang}>
@@ -104,5 +108,13 @@ const projectsData = projectsEntry?.data;
 			lead={directionsData?.lead || ""}
 			directions={directionsData?.items || []}
 		/>
+		{showcaseData && (
+			<Showcase
+				badge={showcaseData.badge || ""}
+				title={showcaseData.title || ""}
+				lead={showcaseData.lead}
+				tabs={showcaseData.tabs || []}
+			/>
+		)}
 	</main>
 </Layout>
