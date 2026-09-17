@@ -3,6 +3,8 @@ import type { ShowcaseTabItem } from "@/content.config";
 import { resolveBenchmarkMetrics } from "@/data/benchmarks";
 import Badge from "@components/ui/Badge.astro";
 import BenchmarkChart from "@components/ui/BenchmarkChart.astro";
+import Button from "@components/ui/Button.astro";
+import IconArrow from "@components/ui/icons/IconArrow.astro";
 import ShowcaseTabs from "@components/ui/ShowcaseTabs.astro";
 
 export interface Props {
@@ -10,6 +12,7 @@ export interface Props {
 	title: string;
 	lead?: string;
 	tabs: ShowcaseTabItem[];
+	nextLabel?: string;
 	id?: string;
 	class?: string;
 }
@@ -19,6 +22,7 @@ const {
 	title,
 	lead,
 	tabs,
+	nextLabel = "Далее",
 	id = "showcase",
 	class: className = "",
 } = Astro.props;
@@ -107,6 +111,20 @@ const {
 						))
 					}
 				</div>
+
+				<div class="showcase-actions">
+					<Button
+						variant="accent"
+						size="md"
+						type="button"
+						id="showcase-next-btn"
+						class="showcase-next-btn"
+						aria-label={nextLabel}
+					>
+						<span>{nextLabel}</span>
+						<IconArrow direction="right" size={14} />
+					</Button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -168,17 +186,6 @@ const {
 			return isTabHovered || isPanelHovered;
 		}
 
-		function isCursorOnActiveFocus(): boolean {
-			const activeTab = tabs[currentIndex];
-			const isTabFocused = activeTab
-				? activeTab.matches(":focus-within")
-				: false;
-			const isPanelFocused = panelsWrapper
-				? panelsWrapper.matches(":focus-within")
-				: false;
-			return isTabFocused || isPanelFocused;
-		}
-
 		function pauseTimer() {
 			if (isPaused || timerId === null) return;
 			isPaused = true;
@@ -197,7 +204,6 @@ const {
 				!isPaused ||
 				!isVisible ||
 				isCursorOnActiveTarget() ||
-				isCursorOnActiveFocus() ||
 				isReducedMotion()
 			)
 				return;
@@ -231,15 +237,6 @@ const {
 			}
 
 			if (!isVisible || isReducedMotion()) return;
-
-			if (isCursorOnActiveTarget() || isCursorOnActiveFocus()) {
-				// If cursor is already on the active tab or panel content, pause immediately
-				isPaused = true;
-				if (currentTab) {
-					currentTab.classList.add("is-paused");
-				}
-				return;
-			}
 
 			startTime = performance.now();
 			timerId = setTimeout(() => {
@@ -304,6 +301,14 @@ const {
 			});
 		});
 
+		// Next button click handler (+1 tab switch)
+		const nextBtn = section.querySelector<HTMLButtonElement>("#showcase-next-btn");
+		const onNextClick = () => {
+			const nextIndex = (currentIndex + 1) % tabs.length;
+			switchTab(nextIndex, true);
+		};
+		nextBtn?.addEventListener("click", onNextClick);
+
 		// Keyboard navigation (WAI-ARIA tabs)
 		tabs.forEach((tab, index) => {
 			tab.addEventListener("keydown", (e: KeyboardEvent) => {
@@ -346,30 +351,12 @@ const {
 				}
 			};
 
-			const onTabFocusIn = () => {
-				if (index === currentIndex) {
-					pauseTimer();
-				}
-			};
-
-			const onTabFocusOut = (e: FocusEvent) => {
-				if (index === currentIndex) {
-					const related = e.relatedTarget as Node | null;
-					if (panelsWrapper?.contains(related)) return;
-					resumeTimer();
-				}
-			};
-
 			tab.addEventListener("mouseenter", onTabEnter);
 			tab.addEventListener("mouseleave", onTabLeave);
-			tab.addEventListener("focusin", onTabFocusIn);
-			tab.addEventListener("focusout", onTabFocusOut);
 
 			tabCleanupFns.push(() => {
 				tab.removeEventListener("mouseenter", onTabEnter);
 				tab.removeEventListener("mouseleave", onTabLeave);
-				tab.removeEventListener("focusin", onTabFocusIn);
-				tab.removeEventListener("focusout", onTabFocusOut);
 			});
 		});
 
@@ -390,27 +377,12 @@ const {
 				resumeTimer();
 			};
 
-			const onPanelFocusIn = () => {
-				pauseTimer();
-			};
-
-			const onPanelFocusOut = (e: FocusEvent) => {
-				const related = e.relatedTarget as Node | null;
-				const activeTab = tabs[currentIndex];
-				if (activeTab?.contains(related)) return;
-				resumeTimer();
-			};
-
 			panelsWrapper.addEventListener("mouseenter", onPanelEnter);
 			panelsWrapper.addEventListener("mouseleave", onPanelLeave);
-			panelsWrapper.addEventListener("focusin", onPanelFocusIn);
-			panelsWrapper.addEventListener("focusout", onPanelFocusOut);
 
 			cleanupPanels = () => {
 				panelsWrapper.removeEventListener("mouseenter", onPanelEnter);
 				panelsWrapper.removeEventListener("mouseleave", onPanelLeave);
-				panelsWrapper.removeEventListener("focusin", onPanelFocusIn);
-				panelsWrapper.removeEventListener("focusout", onPanelFocusOut);
 			};
 		}
 
@@ -418,11 +390,7 @@ const {
 		const onVisibilityChange = () => {
 			if (document.hidden) {
 				pauseTimer();
-			} else if (
-				isVisible &&
-				!isCursorOnActiveTarget() &&
-				!isCursorOnActiveFocus()
-			) {
+			} else if (isVisible && !isCursorOnActiveTarget()) {
 				resumeTimer();
 			}
 		};
@@ -438,10 +406,7 @@ const {
 							if (!isStarted) {
 								isStarted = true;
 								startTimer(TIMER_DURATION);
-							} else if (
-								!isCursorOnActiveTarget() &&
-								!isCursorOnActiveFocus()
-							) {
+							} else if (!isCursorOnActiveTarget()) {
 								resumeTimer();
 							}
 						} else {
@@ -507,6 +472,7 @@ const {
 			resizeObserver?.disconnect();
 			if (resizeRaf !== null) cancelAnimationFrame(resizeRaf);
 			window.removeEventListener("resize", onResize);
+			nextBtn?.removeEventListener("click", onNextClick);
 			tabCleanupFns.forEach((fn) => fn());
 			cleanupPanels?.();
 			document.removeEventListener("visibilitychange", onVisibilityChange);
@@ -530,8 +496,6 @@ const {
 	}
 
 	.showcase-container {
-		max-width: 1440px;
-		margin-inline: auto;
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-12);
@@ -582,6 +546,22 @@ const {
 		position: relative;
 		min-height: 480px;
 		transition: min-height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	.showcase-actions {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		margin-top: var(--space-6);
+	}
+
+	.showcase-next-btn {
+		gap: var(--space-3);
+		padding-inline: var(--space-6);
+	}
+
+	.showcase-next-btn:hover :global(.icon-arrow) {
+		transform: translateX(3px);
 	}
 
 	.showcase-panel {
@@ -776,6 +756,14 @@ const {
 
 		.manifesto-card {
 			padding: var(--space-4);
+		}
+
+		.showcase-actions {
+			justify-content: stretch;
+		}
+
+		.showcase-next-btn {
+			width: 100%;
 		}
 	}
 </style>

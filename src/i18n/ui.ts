@@ -14,6 +14,7 @@ export const ui = {
     "project.back": "Назад на главную",
     "projects.viewCase": "Смотреть кейс",
     "projects.viewAll": "Все проекты",
+    "showcase.next": "Далее",
     "footer.rights": "Все права защищены",
   },
   en: {
@@ -29,6 +30,7 @@ export const ui = {
     "project.back": "Back to Home",
     "projects.viewCase": "View Case Study",
     "projects.viewAll": "All Projects",
+    "showcase.next": "Next",
     "footer.rights": "All rights reserved",
   },
   pl: {
@@ -44,6 +46,7 @@ export const ui = {
     "project.back": "Powrót do strony głównej",
     "projects.viewCase": "Zobacz studium przypadku",
     "projects.viewAll": "Wszystkie projekty",
+    "showcase.next": "Dalej",
     "footer.rights": "Wszelkie prawa zastrzeżone",
   },
   uk: {
@@ -59,6 +62,7 @@ export const ui = {
     "project.back": "Назад на головну",
     "projects.viewCase": "Дивитися кейс",
     "projects.viewAll": "Усі проєкти",
+    "showcase.next": "Далі",
     "footer.rights": "Усі права захищені",
   },
 } as const;
