@@ -1,0 +1,242 @@
+---
+import type { BenchmarkMetric } from "@/content.config";
+
+export interface Props {
+	metrics: BenchmarkMetric[];
+	class?: string;
+}
+
+const { metrics, class: className = "" } = Astro.props;
+---
+
+<div class:list={["benchmark-card", className]} role="region" aria-label="Astro vs Next.js Benchmark">
+	<div class="benchmark-header">
+		<div class="benchmark-title-wrap">
+			<span class="benchmark-indicator" aria-hidden="true"></span>
+			<span class="benchmark-title">RUNTIME BENCHMARK</span>
+		</div>
+		<span class="benchmark-badge">ASTRO SSG VS NEXT.JS</span>
+	</div>
+
+	<div class="benchmark-list">
+		{metrics.map((metric) => (
+			<div class="benchmark-row">
+				<div class="benchmark-row-header">
+					<span class="metric-label">{metric.label}</span>
+					<div class="metric-values">
+						<span class="val-astro" title="Astro">
+							<strong class="val-tech">Astro:</strong> {metric.astroVal}
+						</span>
+						<span class="val-separator">/</span>
+						<span class="val-next" title="Next.js">
+							<span class="val-tech">Next.js:</span> {metric.nextVal}
+						</span>
+					</div>
+				</div>
+
+				<div class="comparison-bars">
+					<div class="bar-row">
+						<span class="bar-name">Astro</span>
+						<div class="bar-track">
+							<div
+								class="bar-fill bar-fill--astro"
+								style={`width: ${metric.astroPercent}%`}
+							></div>
+						</div>
+					</div>
+					<div class="bar-row">
+						<span class="bar-name">Next.js</span>
+						<div class="bar-track">
+							<div
+								class="bar-fill bar-fill--next"
+								style={`width: ${metric.nextPercent}%`}
+							></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		))}
+	</div>
+
+	<div class="benchmark-footer">
+		<span class="footer-note">* Synthetic & local benchmark metrics for baseline portfolio deployment</span>
+	</div>
+</div>
+
+<style>
+	.benchmark-card {
+		background-color: var(--background-secondary);
+		border: 1px solid var(--border);
+		padding: var(--space-6);
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+		margin-top: var(--space-6);
+	}
+
+	.benchmark-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding-bottom: var(--space-4);
+		border-bottom: 1px solid var(--border-dim);
+	}
+
+	.benchmark-title-wrap {
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
+	}
+
+	.benchmark-indicator {
+		width: 8px;
+		height: 8px;
+		background-color: var(--accent);
+		display: inline-block;
+	}
+
+	.benchmark-title {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		color: var(--text);
+		text-transform: uppercase;
+	}
+
+	.benchmark-badge {
+		font-family: var(--font-mono);
+		font-size: 0.6875rem;
+		padding: var(--space-1) var(--space-2);
+		background-color: var(--background-tertiary);
+		border: 1px solid var(--border-dim);
+		color: var(--text-dim);
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+	}
+
+	.benchmark-list {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+	}
+
+	.benchmark-row {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
+	}
+
+	.benchmark-row-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		flex-wrap: wrap;
+		gap: var(--space-2);
+	}
+
+	.metric-label {
+		font-family: var(--font-body);
+		font-size: 1rem;
+		font-weight: 700;
+		color: var(--text);
+		letter-spacing: 0.01em;
+	}
+
+	.metric-values {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
+	}
+
+	.val-astro {
+		color: var(--accent);
+		font-weight: 700;
+	}
+
+	.val-tech {
+		font-size: 0.75rem;
+		opacity: 0.85;
+		margin-right: 2px;
+	}
+
+	.val-separator {
+		color: var(--border-strong);
+	}
+
+	.val-next {
+		color: var(--text-muted);
+	}
+
+	.comparison-bars {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+	}
+
+	.bar-row {
+		display: grid;
+		grid-template-columns: 50px 1fr;
+		align-items: center;
+		gap: var(--space-2);
+	}
+
+	.bar-name {
+		font-family: var(--font-mono);
+		font-size: 0.6875rem;
+		color: var(--text-dim);
+	}
+
+	.bar-track {
+		height: 8px;
+		background-color: var(--background-tertiary);
+		border: 1px solid var(--border-dim);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.bar-fill {
+		height: 100%;
+		transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	.bar-fill--astro {
+		background-color: var(--accent);
+	}
+
+	.bar-fill--next {
+		background-color: var(--border-strong);
+	}
+
+	.benchmark-footer {
+		padding-top: var(--space-2);
+		border-top: 1px solid var(--border-dim);
+	}
+
+	.footer-note {
+		font-family: var(--font-mono);
+		font-size: 0.6875rem;
+		color: var(--text-muted);
+		font-style: italic;
+	}
+
+	@media (max-width: 480px) {
+		.benchmark-card {
+			padding: var(--space-4);
+			gap: var(--space-4);
+		}
+
+		.benchmark-row-header {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: var(--space-1);
+		}
+
+		.bar-row {
+			grid-template-columns: 45px 1fr;
+		}
+	}
+</style>

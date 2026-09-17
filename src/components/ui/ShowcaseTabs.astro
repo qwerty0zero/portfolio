@@ -1,0 +1,208 @@
+---
+import type { ShowcaseTabItem } from "@/content.config";
+
+export interface Props {
+	tabs: ShowcaseTabItem[];
+	class?: string;
+}
+
+const { tabs, class: className = "" } = Astro.props;
+---
+
+<div
+	class:list={["showcase-tabs", className]}
+	role="tablist"
+	aria-label="Project Highlights Navigation"
+>
+	{tabs.map((tab, index) => (
+		<button
+			type="button"
+			role="tab"
+			id={`showcase-tab-${index}`}
+			aria-selected={index === 0 ? "true" : "false"}
+			aria-controls={`showcase-panel-${index}`}
+			tabindex={index === 0 ? 0 : -1}
+			class:list={["showcase-tab", { "is-active": index === 0, "is-timing": index === 0 }]}
+			data-tab-index={index}
+		>
+			<div class="tab-timer-track" aria-hidden="true">
+				<div class="tab-timer-progress"></div>
+			</div>
+			<div class="tab-content-wrap">
+				<span class="tab-index">{tab.index}</span>
+				<span class="tab-title">{tab.tabTitle}</span>
+			</div>
+		</button>
+	))}
+</div>
+
+<style>
+	.showcase-tabs {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.showcase-tab {
+		position: relative;
+		display: flex;
+		align-items: center;
+		padding: var(--space-5) var(--space-6);
+		background-color: var(--background-secondary);
+		border: 1px solid var(--border);
+		border-left: none; /* track acts as left border */
+		color: var(--text-dim);
+		text-align: left;
+		cursor: pointer;
+		outline: none;
+		box-sizing: border-box;
+		min-height: 48px;
+		transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+	}
+
+	.showcase-tab:hover {
+		background-color: var(--background-tertiary);
+		color: var(--text);
+	}
+
+	.showcase-tab:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: -2px;
+	}
+
+	.showcase-tab.is-active {
+		background-color: var(--background-tertiary);
+		color: var(--text);
+		border-color: var(--border-strong);
+	}
+
+	.tab-timer-track {
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 3px;
+		background-color: var(--border-dim);
+		overflow: hidden;
+	}
+
+	.tab-timer-progress {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 0%;
+		background-color: var(--accent);
+		transform-origin: top;
+	}
+
+	.showcase-tab.is-active.is-timing .tab-timer-progress {
+		animation: timerProgressVertical 10s linear forwards;
+	}
+
+	.showcase-tab.is-paused .tab-timer-progress {
+		animation-play-state: paused;
+	}
+
+	@keyframes timerProgressVertical {
+		from {
+			height: 0%;
+		}
+		to {
+			height: 100%;
+		}
+	}
+
+	.tab-content-wrap {
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-4);
+		width: 100%;
+	}
+
+	.tab-index {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		font-weight: 700;
+		color: var(--accent);
+		letter-spacing: 0.05em;
+	}
+
+	.tab-title {
+		font-family: var(--font-heading);
+		font-size: 1rem;
+		line-height: 1.3;
+		letter-spacing: -0.01em;
+	}
+
+	@media (max-width: 1024px) {
+		.showcase-tabs {
+			flex-direction: row;
+			overflow-x: auto;
+			scroll-snap-type: x mandatory;
+			gap: var(--space-2);
+			padding-bottom: var(--space-2);
+			-webkit-overflow-scrolling: touch;
+		}
+
+		.showcase-tab {
+			flex: 1 0 auto;
+			min-width: 220px;
+			scroll-snap-align: start;
+			border-left: 1px solid var(--border);
+			border-bottom: none;
+			padding: var(--space-4) var(--space-5);
+		}
+
+		.tab-timer-track {
+			left: 0;
+			right: 0;
+			bottom: 0;
+			top: auto;
+			height: 3px;
+			width: 100%;
+		}
+
+		.tab-timer-progress {
+			top: 0;
+			left: 0;
+			height: 100%;
+			width: 0%;
+			transform-origin: left;
+		}
+
+		.showcase-tab.is-active.is-timing .tab-timer-progress {
+			animation: timerProgressHorizontal 10s linear forwards;
+		}
+
+		@keyframes timerProgressHorizontal {
+			from {
+				width: 0%;
+			}
+			to {
+				width: 100%;
+			}
+		}
+	}
+
+	@media (max-width: 480px) {
+		.showcase-tab {
+			min-width: 180px;
+			padding: var(--space-3) var(--space-4);
+		}
+
+		.tab-title {
+			font-size: 0.875rem;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.showcase-tab.is-active.is-timing .tab-timer-progress {
+			animation: none !important;
+			height: 100% !important;
+			width: 100% !important;
+		}
+	}
+</style>
