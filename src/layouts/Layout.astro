@@ -13,6 +13,33 @@ const canonicalURL = new URL(
 	Astro.url.pathname,
 	Astro.site || "https://example.com",
 );
+
+const fontsPreloadMap: Record<Lang, string[]> = {
+	en: [
+		"/fonts/DelaGothicOne-Regular-latin.woff2",
+		"/fonts/FiraSansExtraCondensed-Regular-latin.woff2",
+	],
+	pl: [
+		"/fonts/DelaGothicOne-Regular-latin.woff2",
+		"/fonts/DelaGothicOne-Regular-latinext.woff2",
+		"/fonts/FiraSansExtraCondensed-Regular-latin.woff2",
+		"/fonts/FiraSansExtraCondensed-Regular-latinext.woff2",
+	],
+	ru: [
+		"/fonts/DelaGothicOne-Regular-cyrillic.woff2",
+		"/fonts/DelaGothicOne-Regular-latin.woff2",
+		"/fonts/FiraSansExtraCondensed-Regular-cyrillic.woff2",
+		"/fonts/FiraSansExtraCondensed-Regular-latin.woff2",
+	],
+	uk: [
+		"/fonts/DelaGothicOne-Regular-cyrillic.woff2",
+		"/fonts/DelaGothicOne-Regular-latin.woff2",
+		"/fonts/FiraSansExtraCondensed-Regular-cyrillic.woff2",
+		"/fonts/FiraSansExtraCondensed-Regular-latin.woff2",
+	],
+};
+
+const preloadedFonts = fontsPreloadMap[lang] ?? fontsPreloadMap[defaultLang];
 ---
 
 <!doctype html>
@@ -23,31 +50,42 @@ const canonicalURL = new URL(
 		<title>{title}</title>
 		<link rel="canonical" href={canonicalURL} />
 
+		{/* Smart Language-Specific Font Preloading */}
+		{preloadedFonts.map((fontHref) => (
+			<link
+				rel="preload"
+				href={fontHref}
+				as="font"
+				type="font/woff2"
+				crossorigin="anonymous"
+			/>
+		))}
+
 		{/* i18n Alternate Links */}
-		{
-			Object.keys(languages).map((code) => {
-				const localeCode = code as Lang;
-				const localePath = useTranslatedPath(localeCode)(
-					Astro.url.pathname.replace(/^\/(en|pl|uk)/, "") || "/",
-				);
-				return (
-					<link
-						rel="alternate"
-						hreflang={localeCode}
-						href={new URL(localePath, Astro.site || "https://example.com")}
-					/>
-				);
-			})
-		}
+		{Object.keys(languages).map((code) => {
+			const localeCode = code as Lang;
+			const localePath = useTranslatedPath(localeCode)(
+				Astro.url.pathname.replace(/^\/(en|pl|uk)/, "") || "/",
+			);
+			return (
+				<link
+					rel="alternate"
+					hreflang={localeCode}
+					href={new URL(localePath, Astro.site || "https://example.com")}
+				/>
+			);
+		})}
 		<link
 			rel="alternate"
 			hreflang="x-default"
-			href={new URL(
-				useTranslatedPath(defaultLang)(
-					Astro.url.pathname.replace(/^\/(en|pl|uk)/, "") || "/",
-				),
-				Astro.site || "https://example.com",
-			)}
+			href={
+				new URL(
+					useTranslatedPath(defaultLang)(
+						Astro.url.pathname.replace(/^\/(en|pl|uk)/, "") || "/",
+					),
+					Astro.site || "https://example.com",
+				)
+			}
 		/>
 
 		{/* Anti-FOUC Theme Initialization Script */}
