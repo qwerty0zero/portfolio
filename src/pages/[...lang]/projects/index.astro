@@ -1,0 +1,178 @@
+---
+import { getCollection } from "astro:content";
+import Button from "@components/ui/Button.astro";
+import IconArrowRight from "@components/ui/icons/IconArrowRight.astro";
+import ProjectCard from "@components/ui/ProjectCard.astro";
+import { defaultLang, type Lang, languages } from "@i18n/languages";
+import { useTranslations } from "@i18n/utils";
+import Layout from "@layouts/Layout.astro";
+
+export async function getStaticPaths() {
+	return Object.keys(languages).map((code) => {
+		const lang = code as Lang;
+		return {
+			params: {
+				lang: lang === defaultLang ? undefined : lang,
+			},
+		};
+	});
+}
+
+const { lang } = Astro.params;
+const currentLang: Lang =
+	lang && lang in languages ? (lang as Lang) : defaultLang;
+
+const t = useTranslations(currentLang);
+const langPrefix = currentLang === defaultLang ? "" : `/${currentLang}`;
+const homeUrl = langPrefix || "/";
+
+const allProjects = await getCollection("projects");
+const langProjects = allProjects
+	.filter((project) => project.id.startsWith(`${currentLang}/`))
+	.sort((a, b) => a.data.order - b.data.order)
+	.map((project) => {
+		const cleanId = project.id.replace(/\.md$/, "");
+		const [, ...slugParts] = cleanId.split("/");
+		const slug = slugParts.join("/");
+		return {
+			slug,
+			title: project.data.title,
+			category: project.data.category,
+			description: project.data.description,
+			stack: project.data.stack,
+			year: project.data.year,
+			githubUrl: project.data.githubUrl,
+			liveUrl: project.data.liveUrl,
+		};
+	});
+
+const pageTitle = `${t("nav.projects")} | Portfolio`;
+---
+
+<Layout title={pageTitle} lang={currentLang}>
+	<main id="main-content" class="projects-catalog-page">
+		<header class="catalog-header">
+			<nav class="catalog-nav" aria-label="Breadcrumb">
+				<Button
+					href={homeUrl}
+					variant="outline"
+					size="sm"
+					class="back-btn"
+				>
+					<IconArrowRight size={14} direction="left" />
+					<span>{t("project.back")}</span>
+				</Button>
+			</nav>
+
+			<div class="catalog-title-group">
+				<span class="catalog-badge">{t("projects.badge")}</span>
+				<h1 class="catalog-heading">{t("nav.projects")}</h1>
+				<p class="catalog-subtitle">{t("projects.pageSubtitle")}</p>
+			</div>
+		</header>
+
+		<section class="catalog-grid-section" aria-label={t("nav.projects")}>
+			<div class="catalog-grid">
+				{langProjects.map((project, index) => (
+					<ProjectCard
+						index={index + 1}
+						title={project.title}
+						category={project.category}
+						description={project.description}
+						stack={project.stack}
+						year={project.year}
+						slug={project.slug}
+						githubUrl={project.githubUrl}
+						liveUrl={project.liveUrl}
+						viewCaseLabel={t("projects.viewCase")}
+						projectUrl={`${langPrefix}/projects/${project.slug}`}
+					/>
+				))}
+			</div>
+		</section>
+	</main>
+</Layout>
+
+<style>
+	.projects-catalog-page {
+		padding: var(--space-16) var(--space-12) var(--space-24);
+		box-sizing: border-box;
+		min-height: 100vh;
+	}
+
+	.catalog-header {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-8);
+		border-bottom: 1px solid var(--border);
+		padding-bottom: var(--space-12);
+		margin-bottom: var(--space-12);
+	}
+
+	.catalog-nav {
+		display: flex;
+		align-items: center;
+	}
+
+	.catalog-title-group {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+		max-width: 800px;
+	}
+
+	.catalog-badge {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--accent);
+		font-weight: 700;
+	}
+
+	.catalog-heading {
+		font-family: var(--font-heading);
+		font-size: clamp(2.5rem, 5vw, 4.5rem);
+		line-height: 1.1;
+		color: var(--text);
+		text-transform: uppercase;
+		margin: 0;
+	}
+
+	.catalog-subtitle {
+		font-family: var(--font-body);
+		font-size: clamp(1.125rem, 1.4vw, 1.25rem);
+		line-height: 1.55;
+		color: var(--text-dim);
+		margin: 0;
+	}
+
+	.catalog-grid-section {
+		width: 100%;
+	}
+
+	.catalog-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+		gap: var(--space-8);
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	@media (max-width: 768px) {
+		.projects-catalog-page {
+			padding: var(--space-8) var(--space-4) var(--space-16);
+		}
+
+		.catalog-header {
+			padding-bottom: var(--space-8);
+			margin-bottom: var(--space-8);
+			gap: var(--space-6);
+		}
+
+		.catalog-grid {
+			grid-template-columns: 1fr;
+			gap: var(--space-6);
+		}
+	}
+</style>

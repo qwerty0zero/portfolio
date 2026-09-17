@@ -2,10 +2,19 @@
 export interface Props {
 	size?: number;
 	strokeWidth?: number;
+	direction?: "left" | "right";
 	class?: string;
 }
 
-const { size = 14, strokeWidth = 2, class: className = "" } = Astro.props;
+const {
+	size = 14,
+	strokeWidth = 2,
+	direction = "right",
+	class: className = "",
+} = Astro.props;
+
+const path =
+	direction === "left" ? "M19 12H5M12 19l-7-7 7-7" : "M5 12h14M12 5l7 7-7 7";
 ---
 
 <svg
@@ -18,5 +27,5 @@ const { size = 14, strokeWidth = 2, class: className = "" } = Astro.props;
 	stroke-width={strokeWidth}
 	aria-hidden="true"
 >
-	<path d="M5 12h14M12 5l7 7-7 7"></path>
+	<path d={path}></path>
 </svg>

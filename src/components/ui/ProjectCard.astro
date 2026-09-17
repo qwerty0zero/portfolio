@@ -64,7 +64,12 @@ const formattedIndex = String(index).padStart(2, "0");
 		)}
 
 		<div class="card-actions">
-			<Button href={projectUrl} variant="primary" class="primary-action">
+			<Button
+				href={projectUrl}
+				variant="primary"
+				size="md"
+				class="primary-action"
+			>
 				<span>{viewCaseLabel}</span>
 				<IconArrowRight size={14} />
 			</Button>
@@ -164,8 +169,8 @@ const formattedIndex = String(index).padStart(2, "0");
 		font-family: var(--font-heading);
 		font-size: 1.5rem;
 		line-height: 1.25;
-		margin: 0;
 		text-transform: uppercase;
+		margin: 0;
 	}
 
 	.card-title-link {
@@ -222,9 +227,9 @@ const formattedIndex = String(index).padStart(2, "0");
 
 	@media (max-width: 768px) {
 		.project-card {
-			width: 82vw;
-			max-width: 360px;
-			max-height: none;
+			width: 100%;
+			max-width: 100%;
+			height: auto;
 			padding: var(--space-6);
 		}
 

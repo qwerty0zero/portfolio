@@ -24,6 +24,9 @@ export const ui = {
     "projects.description":
       "Ключевые инженерные проекты: от распределенных платежных шлюзов до систем маршрутизации флота и корпоративной аналитики.",
     "projects.viewCase": "Смотреть кейс",
+    "projects.viewAll": "Все проекты",
+    "projects.pageSubtitle":
+      "Полный каталог архитектурных и инженерных проектов с открытым исходным кодом и production-кейсами.",
   },
   en: {
     "nav.home": "Home",
@@ -49,6 +52,9 @@ export const ui = {
     "projects.description":
       "Key engineering milestones: from distributed payment gateways to fleet routing platforms and enterprise data analytics.",
     "projects.viewCase": "View Case Study",
+    "projects.viewAll": "All Projects",
+    "projects.pageSubtitle":
+      "Comprehensive catalog of architectural and engineering projects featuring open-source repositories and production case studies.",
   },
   pl: {
     "nav.home": "Główna",
@@ -74,6 +80,9 @@ export const ui = {
     "projects.description":
       "Kluczowe projekty inżynieryjne: od rozproszonych bramek płatniczych po systemy wyznaczania tras floty i analitykę korporacyjną.",
     "projects.viewCase": "Zobacz studium przypadku",
+    "projects.viewAll": "Wszystkie projekty",
+    "projects.pageSubtitle":
+      "Pełny katalog projektów inżynieryjnych i architektonicznych z repozytoriami open source i wdrożeniami produkcyjnymi.",
   },
   uk: {
     "nav.home": "Головна",
@@ -99,6 +108,9 @@ export const ui = {
     "projects.description":
       "Ключові інженерні досягнення: від розподілених платіжних шлюзів до систем маршрутизації флоту та корпоративної аналітики.",
     "projects.viewCase": "Дивитися кейс",
+    "projects.viewAll": "Усі проєкти",
+    "projects.pageSubtitle":
+      "Повний каталог інженерних та архітектурних проєктів з відкритим кодом і production-кейсами.",
   },
 } as const;
 

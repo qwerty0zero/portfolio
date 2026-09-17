@@ -1,4 +1,6 @@
 ---
+import Button from "@components/ui/Button.astro";
+import IconArrowRight from "@components/ui/icons/IconArrowRight.astro";
 import ProjectCard from "@components/ui/ProjectCard.astro";
 
 export interface ProjectItem {
@@ -19,6 +21,7 @@ export interface Props {
 	domains: string[];
 	projects: ProjectItem[];
 	viewCaseLabel: string;
+	viewAllLabel?: string;
 	lang: string;
 	id?: string;
 	class?: string;
@@ -31,12 +34,14 @@ const {
 	domains,
 	projects,
 	viewCaseLabel,
+	viewAllLabel = "Все проекты",
 	lang,
 	id = "projects",
 	class: className = "",
 } = Astro.props;
 
 const langPrefix = lang === "ru" ? "" : `/${lang}`;
+const allProjectsUrl = `${langPrefix}/projects`;
 ---
 
 <section
@@ -82,6 +87,19 @@ const langPrefix = lang === "ru" ? "" : `/${lang}`;
 							projectUrl={`${langPrefix}/projects/${project.slug}`}
 						/>
 					))}
+				</div>
+
+				<!-- Mobile CTA Button after the 2nd project -->
+				<div class="mobile-cta-wrapper">
+					<Button
+						href={allProjectsUrl}
+						variant="accent"
+						size="lg"
+						class="view-all-projects-btn"
+					>
+						<span>{viewAllLabel}</span>
+						<IconArrowRight size={16} />
+					</Button>
 				</div>
 			</div>
 		</div>
@@ -266,7 +284,15 @@ const langPrefix = lang === "ru" ? "" : `/${lang}`;
 		box-sizing: border-box;
 	}
 
+	.mobile-cta-wrapper {
+		display: none;
+	}
+
 	@media (max-width: 768px) {
+		.projects-sticky-track {
+			height: auto !important;
+		}
+
 		.projects-sticky-container {
 			position: static;
 			height: auto;
@@ -277,7 +303,7 @@ const langPrefix = lang === "ru" ? "" : `/${lang}`;
 		.projects-track {
 			flex-direction: column;
 			align-items: stretch;
-			gap: var(--space-8);
+			gap: var(--space-6);
 			padding: 0 var(--space-4);
 			transform: none !important;
 		}
@@ -288,17 +314,28 @@ const langPrefix = lang === "ru" ? "" : `/${lang}`;
 		}
 
 		.projects-cards-list {
-			flex-direction: row;
-			overflow-x: auto;
-			scroll-snap-type: x mandatory;
-			-webkit-overflow-scrolling: touch;
-			padding-block: var(--space-4);
-			padding-inline: 0;
-			gap: var(--space-4);
+			flex-direction: column;
+			align-items: stretch;
+			gap: var(--space-6);
+			width: 100%;
 		}
 
-		.projects-cards-list > :global(*) {
-			scroll-snap-align: start;
+		/* Hide projects after the 2nd one on mobile on homepage */
+		.projects-cards-list > :global(.project-card:nth-child(n + 3)) {
+			display: none;
+		}
+
+		/* Show full-width CTA button after the 2nd project */
+		.mobile-cta-wrapper {
+			display: block;
+			width: 100%;
+			margin-top: var(--space-2);
+		}
+
+		.mobile-cta-wrapper :global(.view-all-projects-btn) {
+			width: 100%;
+			display: flex;
+			justify-content: center;
 		}
 	}
 </style>

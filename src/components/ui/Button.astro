@@ -3,6 +3,7 @@ import type { HTMLAttributes } from "astro/types";
 
 export type ButtonVariant =
 	| "primary"
+	| "accent"
 	| "secondary"
 	| "outline"
 	| "ghost"
@@ -96,6 +97,19 @@ const Element = isLink ? "a" : "button";
 		color: var(--accent-foreground);
 	}
 
+	.btn--accent {
+		background-color: var(--accent);
+		border-color: var(--accent);
+		color: var(--accent-foreground);
+		font-weight: 700;
+	}
+
+	.btn--accent:hover {
+		background-color: var(--accent-hover);
+		border-color: var(--accent-hover);
+		color: var(--accent-foreground);
+	}
+
 	.btn--secondary {
 		background-color: var(--background-secondary);
 		color: var(--text);
@@ -150,7 +164,14 @@ const Element = isLink ? "a" : "button";
 		color: var(--accent);
 	}
 
-	.btn:disabled {
+	/* Accessible Focus State */
+	.btn:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+
+	.btn:disabled,
+	.btn[aria-disabled="true"] {
 		opacity: 0.5;
 		cursor: not-allowed;
 		pointer-events: none;
