@@ -337,6 +337,16 @@ html.dark,
   padding: 0;
 }
 
+::selection {
+  background-color: var(--accent);
+  color: var(--text);
+}
+
+::-moz-selection {
+  background-color: var(--accent);
+  color: var(--text);
+}
+
 html {
   font-size: 100%;
   scroll-behavior: smooth;
