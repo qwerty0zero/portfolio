@@ -16,6 +16,14 @@
   - `client:idle` — для виджетов аналитики или второстепенного интерактива.
 - **Оптимизация медиа:** Запрещено использовать голый тег `<img>`. Все изображения рендерятся через компонент `astro:assets` (`<Image />` или `<Picture />`) с обязательными атрибутами `alt`, `width` и `height`.
 - **Семантика и SEO:** Использовать ровно один `<h1>` на страницу, логическую структуру тегов (`<header>`, `<main>`, `<section>`, `<footer>`), семантические кнопки (`<button>`, `<a>`) и атрибуты доступности (`aria-*`).
+- **Разделение контента и UI-текстов (Content Collections vs ui.ts):**
+  - Файл `src/i18n/ui.ts` используется **исключительно** для микрокопии интерфейса: ссылки навигации (`nav.*`), переключатель темы (`theme.toggle`), лейблы кнопок (`projects.viewCase`, `projects.viewAll`, `project.back`), технические метки метаданных (`project.meta.*`) и копирайт футера (`footer.rights`).
+  - **Запрещено** размещать в `ui.ts` или хардкодить в шаблонах страниц (`index.astro`) редакционный контент секций (параграфы биографии, описания, списки технологий/обязанностей направлений).
+  - Весь контент страниц и секций управляется строго через Astro Content Collections в `src/content/`:
+    - `src/content/home/[lang]/`: модульные файлы секций главной страницы (`hero.md`, `about.md`, `directions.md`, `projects.md`).
+    - `src/content/projects/[lang]/`: кейсы и проекты.
+    - `src/content/pages/[lang]/`: метаданные страниц (`home.md`, `projects.md`).
+  - Все коллекции обязаны быть строго типизированы через Zod в `src/content.config.ts`.
 
 ---
 
@@ -63,15 +71,21 @@ pnpm run typecheck             # Проверка типов (pnpm astro check /
 ## 4. Структура проекта
 
 ```text
-├── public/              # Статичные ассеты (favicons, robots.txt)
+├── public/              # Статичные ассеты (favicons, robots.txt, fonts)
 ├── src/
 │   ├── assets/          # Оптимизируемые изображения и SVG
 │   ├── components/
 │   │   ├── ui/          # Базовые UI-элементы (кнопки, бейджи, карточки, иконки)
 │   │   ├── common/      # Общие обвязки и контроллеры (SmoothScroll.astro)
-│   │   └── sections/    # Секции лендинга (Hero.astro, Features.astro, FAQ.astro)
+│   │   └── sections/    # Секции лендинга (Hero.astro, About.astro, Directions.astro, Projects.astro)
+│   ├── content/         # Content Collections (Astro 5 Content Layer)
+│   │   ├── home/        # Модульный контент секций главной страницы (ru, en, pl, uk)
+│   │   ├── pages/       # Метаданные страниц каталогов и лендингов
+│   │   └── projects/    # Кейсы проектов с разбивкой по языкам
+│   ├── content.config.ts# Zod-схемы коллекций контента
+│   ├── i18n/            # Интернационализация: языки, чистые UI-лейблы (ui.ts), утилиты
 │   ├── layouts/         # Базовый Layout.astro (head, мета-теги, Open Graph)
-│   ├── pages/           # index.astro и статичные маршруты
+│   ├── pages/           # index.astro и статичные маршруты [...lang]
 │   └── styles/          # Глобальные стили и токены
 ├── DESIGN.md            # Контракт дизайн-системы и токенов
 ├── AGENTS.md            # Инструкция для ИИ-агента
