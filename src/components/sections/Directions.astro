@@ -1,0 +1,238 @@
+---
+import DirectionCard from "@components/ui/DirectionCard.astro";
+
+export interface DirectionItem {
+	id: string;
+	index: string;
+	title: string;
+	tagline: string;
+	description: string;
+	skills: string[];
+	responsibilities: string[];
+}
+
+export interface Props {
+	badge: string;
+	title: string;
+	lead: string;
+	directions: DirectionItem[];
+	id?: string;
+	class?: string;
+}
+
+const {
+	badge,
+	title,
+	lead,
+	directions,
+	id = "directions",
+	class: className = "",
+} = Astro.props;
+---
+
+<section
+	id={id}
+	class:list={["directions-section", className]}
+	aria-labelledby="directions-heading"
+>
+	<!-- Animated Background Canvas Placeholder -->
+	<div class="directions-bg-canvas" aria-hidden="true">
+		<div class="cyber-grid-overlay"></div>
+		<div class="scanlines-overlay"></div>
+		<div class="glowing-orb glowing-orb--1"></div>
+		<div class="glowing-orb glowing-orb--2"></div>
+	</div>
+
+	<div class="directions-container">
+		<header class="directions-header">
+			<span class="directions-badge">{badge}</span>
+			<h2 id="directions-heading" class="directions-title">
+				{title}
+			</h2>
+			<p class="directions-lead">{lead}</p>
+		</header>
+
+		<!-- Stacking Sticky Cards Track -->
+		<div class="directions-stack-track">
+			{directions.map((direction, idx) => (
+				<div
+					class="direction-card-wrapper"
+					style={`--card-index: ${idx};`}
+				>
+					<DirectionCard {...direction} />
+				</div>
+			))}
+		</div>
+	</div>
+</section>
+
+<style>
+	.directions-section {
+		position: relative;
+		width: 100%;
+		background-color: var(--background);
+		border-top: 1px solid var(--border);
+		box-sizing: border-box;
+		overflow: clip;
+	}
+
+	/* Animated Background Placeholder */
+	.directions-bg-canvas {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		overflow: hidden;
+		z-index: 0;
+	}
+
+	.cyber-grid-overlay {
+		position: absolute;
+		inset: 0;
+		background-image:
+			linear-gradient(to right, var(--border-dim) 1px, transparent 1px),
+			linear-gradient(to bottom, var(--border-dim) 1px, transparent 1px);
+		background-size: 48px 48px;
+		opacity: 0.45;
+		mask-image: radial-gradient(circle at 50% 40%, black 20%, transparent 80%);
+		-webkit-mask-image: radial-gradient(circle at 50% 40%, black 20%, transparent 80%);
+	}
+
+	.scanlines-overlay {
+		position: absolute;
+		inset: 0;
+		background: repeating-linear-gradient(
+			0deg,
+			transparent,
+			transparent 3px,
+			var(--border-dim) 3px,
+			var(--border-dim) 4px
+		);
+		opacity: 0.15;
+	}
+
+	.glowing-orb {
+		position: absolute;
+		border-radius: var(--radius-full);
+		filter: blur(80px);
+		pointer-events: none;
+		opacity: 0.12;
+	}
+
+	.glowing-orb--1 {
+		width: 400px;
+		height: 400px;
+		top: 20%;
+		left: 10%;
+		background: var(--accent);
+		animation: pulse-slow 8s ease-in-out infinite alternate;
+	}
+
+	.glowing-orb--2 {
+		width: 350px;
+		height: 350px;
+		bottom: 15%;
+		right: 15%;
+		background: var(--accent);
+		animation: pulse-slow 10s ease-in-out infinite alternate-reverse;
+	}
+
+	@keyframes pulse-slow {
+		0% {
+			transform: scale(0.9) translate3d(0, 0, 0);
+			opacity: 0.08;
+		}
+		100% {
+			transform: scale(1.15) translate3d(20px, -20px, 0);
+			opacity: 0.16;
+		}
+	}
+
+	.directions-container {
+		position: relative;
+		z-index: 1;
+		width: 100%;
+		max-width: 1200px;
+		margin-inline: auto;
+		padding: var(--space-20) var(--space-8) var(--space-24);
+		box-sizing: border-box;
+	}
+
+	.directions-header {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-4);
+		max-width: 800px;
+		margin-bottom: var(--space-16);
+	}
+
+	.directions-badge {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--accent);
+		font-weight: 700;
+	}
+
+	.directions-title {
+		font-family: var(--font-heading);
+		font-size: clamp(2.25rem, 4.5vw, 3.75rem);
+		line-height: 1.1;
+		color: var(--text);
+		text-transform: uppercase;
+		margin: 0;
+	}
+
+	.directions-lead {
+		font-family: var(--font-body);
+		font-size: clamp(1.125rem, 1.4vw, 1.35rem);
+		line-height: 1.55;
+		color: var(--text-dim);
+		margin: 0;
+	}
+
+	/* Sticky Stacking Track */
+	.directions-stack-track {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-8);
+		position: relative;
+		width: 100%;
+	}
+
+	/* On desktop, cards stick and stack on top of each other leaving part of previous cards visible */
+	@media (min-width: 769px) {
+		.directions-stack-track {
+			gap: var(--space-12);
+		}
+
+		.direction-card-wrapper {
+			position: sticky;
+			top: calc(10vh + (var(--card-index) * 36px));
+			z-index: calc(var(--card-index) + 1);
+			transform-origin: center top;
+			transition: transform var(--transition-fast);
+		}
+	}
+
+	@media (max-width: 768px) {
+		.directions-container {
+			padding: var(--space-12) var(--space-4) var(--space-16);
+		}
+
+		.directions-header {
+			margin-bottom: var(--space-8);
+			gap: var(--space-3);
+		}
+
+		.directions-stack-track {
+			gap: var(--space-6);
+		}
+
+		.direction-card-wrapper {
+			position: sticky;
+			top: calc(8vh + (var(--card-index) * 20px));
+			z-index: calc(var(--card-index) + 1);
+		}
+	}
+</style>

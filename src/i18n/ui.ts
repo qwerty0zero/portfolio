@@ -19,6 +19,10 @@ export const ui = {
     "about.lead": "Инженерный подход, чистая архитектура и внимание к деталям.",
     "about.text":
       "Я специализируюсь на создании высокопроизводительных веб-приложений и интерфейсов с акцентом на скорость, доступность и надежность. Разрабатываю масштабируемые решения с продуманной структурой и современным стеком технологий.",
+    "directions.badge": "Экспертиза & Направления",
+    "directions.title": "Инженерный Фокус",
+    "directions.lead":
+      "Ключевые направления разработки: от надежных распределенных интерфейсов до масштабируемых backend-систем и инженерного UI/UX дизайна.",
     "projects.badge": "Проекты & Опыт",
     "projects.title": "Проекты и Домены",
     "projects.description":
@@ -47,6 +51,10 @@ export const ui = {
       "Engineering approach, clean architecture, and precision in every detail.",
     "about.text":
       "I specialize in building high-performance web applications and interfaces focused on speed, accessibility, and resilience. Designing scalable digital products with robust architecture and modern tech stack.",
+    "directions.badge": "Expertise & Directions",
+    "directions.title": "Engineering Focus",
+    "directions.lead":
+      "Core engineering tracks: from resilient distributed interfaces to scalable backend infrastructure and precision UI/UX design systems.",
     "projects.badge": "Projects & Experience",
     "projects.title": "Projects & Domains",
     "projects.description":
@@ -75,6 +83,10 @@ export const ui = {
       "Inżynierskie podejście, czysta architektura i dbałość o detale.",
     "about.text":
       "Specjalizuję się w tworzeniu wydajnych aplikacji i interfejsów internetowych, stawiając na szybkość, dostępność i niezawodność. Projektuję skalowalne rozwiązania oparte na solidnej architekturze i nowoczesnym stosie technologicznym.",
+    "directions.badge": "Obszary Ekspertyzy",
+    "directions.title": "Filary Inżynieryjne",
+    "directions.lead":
+      "Główne kierunki technologiczne: od odpornych interfejsów po skalowalną architekturę backendową i precyzyjne systemy UI/UX.",
     "projects.badge": "Projekty & Doświadczenie",
     "projects.title": "Projekty i Domeny",
     "projects.description":
@@ -103,6 +115,10 @@ export const ui = {
       "Інженерний підхід, чиста архітектура та увага до кожної деталі.",
     "about.text":
       "Спеціалізуюся на розробці високопродуктивних вебзастосунків та інтерфейсів з фокусом на швидкість, доступність і надійність. Створюю масштабовані рішення з продуманою структурою та сучасним стеком.",
+    "directions.badge": "Експертиза & Напрямки",
+    "directions.title": "Інженерний Фокус",
+    "directions.lead":
+      "Ключові технологічні напрямки: від стійких розподілених інтерфейсів до масштабованих backend-систем та інженерного UI/UX дизайну.",
     "projects.badge": "Проєкти & Досвід",
     "projects.title": "Проєкти та Домени",
     "projects.description":
