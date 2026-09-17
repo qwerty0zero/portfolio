@@ -1,0 +1,315 @@
+---
+export interface Props {
+	fileName?: string;
+	lang: string;
+	title: string;
+	text: string;
+	author: string;
+	role: string;
+	class?: string;
+}
+
+const {
+	fileName = "index.html",
+	lang,
+	title,
+	text,
+	author,
+	role,
+	class: className = "",
+} = Astro.props;
+---
+
+<div
+	class:list={["code-window", className]}
+	aria-label={`Code snippet ${fileName}`}
+>
+	<div class="code-window-header">
+		<div class="code-window-controls" aria-hidden="true">
+			<span class="control-dot close">
+				<svg
+					class="control-icon"
+					viewBox="0 0 12 12"
+					width="7"
+					height="7"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.8"
+					stroke-linecap="round"
+				>
+					<line x1="2.5" y1="2.5" x2="9.5" y2="9.5"></line>
+					<line x1="9.5" y1="2.5" x2="2.5" y2="9.5"></line>
+				</svg>
+			</span>
+			<span class="control-dot minimize">
+				<svg
+					class="control-icon"
+					viewBox="0 0 12 12"
+					width="7"
+					height="7"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.8"
+					stroke-linecap="round"
+				>
+					<line x1="2" y1="6" x2="10" y2="6"></line>
+				</svg>
+			</span>
+			<span class="control-dot maximize">
+				<svg
+					class="control-icon"
+					viewBox="0 0 12 12"
+					width="6"
+					height="6"
+					fill="currentColor"
+				>
+					<path d="M1.5 1.5h4v1.5h-2.5v2.5h-1.5v-4zM6.5 10.5h4v-4h-1.5v2.5h-2.5v1.5z"></path>
+				</svg>
+			</span>
+		</div>
+		<div class="code-window-tab">
+			<svg
+				class="file-icon"
+				width="14"
+				height="14"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				aria-hidden="true"
+			>
+				<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+				<polyline points="14 2 14 8 20 8"></polyline>
+			</svg>
+			<span class="tab-title">{fileName}</span>
+		</div>
+	</div>
+
+	<div class="code-window-body">
+		<div class="line-numbers" aria-hidden="true">
+			<span>01</span>
+			<span>02</span>
+			<span>03</span>
+			<span>04</span>
+			<span>05</span>
+			<span>06</span>
+			<span>07</span>
+			<span>08</span>
+			<span>09</span>
+			<span>10</span>
+			<span>11</span>
+			<span>12</span>
+		</div>
+		<pre class="code-content"><code><span class="token-doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="token-tag">&lt;html</span> <span class="token-attr">lang</span>=<span class="token-string">"{lang}"</span><span class="token-tag">&gt;</span>
+  <span class="token-tag">&lt;head&gt;</span>
+    <span class="token-tag">&lt;meta</span> <span class="token-attr">name</span>=<span class="token-string">"author"</span> <span class="token-attr">content</span>=<span class="token-string">"{author}"</span> <span class="token-tag">/&gt;</span>
+    <span class="token-tag">&lt;meta</span> <span class="token-attr">name</span>=<span class="token-string">"role"</span> <span class="token-attr">content</span>=<span class="token-string">"{role}"</span> <span class="token-tag">/&gt;</span>
+  <span class="token-tag">&lt;/head&gt;</span>
+  <span class="token-tag">&lt;body&gt;</span>
+    <span class="token-tag">&lt;h1&gt;</span><span class="token-text">{title}</span><span class="token-tag">&lt;/h1&gt;</span>
+    <span class="token-tag">&lt;p&gt;</span>
+      <span class="token-text wrap-text">{text}</span>
+    <span class="token-tag">&lt;/p&gt;</span>
+  <span class="token-tag">&lt;/body&gt;</span>
+<span class="token-tag">&lt;/html&gt;</span></code></pre>
+	</div>
+</div>
+
+<style>
+	.code-window {
+		width: 100%;
+		max-width: 100%;
+		min-width: 0;
+		background-color: var(--background-secondary);
+		border: 1px solid var(--border);
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+		font-family: var(--font-mono);
+	}
+
+	.code-window-header {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		background-color: var(--background-tertiary);
+		border-bottom: 1px solid var(--border);
+		padding: 0 var(--space-4);
+		height: 40px;
+		user-select: none;
+		gap: var(--space-4);
+		min-width: 0;
+	}
+
+	.code-window-controls {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		flex-shrink: 0;
+		padding: 4px;
+	}
+
+	.control-dot {
+		width: 12px;
+		height: 12px;
+		border-radius: var(--radius-full);
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		cursor: default;
+		transition: background-color var(--transition-fast);
+		position: relative;
+		overflow: hidden;
+		flex-shrink: 0;
+	}
+
+	.control-dot.close {
+		background-color: var(--window-control-close);
+	}
+
+	.control-dot.minimize {
+		background-color: var(--window-control-minimize);
+	}
+
+	.control-dot.maximize {
+		background-color: var(--window-control-maximize);
+	}
+
+	.control-icon {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		color: var(--window-control-symbol);
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 120ms ease;
+	}
+
+	/* Show icons when hovering the control group */
+	.code-window-controls:hover .control-icon {
+		opacity: 1;
+	}
+
+	.control-dot.close:hover {
+		background-color: var(--window-control-close-hover);
+	}
+
+	.control-dot.minimize:hover {
+		background-color: var(--window-control-minimize-hover);
+	}
+
+	.control-dot.maximize:hover {
+		background-color: var(--window-control-maximize-hover);
+	}
+
+	.code-window-tab {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-2);
+		background-color: var(--background-secondary);
+		padding: 0 var(--space-3);
+		height: 100%;
+		border-left: 1px solid var(--border);
+		border-right: 1px solid var(--border);
+		font-size: 0.8125rem;
+		color: var(--text);
+		font-weight: 500;
+		flex-shrink: 0;
+	}
+
+	.file-icon {
+		color: var(--accent);
+		flex-shrink: 0;
+	}
+
+	.tab-title {
+		letter-spacing: 0.02em;
+	}
+
+	.code-window-body {
+		display: flex;
+		padding: var(--space-4);
+		overflow-x: auto;
+		background-color: var(--background-secondary);
+		line-height: 1.65;
+		font-size: 0.875rem;
+		min-width: 0;
+		box-sizing: border-box;
+	}
+
+	.line-numbers {
+		display: flex;
+		flex-direction: column;
+		user-select: none;
+		color: var(--text-muted);
+		padding-right: var(--space-4);
+		margin-right: var(--space-4);
+		border-right: 1px solid var(--border-dim);
+		text-align: right;
+		opacity: 0.6;
+		flex-shrink: 0;
+	}
+
+	.code-content {
+		margin: 0;
+		padding: 0;
+		background: transparent;
+		color: var(--text);
+		font-family: inherit;
+		min-width: 0;
+		flex: 1;
+		white-space: pre-wrap;
+		word-break: break-word;
+	}
+
+	.code-content code {
+		font-family: inherit;
+		display: block;
+		min-width: 0;
+	}
+
+	.wrap-text {
+		display: inline;
+		white-space: pre-wrap;
+		word-break: break-word;
+	}
+
+	/* Semantic Token Highlighting based on OKLCH Design Tokens */
+	.token-doctype {
+		color: var(--text-muted);
+		font-style: italic;
+	}
+
+	.token-tag {
+		color: var(--accent);
+		font-weight: 600;
+	}
+
+	.token-attr {
+		color: var(--text);
+	}
+
+	.token-string {
+		color: var(--text-dim);
+	}
+
+	.token-text {
+		color: var(--text);
+		font-weight: 500;
+	}
+
+	@media (max-width: 768px) {
+		.code-window-body {
+			font-size: 0.775rem;
+			padding: var(--space-3);
+		}
+
+		.line-numbers {
+			padding-right: var(--space-2);
+			margin-right: var(--space-2);
+		}
+	}
+</style>
