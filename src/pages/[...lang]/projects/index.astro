@@ -1,5 +1,5 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, getEntry } from "astro:content";
 import Button from "@components/ui/Button.astro";
 import IconArrow from "@components/ui/icons/IconArrow.astro";
 import ProjectCard from "@components/ui/ProjectCard.astro";
@@ -26,6 +26,8 @@ const t = useTranslations(currentLang);
 const langPrefix = currentLang === defaultLang ? "" : `/${currentLang}`;
 const homeUrl = langPrefix || "/";
 
+const projectsPageEntry = await getEntry("pages", `${currentLang}/projects`);
+
 const allProjects = await getCollection("projects");
 const langProjects = allProjects
 	.filter((project) => project.id.startsWith(`${currentLang}/`))
@@ -46,7 +48,9 @@ const langProjects = allProjects
 		};
 	});
 
-const pageTitle = `${t("nav.projects")} | Portfolio`;
+const pageTitle = `${projectsPageEntry?.data.title || t("nav.projects")} | Portfolio`;
+const catalogBadge = projectsPageEntry?.data.badge;
+const catalogSubtitle = projectsPageEntry?.data.subtitle;
 ---
 
 <Layout title={pageTitle} lang={currentLang}>
@@ -65,9 +69,9 @@ const pageTitle = `${t("nav.projects")} | Portfolio`;
 			</nav>
 
 			<div class="catalog-title-group">
-				<span class="catalog-badge">{t("projects.badge")}</span>
-				<h1 class="catalog-heading">{t("nav.projects")}</h1>
-				<p class="catalog-subtitle">{t("projects.pageSubtitle")}</p>
+				{catalogBadge && <span class="catalog-badge">{catalogBadge}</span>}
+				<h1 class="catalog-heading">{projectsPageEntry?.data.title || t("nav.projects")}</h1>
+				{catalogSubtitle && <p class="catalog-subtitle">{catalogSubtitle}</p>}
 			</div>
 		</header>
 
