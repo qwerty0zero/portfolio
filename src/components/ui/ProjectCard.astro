@@ -1,6 +1,6 @@
 ---
 import Button from "@components/ui/Button.astro";
-import IconArrowRight from "@components/ui/icons/IconArrowRight.astro";
+import IconArrow from "@components/ui/icons/IconArrow.astro";
 import IconExternalLink from "@components/ui/icons/IconExternalLink.astro";
 import IconGithub from "@components/ui/icons/IconGithub.astro";
 
@@ -71,7 +71,7 @@ const formattedIndex = String(index).padStart(2, "0");
 				class="primary-action"
 			>
 				<span>{viewCaseLabel}</span>
-				<IconArrowRight size={14} />
+				<IconArrow size={14} />
 			</Button>
 
 			{liveUrl && (
@@ -103,16 +103,17 @@ const formattedIndex = String(index).padStart(2, "0");
 
 <style>
 	.project-card {
-		width: clamp(340px, 28vw, 420px);
-		height: 100%;
-		background-color: var(--background-secondary);
-		border: 1px solid var(--border);
-		box-sizing: border-box;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
+		width: clamp(340px, 32vw, 440px);
+		height: 480px;
+		background-color: var(--background-secondary);
+		border: 1px solid var(--border);
 		padding: var(--space-8);
+		box-sizing: border-box;
 		flex-shrink: 0;
+		position: relative;
 		transition:
 			border-color var(--transition-fast),
 			background-color var(--transition-fast);
@@ -123,12 +124,13 @@ const formattedIndex = String(index).padStart(2, "0");
 		background-color: var(--background-elevated);
 	}
 
+	/* Card Header */
 	.card-header {
 		display: flex;
-		align-items: center;
 		justify-content: space-between;
-		border-bottom: 1px solid var(--border-dim);
+		align-items: center;
 		padding-bottom: var(--space-4);
+		border-bottom: 1px solid var(--border);
 	}
 
 	.card-meta {
@@ -148,28 +150,28 @@ const formattedIndex = String(index).padStart(2, "0");
 		font-family: var(--font-mono);
 		font-size: 0.75rem;
 		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		color: var(--text-muted);
+		letter-spacing: 0.05em;
+		color: var(--text-dim);
 	}
 
 	.card-year {
 		font-family: var(--font-mono);
-		font-size: 0.8125rem;
-		color: var(--text-dim);
+		font-size: 0.75rem;
+		color: var(--text-muted);
 	}
 
+	/* Card Body */
 	.card-body {
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-4);
-		margin-block: var(--space-6);
+		gap: var(--space-3);
+		margin-block: auto;
 	}
 
 	.card-title {
 		font-family: var(--font-heading);
 		font-size: 1.5rem;
 		line-height: 1.25;
-		text-transform: uppercase;
 		margin: 0;
 	}
 
@@ -185,18 +187,23 @@ const formattedIndex = String(index).padStart(2, "0");
 
 	.card-description {
 		font-family: var(--font-body);
-		font-size: 1.0625rem;
+		font-size: 0.9375rem;
 		line-height: 1.5;
 		color: var(--text-dim);
 		margin: 0;
+		display: -webkit-box;
+		-webkit-line-clamp: 4;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
 	}
 
+	/* Card Footer */
 	.card-footer {
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-6);
-		border-top: 1px solid var(--border-dim);
 		padding-top: var(--space-4);
+		border-top: 1px solid var(--border);
 	}
 
 	.card-stack {
@@ -210,8 +217,8 @@ const formattedIndex = String(index).padStart(2, "0");
 		font-size: 0.6875rem;
 		color: var(--text-dim);
 		background-color: var(--background-tertiary);
-		border: 1px solid var(--border);
 		padding: 2px 8px;
+		border: 1px solid var(--border);
 		letter-spacing: 0.02em;
 	}
 
@@ -230,15 +237,21 @@ const formattedIndex = String(index).padStart(2, "0");
 			width: 100%;
 			max-width: 100%;
 			height: auto;
+			min-height: auto;
 			padding: var(--space-6);
+			gap: var(--space-6);
 		}
 
-		.card-title {
-			font-size: 1.25rem;
+		.card-body {
+			margin-block: var(--space-2);
 		}
 
 		.card-description {
-			font-size: 0.9375rem;
+			-webkit-line-clamp: 6;
+		}
+
+		.card-footer {
+			gap: var(--space-4);
 		}
 	}
 </style>

@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import Button from "@components/ui/Button.astro";
-import IconArrowRight from "@components/ui/icons/IconArrowRight.astro";
+import IconArrow from "@components/ui/icons/IconArrow.astro";
 import ProjectCard from "@components/ui/ProjectCard.astro";
 import { defaultLang, type Lang, languages } from "@i18n/languages";
 import { useTranslations } from "@i18n/utils";
@@ -59,7 +59,7 @@ const pageTitle = `${t("nav.projects")} | Portfolio`;
 					size="sm"
 					class="back-btn"
 				>
-					<IconArrowRight size={14} direction="left" />
+					<IconArrow size={14} direction="left" />
 					<span>{t("project.back")}</span>
 				</Button>
 			</nav>
