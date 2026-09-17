@@ -63,30 +63,34 @@ const allProjectsUrl = `${langPrefix}/projects`;
 					<div class="domains-container">
 						<span class="domains-label">Core Domains:</span>
 						<div class="domains-chips">
-							{domains.map((domain) => (
-								<span class="domain-chip">{domain}</span>
-							))}
+							{
+								domains.map((domain) => (
+									<span class="domain-chip">{domain}</span>
+								))
+							}
 						</div>
 					</div>
 				</header>
 
 				<!-- Project Cards List -->
 				<div class="projects-cards-list">
-					{projects.map((project, index) => (
-						<ProjectCard
-							index={index + 1}
-							title={project.title}
-							category={project.category}
-							description={project.description}
-							stack={project.stack}
-							year={project.year}
-							slug={project.slug}
-							githubUrl={project.githubUrl}
-							liveUrl={project.liveUrl}
-							viewCaseLabel={viewCaseLabel}
-							projectUrl={`${langPrefix}/projects/${project.slug}`}
-						/>
-					))}
+					{
+						projects.map((project, index) => (
+							<ProjectCard
+								index={index + 1}
+								title={project.title}
+								category={project.category}
+								description={project.description}
+								stack={project.stack}
+								year={project.year}
+								slug={project.slug}
+								githubUrl={project.githubUrl}
+								liveUrl={project.liveUrl}
+								viewCaseLabel={viewCaseLabel}
+								projectUrl={`${langPrefix}/projects/${project.slug}`}
+							/>
+						))
+					}
 				</div>
 
 				<!-- Mobile CTA Button after the 2nd project -->
@@ -203,7 +207,7 @@ const allProjectsUrl = `${langPrefix}/projects`;
 	.projects-track {
 		display: flex;
 		align-items: stretch;
-		padding: 0 var(--space-16) 0 var(--space-12);
+		padding-left: var(--space-16);
 		height: 100%;
 		box-sizing: border-box;
 		will-change: transform;
