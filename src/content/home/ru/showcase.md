@@ -8,30 +8,31 @@ tabs:
     tabTitle: "Почему решил создать проект"
     heading: "Инженерная мотивация и принципы"
     text: "Портфолио создавалось как манифест бескомпромиссного инженерного подхода: полный отказ от шаблонных UI-библиотек, строгая геометрия и максимальная производительность. Цель — показать, что современный веб может быть визуально выразительным, интерактивным и при этом сохранять мгновенный отклик без раздутого клиентского рантайма."
+    manifesto:
+      badge: "КЛЮЧЕВЫЕ ПРИНЦИПЫ"
+      items:
+        - highlight: "Zero Third-Party UI:"
+          text: "Полная архитектурная свобода без ограничений готовых дизайн-систем."
+        - highlight: "Strict Geometry:"
+          text: "Бескомпромиссная сетка, выверенные пропорции и прямолинейные формы."
+        - highlight: "Extreme Speed:"
+          text: "Оптимизация каждого байта в критическом пути рендеринга."
   - id: "why-astro"
     index: "02"
     tabTitle: "Почему выбрал Astro"
     heading: "Astro против традиционных SPA"
     text: "Выбор Astro обусловлен парадигмой Zero-JS по умолчанию и архитектурой островов (Islands Architecture). В отличие от Next.js, где базовый гидратируемый рантайм навязывается даже статичным страницам, Astro отправляет в браузер чистый HTML и подключает интерактивность только там, где она объективно необходима."
+    benchmarkMeta:
+      badge: "ASTRO SSG ПРОТИВ NEXT.JS"
+      title: "СРАВНЕНИЕ ПРОИЗВОДИТЕЛЬНОСТИ"
+      note: "* Синтетические и локальные замеры производительности для базового деплоя портфолио"
     metrics:
-      - label: "JS Runtime Baseline"
-        astroVal: "0 KB"
-        nextVal: "85 KB"
-        unit: "KB"
-        astroPercent: 4
-        nextPercent: 85
-      - label: "Core Web Vitals (Lighthouse)"
-        astroVal: "100"
-        nextVal: "88"
-        unit: "/100"
-        astroPercent: 100
-        nextPercent: 88
-      - label: "Interaction to Next Paint (INP)"
-        astroVal: "< 5ms"
-        nextVal: "~42ms"
-        unit: "ms"
-        astroPercent: 8
-        nextPercent: 68
+      - id: "js-runtime"
+        label: "Базовый размер JS Runtime"
+      - id: "core-web-vitals"
+        label: "Core Web Vitals (Lighthouse)"
+      - id: "inp"
+        label: "Interaction to Next Paint (INP)"
   - id: "how-ai"
     index: "03"
     tabTitle: "Как я использовал ИИ"

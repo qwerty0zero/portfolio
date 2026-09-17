@@ -8,30 +8,31 @@ tabs:
     tabTitle: "Чому вирішив створити проєкт"
     heading: "Інженерна мотивація та принципи"
     text: "Портфоліо створювалося як маніфест безкомпромісного інженерного підходу: повна відмова від шаблонних UI-бібліотек, сувора геометрія та максимальна швидкодія. Мета — довести, що сучасний веб може бути візуально виразним та інтерактивним без роздутого клієнтського runtime."
+    manifesto:
+      badge: "КЛЮЧОВІ ПРИНЦИПИ"
+      items:
+        - highlight: "Zero Third-Party UI:"
+          text: "Повна архітектурна свобода без обмежень готових дизайн-систем."
+        - highlight: "Strict Geometry:"
+          text: "Безкомпромісна сітка, вивірені пропорції та прямолінійні форми."
+        - highlight: "Extreme Speed:"
+          text: "Оптимізація кожного байта на критичному шляху рендерингу."
   - id: "why-astro"
     index: "02"
     tabTitle: "Чому обрав Astro"
     heading: "Astro проти традиційних SPA"
     text: "Вибір Astro зумовлений парадигмою Zero-JS за замовчуванням та архітектурою островів (Islands Architecture). На відміну від Next.js, який нав'язує базову гідратацію навіть статичним сторінкам, Astro віддає чистий HTML і підключає інтерактивність лише там, де вона об'єктивно необхідна."
+    benchmarkMeta:
+      badge: "ASTRO SSG ПРОТИ NEXT.JS"
+      title: "ПОРІВНЯННЯ ПРОДУКТИВНОСТІ"
+      note: "* Синтетичні та локальні виміри продуктивності для базового деплою портфоліо"
     metrics:
-      - label: "Розмір JS Runtime"
-        astroVal: "0 KB"
-        nextVal: "85 KB"
-        unit: "KB"
-        astroPercent: 4
-        nextPercent: 85
-      - label: "Core Web Vitals (Lighthouse)"
-        astroVal: "100"
-        nextVal: "88"
-        unit: "/100"
-        astroPercent: 100
-        nextPercent: 88
-      - label: "Interaction to Next Paint (INP)"
-        astroVal: "< 5ms"
-        nextVal: "~42ms"
-        unit: "ms"
-        astroPercent: 8
-        nextPercent: 68
+      - id: "js-runtime"
+        label: "Розмір JS Runtime"
+      - id: "core-web-vitals"
+        label: "Core Web Vitals (Lighthouse)"
+      - id: "inp"
+        label: "Interaction to Next Paint (INP)"
   - id: "how-ai"
     index: "03"
     tabTitle: "Як я використовував ШІ"

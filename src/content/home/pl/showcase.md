@@ -8,30 +8,31 @@ tabs:
     tabTitle: "Dlaczego powstał ten projekt"
     heading: "Motywacja inżynieryjna i manifest"
     text: "Portfolio powstało jako manifest bezkompromisowego podejścia inżynieryjnego: rezygnacja z gotowych bibliotek UI, surowa geometria i najwyższa wydajność. Celem było udowodnienie, że nowoczesna sieć może być wyrazista wizualnie i wysoce interaktywna bez narzutu ciężkich bibliotek klienckich."
+    manifesto:
+      badge: "KLUCZOWE ZASADY"
+      items:
+        - highlight: "Zero Third-Party UI:"
+          text: "Pełna swoboda architektoniczna bez ograniczeń gotowych bibliotek komponentów."
+        - highlight: "Strict Geometry:"
+          text: "Bezkompromisowa siatka, precyzyjne proporcje i wyraziste, proste linie."
+        - highlight: "Extreme Speed:"
+          text: "Optymalizacja każdego bajta na krytycznej ścieżce renderowania."
   - id: "why-astro"
     index: "02"
     tabTitle: "Dlaczego wybrałem Astro"
     heading: "Astro kontra tradycyjne SPA"
     text: "Astro wybrano ze względu na paradygmat Zero-JS domyślnie oraz architekturę wysp (Islands Architecture). W przeciwieństwie do Next.js, który narzuca hydratację nawet statycznym treściom, Astro generuje czysty HTML, włączając interaktywność tylko tam, gdzie jest ona konieczna."
+    benchmarkMeta:
+      badge: "ASTRO SSG KONTRA NEXT.JS"
+      title: "PORÓWNANIE WYDAJNOŚCI"
+      note: "* Syntetyczne i lokalne pomiary wydajności dla bazowego wdrożenia portfolio"
     metrics:
-      - label: "Wielkość runtime JS"
-        astroVal: "0 KB"
-        nextVal: "85 KB"
-        unit: "KB"
-        astroPercent: 4
-        nextPercent: 85
-      - label: "Core Web Vitals (Lighthouse)"
-        astroVal: "100"
-        nextVal: "88"
-        unit: "/100"
-        astroPercent: 100
-        nextPercent: 88
-      - label: "Interaction to Next Paint (INP)"
-        astroVal: "< 5ms"
-        nextVal: "~42ms"
-        unit: "ms"
-        astroPercent: 8
-        nextPercent: 68
+      - id: "js-runtime"
+        label: "Wielkość runtime JS"
+      - id: "core-web-vitals"
+        label: "Core Web Vitals (Lighthouse)"
+      - id: "inp"
+        label: "Interaction to Next Paint (INP)"
   - id: "how-ai"
     index: "03"
     tabTitle: "Jak wykorzystałem AI"

@@ -8,30 +8,31 @@ tabs:
     tabTitle: "Why I Built This Project"
     heading: "Engineering Motivation & Principles"
     text: "This portfolio was engineered as a manifesto of an uncompromising approach to software development: zero template component libraries, strict geometric discipline, and raw performance. The goal was to prove that modern web experiences can be visually engaging and interactive while maintaining instantaneous response times without heavy client-side runtimes."
+    manifesto:
+      badge: "CORE PRINCIPLES"
+      items:
+        - highlight: "Zero Third-Party UI:"
+          text: "Complete architectural freedom without the constraints of off-the-shelf component libraries."
+        - highlight: "Strict Geometry:"
+          text: "Uncompromising grid layout, balanced proportions, and sharp geometric silhouettes."
+        - highlight: "Extreme Speed:"
+          text: "Relentless byte-by-byte optimization along the critical rendering path."
   - id: "why-astro"
     index: "02"
     tabTitle: "Why Astro"
     heading: "Astro vs Traditional SPAs"
     text: "Astro was chosen for its Zero-JS by default paradigm and Islands Architecture. Unlike Next.js, which ships a substantial hydration runtime even to mostly static content, Astro delivers pristine HTML and activates client JavaScript strictly where interactivity is genuinely required."
+    benchmarkMeta:
+      badge: "ASTRO SSG VS NEXT.JS"
+      title: "RUNTIME BENCHMARK"
+      note: "* Synthetic & local benchmark metrics for baseline portfolio deployment"
     metrics:
-      - label: "JS Runtime Baseline"
-        astroVal: "0 KB"
-        nextVal: "85 KB"
-        unit: "KB"
-        astroPercent: 4
-        nextPercent: 85
-      - label: "Core Web Vitals (Lighthouse)"
-        astroVal: "100"
-        nextVal: "88"
-        unit: "/100"
-        astroPercent: 100
-        nextPercent: 88
-      - label: "Interaction to Next Paint (INP)"
-        astroVal: "< 5ms"
-        nextVal: "~42ms"
-        unit: "ms"
-        astroPercent: 8
-        nextPercent: 68
+      - id: "js-runtime"
+        label: "JS Runtime Baseline"
+      - id: "core-web-vitals"
+        label: "Core Web Vitals (Lighthouse)"
+      - id: "inp"
+        label: "Interaction to Next Paint (INP)"
   - id: "how-ai"
     index: "03"
     tabTitle: "How I Leveraged AI"

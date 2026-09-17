@@ -24,15 +24,26 @@ export const directionItemSchema = z.object({
 export type DirectionItem = z.infer<typeof directionItemSchema>;
 
 export const benchmarkMetricSchema = z.object({
+  id: z.string(),
   label: z.string(),
-  astroVal: z.string(),
-  nextVal: z.string(),
+  astroVal: z.string().optional(),
+  nextVal: z.string().optional(),
   unit: z.string().optional(),
-  astroPercent: z.number().min(0).max(100),
-  nextPercent: z.number().min(0).max(100),
+  astroPercent: z.number().min(0).max(100).optional(),
+  nextPercent: z.number().min(0).max(100).optional(),
 });
 
 export type BenchmarkMetric = z.infer<typeof benchmarkMetricSchema>;
+
+export const benchmarkMetaSchema = z.object({
+  badge: z.string(),
+  title: z.string(),
+  note: z.string(),
+  astroLabel: z.string().optional(),
+  nextLabel: z.string().optional(),
+});
+
+export type BenchmarkMeta = z.infer<typeof benchmarkMetaSchema>;
 
 export const highlightItemSchema = z.object({
   badge: z.string(),
@@ -42,13 +53,27 @@ export const highlightItemSchema = z.object({
 
 export type HighlightItem = z.infer<typeof highlightItemSchema>;
 
+export const manifestoItemSchema = z.object({
+  highlight: z.string(),
+  text: z.string(),
+});
+
+export const manifestoSchema = z.object({
+  badge: z.string(),
+  items: z.array(manifestoItemSchema),
+});
+
+export type ManifestoData = z.infer<typeof manifestoSchema>;
+
 export const showcaseTabItemSchema = z.object({
   id: z.string(),
   index: z.string(),
   tabTitle: z.string(),
   heading: z.string(),
   text: z.string(),
+  manifesto: manifestoSchema.optional(),
   metrics: z.array(benchmarkMetricSchema).optional(),
+  benchmarkMeta: benchmarkMetaSchema.optional(),
   highlights: z.array(highlightItemSchema).optional(),
 });
 
