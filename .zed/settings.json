@@ -1,0 +1,52 @@
+{
+  "languages": {
+    "Astro": {
+      "language_servers": [
+        "astro-language-server",
+        "vtsls",
+        "!typescript-language-server"
+      ],
+      "format_on_save": "on",
+      "formatter": {
+        "external": {
+          "command": "biome",
+          "arguments": ["format", "--stdin-file-path", "{buffer_path}"]
+        }
+      }
+    },
+    "TypeScript": {
+      "language_servers": ["vtsls", "!typescript-language-server"],
+      "format_on_save": "on",
+      "formatter": {
+        "external": {
+          "command": "biome",
+          "arguments": ["format", "--stdin-file-path", "{buffer_path}"]
+        }
+      }
+    }
+  },
+  "lsp": {
+    "astro-language-server": {
+      "initialization_options": {
+        "typescript": {
+          "tsdk": "node_modules/typescript/lib"
+        }
+      }
+    },
+    "vtsls": {
+      "initialization_options": {
+        "typescript": {
+          "tsdk": "node_modules/typescript/lib"
+        },
+        "vtsls": {
+          "autoUseWorkspaceTsdk": true,
+          "experimental": {
+            "completion": {
+              "enableServerSideFuzzyMatch": true
+            }
+          }
+        }
+      }
+    }
+  }
+}
