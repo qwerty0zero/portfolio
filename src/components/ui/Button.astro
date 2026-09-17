@@ -1,0 +1,158 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export type ButtonVariant =
+	| "primary"
+	| "secondary"
+	| "outline"
+	| "ghost"
+	| "icon";
+export type ButtonSize = "sm" | "md" | "lg";
+
+interface CommonProps {
+	variant?: ButtonVariant;
+	size?: ButtonSize;
+	class?: string;
+}
+
+export type Props = CommonProps &
+	(
+		| ({ href: string; type?: never } & HTMLAttributes<"a">)
+		| ({
+				href?: never;
+				type?: "button" | "submit" | "reset";
+		  } & HTMLAttributes<"button">)
+	);
+
+const {
+	variant = "primary",
+	size = "md",
+	class: className = "",
+	href,
+	...rest
+} = Astro.props as Props;
+
+const isLink = Boolean(href);
+const Element = isLink ? "a" : "button";
+---
+
+<Element
+	href={href}
+	class:list={["btn", `btn--${variant}`, `btn--${size}`, className]}
+	{...rest}
+>
+	<slot />
+</Element>
+
+<style>
+	.btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-2);
+		font-family: var(--font-mono);
+		font-weight: 500;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		text-decoration: none;
+		border: 1px solid var(--border);
+		box-sizing: border-box;
+		cursor: pointer;
+		user-select: none;
+		transition:
+			background-color var(--transition-fast),
+			border-color var(--transition-fast),
+			color var(--transition-fast);
+	}
+
+	/* Sizes */
+	.btn--sm {
+		height: 32px;
+		padding: 0 var(--space-3);
+		font-size: 0.75rem;
+	}
+
+	.btn--md {
+		height: 40px;
+		padding: 0 var(--space-4);
+		font-size: 0.8125rem;
+	}
+
+	.btn--lg {
+		height: 48px;
+		padding: 0 var(--space-6);
+		font-size: 0.875rem;
+	}
+
+	/* Variants */
+	.btn--primary {
+		background-color: var(--background-tertiary);
+		color: var(--text);
+	}
+
+	.btn--primary:hover {
+		background-color: var(--accent);
+		border-color: var(--accent);
+		color: var(--accent-foreground);
+	}
+
+	.btn--secondary {
+		background-color: var(--background-secondary);
+		color: var(--text);
+	}
+
+	.btn--secondary:hover {
+		background-color: var(--background-elevated);
+		border-color: var(--border-strong);
+	}
+
+	.btn--outline {
+		background-color: transparent;
+		color: var(--text);
+	}
+
+	.btn--outline:hover {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+
+	.btn--ghost {
+		background-color: transparent;
+		border-color: transparent;
+		color: var(--text-dim);
+	}
+
+	.btn--ghost:hover {
+		background-color: var(--background-secondary);
+		color: var(--text);
+	}
+
+	.btn--icon {
+		width: 40px;
+		height: 40px;
+		padding: 0;
+		background-color: var(--background-tertiary);
+		color: var(--text-dim);
+	}
+
+	.btn--icon.btn--sm {
+		width: 32px;
+		height: 32px;
+	}
+
+	.btn--icon.btn--lg {
+		width: 48px;
+		height: 48px;
+	}
+
+	.btn--icon:hover {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+
+	.btn:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+		pointer-events: none;
+	}
+</style>

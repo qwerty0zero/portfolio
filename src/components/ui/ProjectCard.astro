@@ -1,4 +1,9 @@
 ---
+import Button from "./Button.astro";
+import IconArrowRight from "./icons/IconArrowRight.astro";
+import IconExternalLink from "./icons/IconExternalLink.astro";
+import IconGithub from "./icons/IconGithub.astro";
+
 export interface Props {
 	index: number;
 	title: string;
@@ -57,65 +62,33 @@ const formattedIndex = String(index).padStart(2, "0");
 		</div>
 
 		<div class="card-actions">
-			<a href={projectUrl} class="action-btn primary-action">
+			<Button href={projectUrl} variant="primary" class="primary-action">
 				<span>{viewCaseLabel}</span>
-				<svg
-					width="14"
-					height="14"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					aria-hidden="true"
-				>
-					<path d="M5 12h14M12 5l7 7-7 7"></path>
-				</svg>
-			</a>
+				<IconArrowRight size={14} />
+			</Button>
 
 			{liveUrl && (
-				<a
+				<Button
 					href={liveUrl}
+					variant="icon"
 					target="_blank"
 					rel="noopener noreferrer"
-					class="action-btn icon-action"
 					aria-label="Live Demo"
 				>
-					<svg
-						width="14"
-						height="14"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						aria-hidden="true"
-					>
-						<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-						<polyline points="15 3 21 3 21 9"></polyline>
-						<line x1="10" y1="14" x2="21" y2="3"></line>
-					</svg>
-				</a>
+					<IconExternalLink size={14} />
+				</Button>
 			)}
 
 			{githubUrl && (
-				<a
+				<Button
 					href={githubUrl}
+					variant="icon"
 					target="_blank"
 					rel="noopener noreferrer"
-					class="action-btn icon-action"
 					aria-label="GitHub Repository"
 				>
-					<svg
-						width="14"
-						height="14"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						aria-hidden="true"
-					>
-						<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-					</svg>
-				</a>
+					<IconGithub size={14} />
+				</Button>
 			)}
 		</div>
 	</div>
@@ -241,48 +214,8 @@ const formattedIndex = String(index).padStart(2, "0");
 		gap: var(--space-3);
 	}
 
-	.action-btn {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		font-family: var(--font-mono);
-		font-size: 0.8125rem;
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
-		text-decoration: none;
-		height: 40px;
-		box-sizing: border-box;
-		border: 1px solid var(--border);
-		transition:
-			background-color var(--transition-fast),
-			border-color var(--transition-fast),
-			color var(--transition-fast);
-	}
-
 	.primary-action {
 		flex: 1;
-		gap: var(--space-2);
-		background-color: var(--background-tertiary);
-		color: var(--text);
-		padding: 0 var(--space-4);
-		font-weight: 500;
-	}
-
-	.primary-action:hover {
-		background-color: var(--accent);
-		border-color: var(--accent);
-		color: var(--accent-foreground);
-	}
-
-	.icon-action {
-		width: 40px;
-		color: var(--text-dim);
-		background-color: var(--background-tertiary);
-	}
-
-	.icon-action:hover {
-		border-color: var(--accent);
-		color: var(--accent);
 	}
 
 	@media (max-width: 768px) {
