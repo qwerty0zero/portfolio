@@ -79,6 +79,16 @@ export const showcaseTabItemSchema = z.object({
 
 export type ShowcaseTabItem = z.infer<typeof showcaseTabItemSchema>;
 
+export const faqItemSchema = z.object({
+  id: z.string(),
+  index: z.string(),
+  question: z.string(),
+  answer: z.string(),
+  category: z.string().optional(),
+});
+
+export type FaqItem = z.infer<typeof faqItemSchema>;
+
 const home = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/home" }),
   schema: z.object({
@@ -107,6 +117,9 @@ const home = defineCollection({
 
     // Showcase section fields
     tabs: z.array(showcaseTabItemSchema).optional(),
+
+    // FAQ section fields
+    faqItems: z.array(faqItemSchema).optional(),
   }),
 });
 

@@ -2,6 +2,7 @@
 import { getCollection, getEntry } from "astro:content";
 import About from "@components/sections/About.astro";
 import Directions from "@components/sections/Directions.astro";
+import FAQ from "@components/sections/FAQ.astro";
 import Hero from "@components/sections/Hero.astro";
 import Projects from "@components/sections/Projects.astro";
 import Showcase from "@components/sections/Showcase.astro";
@@ -31,6 +32,7 @@ const [
 	heroEntry,
 	aboutEntry,
 	directionsEntry,
+	faqEntry,
 	projectsEntry,
 	showcaseEntry,
 	allProjects,
@@ -39,6 +41,7 @@ const [
 	getEntry("home", `${currentLang}/hero`),
 	getEntry("home", `${currentLang}/about`),
 	getEntry("home", `${currentLang}/directions`),
+	getEntry("home", `${currentLang}/faq`),
 	getEntry("home", `${currentLang}/projects`),
 	getEntry("home", `${currentLang}/showcase`),
 	getCollection("projects"),
@@ -68,6 +71,7 @@ const langProjects = allProjects
 const heroData = heroEntry?.data;
 const aboutData = aboutEntry?.data;
 const directionsData = directionsEntry?.data;
+const faqData = faqEntry?.data;
 const projectsData = projectsEntry?.data;
 const showcaseData = showcaseEntry?.data;
 ---
@@ -108,6 +112,14 @@ const showcaseData = showcaseEntry?.data;
 			lead={directionsData?.lead || ""}
 			directions={directionsData?.items || []}
 		/>
+		{faqData && (
+			<FAQ
+				badge={faqData.badge || ""}
+				title={faqData.title || ""}
+				lead={faqData.lead}
+				items={faqData.faqItems || []}
+			/>
+		)}
 		{showcaseData && (
 			<Showcase
 				badge={showcaseData.badge || ""}
