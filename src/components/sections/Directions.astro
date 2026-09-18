@@ -41,8 +41,6 @@ const {
 		<div class="directions-bg-canvas" aria-hidden="true">
 			<div class="cyber-grid-overlay"></div>
 			<div class="scanlines-overlay"></div>
-			<div class="glowing-orb glowing-orb--1"></div>
-			<div class="glowing-orb glowing-orb--2"></div>
 		</div>
 
 		<div class="directions-container">
@@ -132,43 +130,6 @@ const {
 			var(--border-dim) 4px
 		);
 		opacity: 0.15;
-	}
-
-	.glowing-orb {
-		position: absolute;
-		border-radius: var(--radius-full);
-		filter: blur(90px);
-		pointer-events: none;
-		opacity: 0.12;
-	}
-
-	.glowing-orb--1 {
-		width: 450px;
-		height: 450px;
-		top: 15%;
-		left: 5%;
-		background: var(--accent);
-		animation: pulse-slow 8s ease-in-out infinite alternate;
-	}
-
-	.glowing-orb--2 {
-		width: 400px;
-		height: 400px;
-		bottom: 10%;
-		right: 10%;
-		background: var(--accent);
-		animation: pulse-slow 10s ease-in-out infinite alternate-reverse;
-	}
-
-	@keyframes pulse-slow {
-		0% {
-			transform: scale(0.9) translate3d(0, 0, 0);
-			opacity: 0.08;
-		}
-		100% {
-			transform: scale(1.15) translate3d(20px, -20px, 0);
-			opacity: 0.18;
-		}
 	}
 
 	.directions-container {

@@ -22,7 +22,7 @@ const { tabs, class: className = "" } = Astro.props;
 			aria-selected={index === 0 ? "true" : "false"}
 			aria-controls={`showcase-panel-${index}`}
 			tabindex={index === 0 ? 0 : -1}
-			class:list={["showcase-tab", { "is-active": index === 0, "is-timing": index === 0 }]}
+			class:list={["showcase-tab", { "is-active": index === 0 }]}
 			data-tab-index={index}
 		>
 			<div class="tab-timer-track" aria-hidden="true">
@@ -86,6 +86,8 @@ const { tabs, class: className = "" } = Astro.props;
 		width: 3px;
 		background-color: var(--border-dim);
 		overflow: hidden;
+		contain: paint;
+		transform: translateZ(0);
 	}
 
 	.tab-timer-progress {
@@ -95,9 +97,10 @@ const { tabs, class: className = "" } = Astro.props;
 		width: 100%;
 		height: 100%;
 		background-color: var(--accent);
-		transform: scaleY(0);
+		transform: scaleY(0) translateZ(0);
 		transform-origin: top;
 		will-change: transform;
+		backface-visibility: hidden;
 	}
 
 	.showcase-tab.is-active.is-timing .tab-timer-progress {
@@ -111,10 +114,10 @@ const { tabs, class: className = "" } = Astro.props;
 
 	@keyframes timerProgressVertical {
 		from {
-			transform: scaleY(0);
+			transform: scaleY(0) translateZ(0);
 		}
 		to {
-			transform: scaleY(1);
+			transform: scaleY(1) translateZ(0);
 		}
 	}
 
@@ -170,9 +173,10 @@ const { tabs, class: className = "" } = Astro.props;
 			left: 0;
 			height: 100%;
 			width: 100%;
-			transform: scaleX(0);
+			transform: scaleX(0) translateZ(0);
 			transform-origin: left;
 			will-change: transform;
+			backface-visibility: hidden;
 		}
 
 		.showcase-tab.is-active.is-timing .tab-timer-progress {
@@ -186,10 +190,10 @@ const { tabs, class: className = "" } = Astro.props;
 
 		@keyframes timerProgressHorizontal {
 			from {
-				transform: scaleX(0);
+				transform: scaleX(0) translateZ(0);
 			}
 			to {
-				transform: scaleX(1);
+				transform: scaleX(1) translateZ(0);
 			}
 		}
 	}
