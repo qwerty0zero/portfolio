@@ -1,19 +1,18 @@
 ---
 import "@styles/global.css";
+import HeadSEO from "@components/common/HeadSEO.astro";
 import SmoothScroll from "@components/common/SmoothScroll.astro";
-import { defaultLang, type Lang, languages } from "@i18n/languages";
-import { useTranslatedPath } from "@i18n/utils";
+import { defaultLang, type Lang } from "@i18n/languages";
 
 interface Props {
 	title?: string;
+	description?: string;
+	ogImage?: string;
+	ogType?: "website" | "article";
 	lang?: Lang;
 }
 
-const { title = "Portfolio", lang = defaultLang } = Astro.props;
-const canonicalURL = new URL(
-	Astro.url.pathname,
-	Astro.site || "https://example.com",
-);
+const { title, description, ogImage, ogType, lang = defaultLang } = Astro.props;
 
 const fontsPreloadMap: Record<Lang, string[]> = {
 	en: [
@@ -55,8 +54,14 @@ const preloadedFonts = fontsPreloadMap[lang] ?? fontsPreloadMap[defaultLang];
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>{title}</title>
-		<link rel="canonical" href={canonicalURL} />
+
+		<HeadSEO
+			title={title}
+			description={description}
+			ogImage={ogImage}
+			ogType={ogType}
+			lang={lang}
+		/>
 
 		{/* Smart Language-Specific Font Preloading */}
 		{preloadedFonts.map((fontHref) => (
@@ -68,33 +73,6 @@ const preloadedFonts = fontsPreloadMap[lang] ?? fontsPreloadMap[defaultLang];
 				crossorigin="anonymous"
 			/>
 		))}
-
-		{/* i18n Alternate Links */}
-		{Object.keys(languages).map((code) => {
-			const localeCode = code as Lang;
-			const localePath = useTranslatedPath(localeCode)(
-				Astro.url.pathname.replace(/^\/(en|pl|uk)/, "") || "/",
-			);
-			return (
-				<link
-					rel="alternate"
-					hreflang={localeCode}
-					href={new URL(localePath, Astro.site || "https://example.com")}
-				/>
-			);
-		})}
-		<link
-			rel="alternate"
-			hreflang="x-default"
-			href={
-				new URL(
-					useTranslatedPath(defaultLang)(
-						Astro.url.pathname.replace(/^\/(en|pl|uk)/, "") || "/",
-					),
-					Astro.site || "https://example.com",
-				)
-			}
-		/>
 
 		{/* Anti-FOUC Theme Initialization Script */}
 		<script is:inline>

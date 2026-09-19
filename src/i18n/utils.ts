@@ -1,4 +1,10 @@
-import { defaultLang, type Lang, languages } from "@i18n/languages";
+import {
+  defaultLang,
+  type Lang,
+  languages,
+  locales,
+  ogLocales,
+} from "@i18n/languages";
 import { ui, type UIKey } from "@i18n/ui";
 
 export function getLangFromUrl(url: URL): Lang {
@@ -25,4 +31,35 @@ export function useTranslatedPath(lang: Lang) {
     }
     return `/${lang}${cleanPath === "/" ? "" : cleanPath}`;
   };
+}
+
+export function getCleanPathname(pathname: string): string {
+  const segments = pathname.split("/").filter(Boolean);
+  if (segments.length > 0 && segments[0] in languages) {
+    segments.shift();
+  }
+  return `/${segments.join("/")}`;
+}
+
+export function getAlternateOgLocales(currentLang: Lang): string[] {
+  return locales
+    .filter((lang) => lang !== currentLang)
+    .map((lang) => ogLocales[lang]);
+}
+
+export function getI18nStaticPaths() {
+  return Object.keys(languages).map((code) => {
+    const lang = code as Lang;
+    return {
+      params: {
+        lang: lang === defaultLang ? undefined : lang,
+      },
+    };
+  });
+}
+
+export function resolveLang(langParam?: string): Lang {
+  return langParam && langParam in languages
+    ? (langParam as Lang)
+    : defaultLang;
 }
