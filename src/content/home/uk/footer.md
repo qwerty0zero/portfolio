@@ -1,0 +1,23 @@
+---
+name: "ihor kuhel"
+role: "Software Developer"
+bio: "Створення надійних, надшвидких інтерфейсів без архітектурних надлишків та з увагою до ремесла."
+email: "kuhel.ihor@gmail.com"
+githubUrl: "https://github.com/qwerty0zero"
+linkedinUrl: "https://www.linkedin.com/in/ihor-kuhel-993399167/"
+producedBy: "iBiltaz"
+producedByUrl: "https://github.com/iBiltaz"
+navAnchors:
+  - id: "hero"
+    label: "Головна"
+  - id: "about"
+    label: "Про мене"
+  - id: "projects"
+    label: "Проєкти"
+  - id: "directions"
+    label: "Напрямки"
+  - id: "faq"
+    label: "FAQ"
+  - id: "showcase"
+    label: "Бенчмарки"
+---

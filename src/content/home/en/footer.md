@@ -1,0 +1,23 @@
+---
+name: "ihor kuhel"
+role: "Software Developer"
+bio: "Crafting resilient, high-speed interfaces with zero architectural excess and deep care for craft."
+email: "kuhel.ihor@gmail.com"
+githubUrl: "https://github.com/qwerty0zero"
+linkedinUrl: "https://www.linkedin.com/in/ihor-kuhel-993399167/"
+producedBy: "iBiltaz"
+producedByUrl: "https://github.com/iBiltaz"
+navAnchors:
+  - id: "hero"
+    label: "Home"
+  - id: "about"
+    label: "About"
+  - id: "projects"
+    label: "Projects"
+  - id: "directions"
+    label: "Directions"
+  - id: "faq"
+    label: "FAQ"
+  - id: "showcase"
+    label: "Showcase"
+---

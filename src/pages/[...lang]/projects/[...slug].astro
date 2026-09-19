@@ -1,5 +1,6 @@
 ---
 import { getCollection, getEntry } from "astro:content";
+import Footer from "@components/sections/Footer.astro";
 import { defaultLang, type Lang, languages } from "@i18n/languages";
 import Layout from "@layouts/Layout.astro";
 
@@ -25,12 +26,39 @@ const { lang, slug } = Astro.params;
 const currentLang: Lang =
 	lang && lang in languages ? (lang as Lang) : defaultLang;
 
-const project = slug
-	? await getEntry("projects", `${currentLang}/${slug}`)
-	: null;
+const [project, heroEntry, allProjects] = await Promise.all([
+	slug ? getEntry("projects", `${currentLang}/${slug}`) : null,
+	getEntry("home", `${currentLang}/hero`),
+	getCollection("projects"),
+]);
+
+const langProjects = allProjects
+	.filter((p) => p.id.startsWith(`${currentLang}/`))
+	.sort((a, b) => a.data.order - b.data.order)
+	.map((p) => {
+		const cleanId = p.id.replace(/\.md$/, "");
+		const [, ...slugParts] = cleanId.split("/");
+		return {
+			slug: slugParts.join("/"),
+			title: p.data.title,
+			year: p.data.year,
+			category: p.data.category,
+		};
+	});
+
 const projectTitle = project?.data.title || "Project";
 ---
 
 <Layout title={projectTitle} lang={currentLang}>
-	<h1>{projectTitle}</h1>
+	<main id="main-content">
+		<h1>{projectTitle}</h1>
+	</main>
+	<Footer
+		lang={currentLang}
+		authorName={heroEntry?.data.name}
+		authorRole={heroEntry?.data.role}
+		githubUrl={heroEntry?.data.githubUrl}
+		linkedinUrl={heroEntry?.data.linkedinUrl}
+		projects={langProjects}
+	/>
 </Layout>

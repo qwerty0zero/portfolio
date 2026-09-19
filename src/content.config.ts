@@ -120,6 +120,20 @@ const home = defineCollection({
 
     // FAQ section fields
     faqItems: z.array(faqItemSchema).optional(),
+
+    // Footer section fields
+    bio: z.string().optional(),
+    email: z.string().optional(),
+    producedBy: z.string().optional(),
+    producedByUrl: z.string().optional(),
+    navAnchors: z
+      .array(
+        z.object({
+          id: z.string(),
+          label: z.string(),
+        }),
+      )
+      .optional(),
   }),
 });
 

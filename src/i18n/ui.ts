@@ -16,6 +16,11 @@ export const ui = {
     "projects.viewAll": "Все проекты",
     "showcase.next": "Далее",
     "footer.rights": "Все права защищены",
+    "footer.backToTop": "Наверх",
+    "footer.producedBy": "Разработано",
+    "footer.navTitle": "Навигация",
+    "footer.projectsTitle": "Проекты",
+    "footer.contactsTitle": "Связь & Соцсети",
   },
   en: {
     "nav.home": "Home",
@@ -32,6 +37,11 @@ export const ui = {
     "projects.viewAll": "All Projects",
     "showcase.next": "Next",
     "footer.rights": "All rights reserved",
+    "footer.backToTop": "Back to top",
+    "footer.producedBy": "Produced by",
+    "footer.navTitle": "Navigation",
+    "footer.projectsTitle": "Projects",
+    "footer.contactsTitle": "Connect & Social",
   },
   pl: {
     "nav.home": "Główna",
@@ -48,6 +58,11 @@ export const ui = {
     "projects.viewAll": "Wszystkie projekty",
     "showcase.next": "Dalej",
     "footer.rights": "Wszelkie prawa zastrzeżone",
+    "footer.backToTop": "Do góry",
+    "footer.producedBy": "Stworzone przez",
+    "footer.navTitle": "Nawigacja",
+    "footer.projectsTitle": "Projekty",
+    "footer.contactsTitle": "Kontakt i Social",
   },
   uk: {
     "nav.home": "Головна",
@@ -64,6 +79,11 @@ export const ui = {
     "projects.viewAll": "Усі проєкти",
     "showcase.next": "Далі",
     "footer.rights": "Усі права захищені",
+    "footer.backToTop": "Вгору",
+    "footer.producedBy": "Розроблено",
+    "footer.navTitle": "Навігація",
+    "footer.projectsTitle": "Проєкти",
+    "footer.contactsTitle": "Зв'язок & Соцмережі",
   },
 } as const;
 

@@ -3,6 +3,7 @@ import { getCollection, getEntry } from "astro:content";
 import Button from "@components/ui/Button.astro";
 import IconArrow from "@components/ui/icons/IconArrow.astro";
 import ProjectCard from "@components/ui/ProjectCard.astro";
+import Footer from "@components/sections/Footer.astro";
 import { defaultLang, type Lang, languages } from "@i18n/languages";
 import { useTranslations } from "@i18n/utils";
 import Layout from "@layouts/Layout.astro";
@@ -26,7 +27,10 @@ const t = useTranslations(currentLang);
 const langPrefix = currentLang === defaultLang ? "" : `/${currentLang}`;
 const homeUrl = langPrefix || "/";
 
-const projectsPageEntry = await getEntry("pages", `${currentLang}/projects`);
+const [projectsPageEntry, heroEntry] = await Promise.all([
+	getEntry("pages", `${currentLang}/projects`),
+	getEntry("home", `${currentLang}/hero`),
+]);
 
 const allProjects = await getCollection("projects");
 const langProjects = allProjects
@@ -95,6 +99,14 @@ const catalogSubtitle = projectsPageEntry?.data.subtitle;
 			</div>
 		</section>
 	</main>
+	<Footer
+		lang={currentLang}
+		authorName={heroEntry?.data.name}
+		authorRole={heroEntry?.data.role}
+		githubUrl={heroEntry?.data.githubUrl}
+		linkedinUrl={heroEntry?.data.linkedinUrl}
+		projects={langProjects}
+	/>
 </Layout>
 
 <style>

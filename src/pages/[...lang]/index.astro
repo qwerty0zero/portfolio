@@ -3,6 +3,7 @@ import { getCollection, getEntry } from "astro:content";
 import About from "@components/sections/About.astro";
 import Directions from "@components/sections/Directions.astro";
 import FAQ from "@components/sections/FAQ.astro";
+import Footer from "@components/sections/Footer.astro";
 import Hero from "@components/sections/Hero.astro";
 import Projects from "@components/sections/Projects.astro";
 import Showcase from "@components/sections/Showcase.astro";
@@ -130,4 +131,12 @@ const showcaseData = showcaseEntry?.data;
 			/>
 		)}
 	</main>
+	<Footer
+		lang={currentLang}
+		authorName={heroData?.name}
+		authorRole={heroData?.role}
+		githubUrl={heroData?.githubUrl}
+		linkedinUrl={heroData?.linkedinUrl}
+		projects={langProjects}
+	/>
 </Layout>
