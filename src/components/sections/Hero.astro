@@ -13,6 +13,11 @@ const { id = "hero", class: className = "" } = Astro.props;
 ---
 
 <div id={id} class="hero-scroll-anchor" aria-hidden="true"></div>
+<div
+	id={`${id}-tracker`}
+	class="hero-tracker fullscreen"
+	aria-hidden="true"
+></div>
 <section
 	id={`${id}-section`}
 	class:list={["hero", "fullscreen", className]}
@@ -20,6 +25,7 @@ const { id = "hero", class: className = "" } = Astro.props;
 >
 	<DitherBackground
 		id="hero-dither-bg"
+		observerTarget={`#${id}-tracker`}
 		waveSpeed={0.04}
 		waveFrequency={2.8}
 		waveAmplitude={0.32}
@@ -70,6 +76,16 @@ const { id = "hero", class: className = "" } = Astro.props;
 	height: 1px;
 	pointer-events: none;
 	visibility: hidden;
+}
+
+.hero-tracker {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 1px;
+	pointer-events: none;
+	visibility: hidden;
+	z-index: -1;
 }
 
 .hero {

@@ -14,6 +14,7 @@ export interface Props {
 	mouseRadius?: number;
 	class?: string;
 	id?: string;
+	observerTarget?: string;
 }
 
 const {
@@ -29,6 +30,7 @@ const {
 	mouseRadius = 1.0,
 	class: className = "",
 	id = "dither-bg",
+	observerTarget,
 } = Astro.props;
 ---
 
@@ -48,6 +50,7 @@ const {
 	data-disable-animation={disableAnimation ? "true" : "false"}
 	data-mouse-interaction={enableMouseInteraction ? "true" : "false"}
 	data-mouse-radius={mouseRadius}
+	data-observer-target={observerTarget}
 >
 	<canvas class="dither-canvas"></canvas>
 </div>
@@ -380,59 +383,13 @@ function initDitherInstance(wrapper: HTMLElement) {
 	gl.uniform1f(uMouseRadius, mouseRadius);
 	gl.uniform1i(uEnableMouse, enableMouse ? 1 : 0);
 
-	// Viewport & DPR
-	let width = 0;
-	let height = 0;
-	let dpr = 1;
-
-	function resize() {
-		dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-		const rect = wrapper.getBoundingClientRect();
-		width = Math.max(1, Math.floor(rect.width * dpr));
-		height = Math.max(1, Math.floor(rect.height * dpr));
-
-		if (canvas && (canvas.width !== width || canvas.height !== height)) {
-			canvas.width = width;
-			canvas.height = height;
-			if (gl) {
-				gl.viewport(0, 0, width, height);
-				gl.uniform2f(uResolution, width, height);
-			}
-		}
-	}
-
-	resize();
-	window.addEventListener("resize", resize, { passive: true });
-
 	// Pointer interaction
 	let mouseX = -9999;
 	let mouseY = -9999;
 
-	if (enableMouse) {
-		window.addEventListener(
-			"pointermove",
-			(e) => {
-				const rect = canvas.getBoundingClientRect();
-				mouseX = (e.clientX - rect.left) * dpr;
-				mouseY = (e.clientY - rect.top) * dpr;
-			},
-			{ passive: true },
-		);
-	}
-
-	// Animation loop & IntersectionObserver
+	// Animation loop & motion preference
 	const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 	let prefersReducedMotion = motionQuery.matches;
-	motionQuery.addEventListener("change", (e) => {
-		prefersReducedMotion = e.matches;
-		if (prefersReducedMotion && rafId) {
-			cancelAnimationFrame(rafId);
-			rafId = 0;
-			renderFrame(0);
-		} else if (!prefersReducedMotion && isVisible && !rafId) {
-			rafId = requestAnimationFrame(loop);
-		}
-	});
 
 	let rafId = 0;
 	let isVisible = false;
@@ -458,12 +415,77 @@ function initDitherInstance(wrapper: HTMLElement) {
 		rafId = requestAnimationFrame(loop);
 	}
 
+	motionQuery.addEventListener("change", (e) => {
+		prefersReducedMotion = e.matches;
+		if (prefersReducedMotion && rafId) {
+			cancelAnimationFrame(rafId);
+			rafId = 0;
+			renderFrame(0);
+		} else if (!prefersReducedMotion && isVisible && !rafId) {
+			rafId = requestAnimationFrame(loop);
+		}
+	});
+
+	// Viewport & DPR
+	let dpr = 1;
+	let lastAllocatedWidth = 0;
+	let lastAllocatedHeight = 0;
+
+	function resize() {
+		dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+		const rect = wrapper.getBoundingClientRect();
+		const newWidth = Math.max(1, Math.floor(rect.width * dpr));
+		const newHeight = Math.max(1, Math.floor(rect.height * dpr));
+
+		// Avoid reallocating the WebGL buffer on minor mobile viewport height changes
+		// (e.g., dynamic browser address bar showing/hiding during scroll)
+		const isInitial = lastAllocatedWidth === 0 || lastAllocatedHeight === 0;
+		const widthChanged = Math.abs(newWidth - lastAllocatedWidth) > 1;
+		const heightDiffCss = Math.abs(newHeight - lastAllocatedHeight) / dpr;
+		const shouldReallocate = isInitial || widthChanged || heightDiffCss > 150;
+
+		if (canvas && shouldReallocate) {
+			lastAllocatedWidth = newWidth;
+			lastAllocatedHeight = newHeight;
+			canvas.width = newWidth;
+			canvas.height = newHeight;
+			if (gl) {
+				gl.viewport(0, 0, newWidth, newHeight);
+				gl.uniform2f(uResolution, newWidth, newHeight);
+			}
+			if (!rafId && isVisible) {
+				renderFrame(0);
+			}
+		}
+	}
+
+	resize();
+	window.addEventListener("resize", resize, { passive: true });
+
+	if (enableMouse) {
+		window.addEventListener(
+			"pointermove",
+			(e) => {
+				const rect = canvas.getBoundingClientRect();
+				mouseX = (e.clientX - rect.left) * dpr;
+				mouseY = (e.clientY - rect.top) * dpr;
+			},
+			{ passive: true },
+		);
+	}
+
+	const targetSelector = wrapper.dataset.observerTarget;
+	const targetElement = targetSelector
+		? document.querySelector<HTMLElement>(targetSelector)
+		: null;
+	const elementToObserve = targetElement || wrapper;
+
 	const observer = new IntersectionObserver(
 		(entries) => {
 			for (const entry of entries) {
 				isVisible = entry.isIntersecting;
 				if (isVisible) {
-					if (!rafId && !prefersReducedMotion) {
+					if (!rafId && !disableAnimation && !prefersReducedMotion) {
 						rafId = requestAnimationFrame(loop);
 					} else if (prefersReducedMotion) {
 						renderFrame(0);
@@ -474,10 +496,10 @@ function initDitherInstance(wrapper: HTMLElement) {
 				}
 			}
 		},
-		{ threshold: 0.05 },
+		{ threshold: 0 },
 	);
 
-	observer.observe(wrapper);
+	observer.observe(elementToObserve);
 
 	// Dynamic theme updates
 	const themeObserver = new MutationObserver(() => {
@@ -513,4 +535,5 @@ if (document.readyState === "loading") {
 } else {
 	setupAllDithers();
 }
+document.addEventListener("astro:page-load", setupAllDithers);
 </script>
