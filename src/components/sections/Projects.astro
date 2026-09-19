@@ -52,7 +52,7 @@ const allProjectsUrl = getRelativeLocaleUrl(lang, "projects");
 	<div class="projects-sticky-track" data-sticky-track>
 		<div class="projects-sticky-container fullscreen" data-sticky-container>
 			<div class="projects-track" data-projects-track>
-				<!-- Intro Panel (First ~50-60vw) -->
+				{/* Intro Panel (First ~50-60vw) */}
 				<header class="projects-intro-panel">
 					<Badge text={badge} />
 
@@ -71,7 +71,7 @@ const allProjectsUrl = getRelativeLocaleUrl(lang, "projects");
 					</div>
 				</header>
 
-				<!-- Project Cards List -->
+				{/* Project Cards List */}
 				<div class="projects-cards-list">
 					{projects.map((project, index) => (
 							<ProjectCard
@@ -90,7 +90,7 @@ const allProjectsUrl = getRelativeLocaleUrl(lang, "projects");
 						))}
 				</div>
 
-				<!-- Mobile CTA Button after the 2nd project -->
+				{/* Mobile CTA Button after the 2nd project */}
 				<div class="mobile-cta-wrapper">
 					<Button
 						href={allProjectsUrl}

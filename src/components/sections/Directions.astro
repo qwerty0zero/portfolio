@@ -35,16 +35,16 @@ const {
 	class:list={["directions-section", className]}
 	aria-labelledby="directions-heading"
 >
-	<!-- Full viewport sticky stage containing pinned background, header, and stacking cards -->
+	{/* Full viewport sticky stage containing pinned background, header, and stacking cards */}
 	<div class="directions-sticky-stage fullscreen">
-		<!-- Animated Background Canvas Placeholder -->
+		{/* Animated Background Canvas Placeholder */}
 		<div class="directions-bg-canvas" aria-hidden="true">
 			<div class="cyber-grid-overlay"></div>
 			<div class="scanlines-overlay"></div>
 		</div>
 
 		<div class="directions-container">
-			<!-- Pinned Top Section Header (Placed directly above the cards, visible during the entire scroll sequence) -->
+			{/* Pinned Top Section Header (Placed directly above the cards, visible during the entire scroll sequence) */}
 			<header class="directions-header">
 				<div class="header-top-row">
 					<span class="directions-badge">{badge}</span>
@@ -55,9 +55,9 @@ const {
 				<p class="directions-lead">{lead}</p>
 			</header>
 
-			<!-- Stacking Cards Viewport beneath the header -->
+			{/* Stacking Cards Viewport beneath the header */}
 			<div class="directions-cards-viewport">
-				<!-- Stacking Sticky Cards Track -->
+				{/* Stacking Sticky Cards Track */}
 				<div class="directions-stack-track">
 					{directions.map((direction, idx) => (
 							<div
