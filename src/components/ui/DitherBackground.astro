@@ -39,14 +39,10 @@ const {
 	data-wave-speed={waveSpeed}
 	data-wave-frequency={waveFrequency}
 	data-wave-amplitude={waveAmplitude}
-	data-wave-color={
-		typeof waveColor === "string" ? waveColor : JSON.stringify(waveColor)
-	}
-	data-bg-color={
-		typeof backgroundColor === "string"
+	data-wave-color={typeof waveColor === "string" ? waveColor : JSON.stringify(waveColor)}
+	data-bg-color={typeof backgroundColor === "string"
 			? backgroundColor
-			: JSON.stringify(backgroundColor)
-	}
+			: JSON.stringify(backgroundColor)}
 	data-color-num={colorNum}
 	data-pixel-size={pixelSize}
 	data-disable-animation={disableAnimation ? "true" : "false"}
@@ -57,33 +53,33 @@ const {
 </div>
 
 <style>
-	.dither-wrapper {
-		position: absolute;
-		inset: 0;
-		width: 100%;
-		height: 100%;
-		overflow: hidden;
-		pointer-events: none;
-		z-index: 0;
-	}
+.dither-wrapper {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	pointer-events: none;
+	z-index: 0;
+}
 
-	.dither-canvas {
-		position: absolute;
-		inset: 0;
-		width: 100%;
-		height: 100%;
-		display: block;
-	}
+.dither-canvas {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	display: block;
+}
 </style>
 
 <script>
-	const vsSource = `#version 300 es
+const vsSource = `#version 300 es
 	in vec2 position;
 	void main() {
 		gl_Position = vec4(position, 0.0, 1.0);
 	}`;
 
-	const fsSource = `#version 300 es
+const fsSource = `#version 300 es
 	precision highp float;
 
 	out vec4 fragColor;
@@ -194,332 +190,327 @@ const {
 		fragColor = vec4(col, 1.0);
 	}`;
 
-	function createShader(
-		gl: WebGL2RenderingContext,
-		type: number,
-		source: string,
-	): WebGLShader | null {
-		const shader = gl.createShader(type);
-		if (!shader) return null;
-		gl.shaderSource(shader, source);
-		gl.compileShader(shader);
-		if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-			console.error("Shader compilation error:", gl.getShaderInfoLog(shader));
-			gl.deleteShader(shader);
-			return null;
-		}
-		return shader;
+function createShader(
+	gl: WebGL2RenderingContext,
+	type: number,
+	source: string,
+): WebGLShader | null {
+	const shader = gl.createShader(type);
+	if (!shader) return null;
+	gl.shaderSource(shader, source);
+	gl.compileShader(shader);
+	if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+		console.error("Shader compilation error:", gl.getShaderInfoLog(shader));
+		gl.deleteShader(shader);
+		return null;
 	}
+	return shader;
+}
 
-	function createProgram(
-		gl: WebGL2RenderingContext,
-		vs: WebGLShader,
-		fs: WebGLShader,
-	): WebGLProgram | null {
-		const program = gl.createProgram();
-		if (!program) return null;
-		gl.attachShader(program, vs);
-		gl.attachShader(program, fs);
-		gl.linkProgram(program);
-		if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-			console.error("Program link error:", gl.getProgramInfoLog(program));
-			gl.deleteProgram(program);
-			return null;
-		}
-		return program;
+function createProgram(
+	gl: WebGL2RenderingContext,
+	vs: WebGLShader,
+	fs: WebGLShader,
+): WebGLProgram | null {
+	const program = gl.createProgram();
+	if (!program) return null;
+	gl.attachShader(program, vs);
+	gl.attachShader(program, fs);
+	gl.linkProgram(program);
+	if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+		console.error("Program link error:", gl.getProgramInfoLog(program));
+		gl.deleteProgram(program);
+		return null;
 	}
+	return program;
+}
 
-	function parseColorWithAlpha(
-		input: string | undefined,
-		baseBg: [number, number, number],
-		fallback: [number, number, number],
-	): [number, number, number] {
-		if (!input) return fallback;
-		let str = input.trim();
-		if (!str) return fallback;
+function parseColorWithAlpha(
+	input: string | undefined,
+	baseBg: [number, number, number],
+	fallback: [number, number, number],
+): [number, number, number] {
+	if (!input) return fallback;
+	let str = input.trim();
+	if (!str) return fallback;
 
-		if (str.startsWith("[")) {
-			try {
-				const arr = JSON.parse(str);
-				if (
-					Array.isArray(arr) &&
-					arr.length >= 3 &&
-					typeof arr[0] === "number" &&
-					!Number.isNaN(arr[0])
-				) {
-					return [arr[0], arr[1], arr[2]];
-				}
-			} catch {
-				// Continue to CSS resolution
-			}
-		}
-
-		if (str.startsWith("var(")) {
-			const varName = str
-				.replace(/^var\(\s*/, "")
-				.replace(/\s*\)$/, "")
-				.trim();
-			const computed = getComputedStyle(document.documentElement)
-				.getPropertyValue(varName)
-				.trim();
-			if (computed) str = computed;
-		} else if (str.startsWith("--")) {
-			const computed = getComputedStyle(document.documentElement)
-				.getPropertyValue(str)
-				.trim();
-			if (computed) str = computed;
-		}
-
+	if (str.startsWith("[")) {
 		try {
-			const canvas = document.createElement("canvas");
-			canvas.width = 1;
-			canvas.height = 1;
-			const ctx = canvas.getContext("2d", { willReadFrequently: true });
-			if (!ctx) return fallback;
-
-			ctx.clearRect(0, 0, 1, 1);
-			ctx.fillStyle = str;
-			ctx.fillRect(0, 0, 1, 1);
-			const d = ctx.getImageData(0, 0, 1, 1).data;
-
-			if (d[3] === 0 && !str.includes("transparent")) return fallback;
-
-			const alpha = d[3] / 255;
-			const r = (d[0] / 255) * alpha + baseBg[0] * (1 - alpha);
-			const g = (d[1] / 255) * alpha + baseBg[1] * (1 - alpha);
-			const b = (d[2] / 255) * alpha + baseBg[2] * (1 - alpha);
-			return [r, g, b];
+			const arr = JSON.parse(str);
+			if (
+				Array.isArray(arr) &&
+				arr.length >= 3 &&
+				typeof arr[0] === "number" &&
+				!Number.isNaN(arr[0])
+			) {
+				return [arr[0], arr[1], arr[2]];
+			}
 		} catch {
-			return fallback;
+			// Continue to CSS resolution
 		}
 	}
 
-	function initDitherInstance(wrapper: HTMLElement) {
-		const canvas = wrapper.querySelector<HTMLCanvasElement>(".dither-canvas");
-		if (!canvas) return;
+	if (str.startsWith("var(")) {
+		const varName = str
+			.replace(/^var\(\s*/, "")
+			.replace(/\s*\)$/, "")
+			.trim();
+		const computed = getComputedStyle(document.documentElement)
+			.getPropertyValue(varName)
+			.trim();
+		if (computed) str = computed;
+	} else if (str.startsWith("--")) {
+		const computed = getComputedStyle(document.documentElement)
+			.getPropertyValue(str)
+			.trim();
+		if (computed) str = computed;
+	}
 
-		const gl = canvas.getContext("webgl2", {
-			alpha: false,
-			depth: false,
-			stencil: false,
-			antialias: false,
-			powerPreference: "low-power",
-		});
+	try {
+		const canvas = document.createElement("canvas");
+		canvas.width = 1;
+		canvas.height = 1;
+		const ctx = canvas.getContext("2d", { willReadFrequently: true });
+		if (!ctx) return fallback;
 
-		if (!gl) {
-			console.warn("WebGL2 is not supported. Dither background disabled.");
-			return;
-		}
+		ctx.clearRect(0, 0, 1, 1);
+		ctx.fillStyle = str;
+		ctx.fillRect(0, 0, 1, 1);
+		const d = ctx.getImageData(0, 0, 1, 1).data;
 
-		const vs = createShader(gl, gl.VERTEX_SHADER, vsSource);
-		const fs = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
-		if (!vs || !fs) return;
+		if (d[3] === 0 && !str.includes("transparent")) return fallback;
 
-		const program = createProgram(gl, vs, fs);
-		if (!program) return;
+		const alpha = d[3] / 255;
+		const r = (d[0] / 255) * alpha + baseBg[0] * (1 - alpha);
+		const g = (d[1] / 255) * alpha + baseBg[1] * (1 - alpha);
+		const b = (d[2] / 255) * alpha + baseBg[2] * (1 - alpha);
+		return [r, g, b];
+	} catch {
+		return fallback;
+	}
+}
 
-		gl.useProgram(program);
+function initDitherInstance(wrapper: HTMLElement) {
+	const canvas = wrapper.querySelector<HTMLCanvasElement>(".dither-canvas");
+	if (!canvas) return;
 
-		// Quad buffer
-		const positionBuffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-		gl.bufferData(
-			gl.ARRAY_BUFFER,
-			new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
-			gl.STATIC_DRAW,
+	const gl = canvas.getContext("webgl2", {
+		alpha: false,
+		depth: false,
+		stencil: false,
+		antialias: false,
+		powerPreference: "low-power",
+	});
+
+	if (!gl) {
+		console.warn("WebGL2 is not supported. Dither background disabled.");
+		return;
+	}
+
+	const vs = createShader(gl, gl.VERTEX_SHADER, vsSource);
+	const fs = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+	if (!vs || !fs) return;
+
+	const program = createProgram(gl, vs, fs);
+	if (!program) return;
+
+	gl.useProgram(program);
+
+	// Quad buffer
+	const positionBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+	gl.bufferData(
+		gl.ARRAY_BUFFER,
+		new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
+		gl.STATIC_DRAW,
+	);
+
+	const posLoc = gl.getAttribLocation(program, "position");
+	gl.enableVertexAttribArray(posLoc);
+	gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+	// Uniform locations
+	const uResolution = gl.getUniformLocation(program, "resolution");
+	const uTime = gl.getUniformLocation(program, "time");
+	const uWaveSpeed = gl.getUniformLocation(program, "waveSpeed");
+	const uWaveFrequency = gl.getUniformLocation(program, "waveFrequency");
+	const uWaveAmplitude = gl.getUniformLocation(program, "waveAmplitude");
+	const uWaveColor = gl.getUniformLocation(program, "waveColor");
+	const uBackgroundColor = gl.getUniformLocation(program, "backgroundColor");
+	const uMousePos = gl.getUniformLocation(program, "mousePos");
+	const uEnableMouse = gl.getUniformLocation(program, "enableMouseInteraction");
+	const uMouseRadius = gl.getUniformLocation(program, "mouseRadius");
+	const uColorNum = gl.getUniformLocation(program, "colorNum");
+	const uPixelSize = gl.getUniformLocation(program, "pixelSize");
+
+	// Parse initial props
+	const waveSpeed = parseFloat(wrapper.dataset.waveSpeed || "0.05");
+	const waveFrequency = parseFloat(wrapper.dataset.waveFrequency || "3.0");
+	const waveAmplitude = parseFloat(wrapper.dataset.waveAmplitude || "0.3");
+	const colorNum = parseFloat(wrapper.dataset.colorNum || "4.0");
+	const pixelSize = parseFloat(wrapper.dataset.pixelSize || "2.0");
+	const mouseRadius = parseFloat(wrapper.dataset.mouseRadius || "1.0");
+	const disableAnimation = wrapper.dataset.disableAnimation === "true";
+	const enableMouse = wrapper.dataset.mouseInteraction === "true";
+
+	function updateColors() {
+		if (!gl) return;
+		const bg = parseColorWithAlpha(
+			wrapper.dataset.bgColor,
+			[0.08, 0.08, 0.08],
+			[0.08, 0.08, 0.08],
 		);
-
-		const posLoc = gl.getAttribLocation(program, "position");
-		gl.enableVertexAttribArray(posLoc);
-		gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
-
-		// Uniform locations
-		const uResolution = gl.getUniformLocation(program, "resolution");
-		const uTime = gl.getUniformLocation(program, "time");
-		const uWaveSpeed = gl.getUniformLocation(program, "waveSpeed");
-		const uWaveFrequency = gl.getUniformLocation(program, "waveFrequency");
-		const uWaveAmplitude = gl.getUniformLocation(program, "waveAmplitude");
-		const uWaveColor = gl.getUniformLocation(program, "waveColor");
-		const uBackgroundColor = gl.getUniformLocation(program, "backgroundColor");
-		const uMousePos = gl.getUniformLocation(program, "mousePos");
-		const uEnableMouse = gl.getUniformLocation(
-			program,
-			"enableMouseInteraction",
+		const wave = parseColorWithAlpha(
+			wrapper.dataset.waveColor,
+			bg,
+			[0.45, 0.45, 0.45],
 		);
-		const uMouseRadius = gl.getUniformLocation(program, "mouseRadius");
-		const uColorNum = gl.getUniformLocation(program, "colorNum");
-		const uPixelSize = gl.getUniformLocation(program, "pixelSize");
+		gl.uniform3f(uBackgroundColor, bg[0], bg[1], bg[2]);
+		gl.uniform3f(uWaveColor, wave[0], wave[1], wave[2]);
+	}
 
-		// Parse initial props
-		const waveSpeed = parseFloat(wrapper.dataset.waveSpeed || "0.05");
-		const waveFrequency = parseFloat(wrapper.dataset.waveFrequency || "3.0");
-		const waveAmplitude = parseFloat(wrapper.dataset.waveAmplitude || "0.3");
-		const colorNum = parseFloat(wrapper.dataset.colorNum || "4.0");
-		const pixelSize = parseFloat(wrapper.dataset.pixelSize || "2.0");
-		const mouseRadius = parseFloat(wrapper.dataset.mouseRadius || "1.0");
-		const disableAnimation = wrapper.dataset.disableAnimation === "true";
-		const enableMouse = wrapper.dataset.mouseInteraction === "true";
+	updateColors();
 
-		function updateColors() {
-			if (!gl) return;
-			const bg = parseColorWithAlpha(
-				wrapper.dataset.bgColor,
-				[0.08, 0.08, 0.08],
-				[0.08, 0.08, 0.08],
-			);
-			const wave = parseColorWithAlpha(
-				wrapper.dataset.waveColor,
-				bg,
-				[0.45, 0.45, 0.45],
-			);
-			gl.uniform3f(uBackgroundColor, bg[0], bg[1], bg[2]);
-			gl.uniform3f(uWaveColor, wave[0], wave[1], wave[2]);
-		}
+	// Set initial static uniforms
+	gl.uniform1f(uWaveSpeed, waveSpeed);
+	gl.uniform1f(uWaveFrequency, waveFrequency);
+	gl.uniform1f(uWaveAmplitude, waveAmplitude);
+	gl.uniform1f(uColorNum, colorNum);
+	gl.uniform1f(uPixelSize, pixelSize);
+	gl.uniform1f(uMouseRadius, mouseRadius);
+	gl.uniform1i(uEnableMouse, enableMouse ? 1 : 0);
 
-		updateColors();
+	// Viewport & DPR
+	let width = 0;
+	let height = 0;
+	let dpr = 1;
 
-		// Set initial static uniforms
-		gl.uniform1f(uWaveSpeed, waveSpeed);
-		gl.uniform1f(uWaveFrequency, waveFrequency);
-		gl.uniform1f(uWaveAmplitude, waveAmplitude);
-		gl.uniform1f(uColorNum, colorNum);
-		gl.uniform1f(uPixelSize, pixelSize);
-		gl.uniform1f(uMouseRadius, mouseRadius);
-		gl.uniform1i(uEnableMouse, enableMouse ? 1 : 0);
+	function resize() {
+		dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+		const rect = wrapper.getBoundingClientRect();
+		width = Math.max(1, Math.floor(rect.width * dpr));
+		height = Math.max(1, Math.floor(rect.height * dpr));
 
-		// Viewport & DPR
-		let width = 0;
-		let height = 0;
-		let dpr = 1;
-
-		function resize() {
-			dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-			const rect = wrapper.getBoundingClientRect();
-			width = Math.max(1, Math.floor(rect.width * dpr));
-			height = Math.max(1, Math.floor(rect.height * dpr));
-
-			if (canvas && (canvas.width !== width || canvas.height !== height)) {
-				canvas.width = width;
-				canvas.height = height;
-				if (gl) {
-					gl.viewport(0, 0, width, height);
-					gl.uniform2f(uResolution, width, height);
-				}
+		if (canvas && (canvas.width !== width || canvas.height !== height)) {
+			canvas.width = width;
+			canvas.height = height;
+			if (gl) {
+				gl.viewport(0, 0, width, height);
+				gl.uniform2f(uResolution, width, height);
 			}
 		}
+	}
 
-		resize();
-		window.addEventListener("resize", resize, { passive: true });
+	resize();
+	window.addEventListener("resize", resize, { passive: true });
 
-		// Pointer interaction
-		let mouseX = -9999;
-		let mouseY = -9999;
+	// Pointer interaction
+	let mouseX = -9999;
+	let mouseY = -9999;
 
-		if (enableMouse) {
-			window.addEventListener(
-				"pointermove",
-				(e) => {
-					const rect = canvas.getBoundingClientRect();
-					mouseX = (e.clientX - rect.left) * dpr;
-					mouseY = (e.clientY - rect.top) * dpr;
-				},
-				{ passive: true },
-			);
-		}
+	if (enableMouse) {
+		window.addEventListener(
+			"pointermove",
+			(e) => {
+				const rect = canvas.getBoundingClientRect();
+				mouseX = (e.clientX - rect.left) * dpr;
+				mouseY = (e.clientY - rect.top) * dpr;
+			},
+			{ passive: true },
+		);
+	}
 
-		// Animation loop & IntersectionObserver
-		const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-		let prefersReducedMotion = motionQuery.matches;
-		motionQuery.addEventListener("change", (e) => {
-			prefersReducedMotion = e.matches;
-			if (prefersReducedMotion && rafId) {
-				cancelAnimationFrame(rafId);
-				rafId = 0;
-				renderFrame(0);
-			} else if (!prefersReducedMotion && isVisible && !rafId) {
-				rafId = requestAnimationFrame(loop);
-			}
-		});
-
-		let rafId = 0;
-		let isVisible = false;
-		const startTime = performance.now();
-
-		function renderFrame(timeSec: number) {
-			if (!gl) return;
-			gl.uniform1f(uTime, timeSec);
-			if (enableMouse) {
-				gl.uniform2f(uMousePos, mouseX, mouseY);
-			}
-			gl.drawArrays(gl.TRIANGLES, 0, 6);
-		}
-
-		function loop(now: number) {
-			if (!isVisible) {
-				rafId = 0;
-				return;
-			}
-			const elapsed =
-				disableAnimation || prefersReducedMotion
-					? 0
-					: (now - startTime) * 0.001;
-			renderFrame(elapsed);
+	// Animation loop & IntersectionObserver
+	const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+	let prefersReducedMotion = motionQuery.matches;
+	motionQuery.addEventListener("change", (e) => {
+		prefersReducedMotion = e.matches;
+		if (prefersReducedMotion && rafId) {
+			cancelAnimationFrame(rafId);
+			rafId = 0;
+			renderFrame(0);
+		} else if (!prefersReducedMotion && isVisible && !rafId) {
 			rafId = requestAnimationFrame(loop);
 		}
+	});
 
-		const observer = new IntersectionObserver(
-			(entries) => {
-				for (const entry of entries) {
-					isVisible = entry.isIntersecting;
-					if (isVisible) {
-						if (!rafId && !prefersReducedMotion) {
-							rafId = requestAnimationFrame(loop);
-						} else if (prefersReducedMotion) {
-							renderFrame(0);
-						}
-					} else if (rafId) {
-						cancelAnimationFrame(rafId);
-						rafId = 0;
+	let rafId = 0;
+	let isVisible = false;
+	const startTime = performance.now();
+
+	function renderFrame(timeSec: number) {
+		if (!gl) return;
+		gl.uniform1f(uTime, timeSec);
+		if (enableMouse) {
+			gl.uniform2f(uMousePos, mouseX, mouseY);
+		}
+		gl.drawArrays(gl.TRIANGLES, 0, 6);
+	}
+
+	function loop(now: number) {
+		if (!isVisible) {
+			rafId = 0;
+			return;
+		}
+		const elapsed =
+			disableAnimation || prefersReducedMotion ? 0 : (now - startTime) * 0.001;
+		renderFrame(elapsed);
+		rafId = requestAnimationFrame(loop);
+	}
+
+	const observer = new IntersectionObserver(
+		(entries) => {
+			for (const entry of entries) {
+				isVisible = entry.isIntersecting;
+				if (isVisible) {
+					if (!rafId && !prefersReducedMotion) {
+						rafId = requestAnimationFrame(loop);
+					} else if (prefersReducedMotion) {
+						renderFrame(0);
 					}
+				} else if (rafId) {
+					cancelAnimationFrame(rafId);
+					rafId = 0;
 				}
-			},
-			{ threshold: 0.05 },
-		);
-
-		observer.observe(wrapper);
-
-		// Dynamic theme updates
-		const themeObserver = new MutationObserver(() => {
-			updateColors();
-			if (!rafId) renderFrame(0);
-		});
-		themeObserver.observe(document.documentElement, {
-			attributes: true,
-			attributeFilter: ["class", "data-theme", "style"],
-		});
-
-		const colorSchemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
-		colorSchemeQuery.addEventListener("change", () => {
-			updateColors();
-			if (!rafId) renderFrame(0);
-		});
-
-		// Initial render
-		renderFrame(0);
-	}
-
-	function setupAllDithers() {
-		document.querySelectorAll<HTMLElement>(".dither-wrapper").forEach((el) => {
-			if (!el.dataset.ditherInitialized) {
-				el.dataset.ditherInitialized = "true";
-				initDitherInstance(el);
 			}
-		});
-	}
+		},
+		{ threshold: 0.05 },
+	);
 
-	if (document.readyState === "loading") {
-		document.addEventListener("DOMContentLoaded", setupAllDithers);
-	} else {
-		setupAllDithers();
-	}
+	observer.observe(wrapper);
+
+	// Dynamic theme updates
+	const themeObserver = new MutationObserver(() => {
+		updateColors();
+		if (!rafId) renderFrame(0);
+	});
+	themeObserver.observe(document.documentElement, {
+		attributes: true,
+		attributeFilter: ["class", "data-theme", "style"],
+	});
+
+	const colorSchemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+	colorSchemeQuery.addEventListener("change", () => {
+		updateColors();
+		if (!rafId) renderFrame(0);
+	});
+
+	// Initial render
+	renderFrame(0);
+}
+
+function setupAllDithers() {
+	document.querySelectorAll<HTMLElement>(".dither-wrapper").forEach((el) => {
+		if (!el.dataset.ditherInitialized) {
+			el.dataset.ditherInitialized = "true";
+			initDitherInstance(el);
+		}
+	});
+}
+
+if (document.readyState === "loading") {
+	document.addEventListener("DOMContentLoaded", setupAllDithers);
+} else {
+	setupAllDithers();
+}
 </script>

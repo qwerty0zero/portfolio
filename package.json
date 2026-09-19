@@ -7,11 +7,12 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "lint": "oxlint",
-    "lint:fix": "oxlint --fix",
+    "lint": "oxlint && biome lint",
+    "lint:fix": "oxlint --fix && biome lint --write",
     "format": "biome format --write",
     "format:check": "biome format",
     "fmt": "biome format --write",
+    "biome:lint": "biome lint",
     "biome:check": "biome check",
     "biome:fix": "biome check --write",
     "typecheck": "astro check",
@@ -33,10 +34,12 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "oxlint --fix"
+      "oxlint --fix",
+      "biome format --write --no-errors-on-unmatched"
     ],
     "*.{astro,js,jsx,ts,tsx,mjs,json,css}": [
-      "biome format --write --no-errors-on-unmatched"
+      "biome format --write --no-errors-on-unmatched",
+      "biome lint --write --no-errors-on-unmatched"
     ]
   },
   "engines": {

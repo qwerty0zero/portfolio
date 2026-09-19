@@ -3,107 +3,106 @@ import "lenis/dist/lenis.css";
 ---
 
 <script>
-	import Lenis from "lenis";
+import Lenis from "lenis";
 
-	let lenisInstance: Lenis | null = null;
+let lenisInstance: Lenis | null = null;
 
-	function initLenis() {
-		if (lenisInstance) {
-			lenisInstance.destroy();
-		}
-
-		lenisInstance = new Lenis({
-			autoRaf: true,
-			anchors: true,
-			duration: 1.2,
-			easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-			orientation: "vertical",
-			gestureOrientation: "vertical",
-			smoothWheel: true,
-			respectReducedMotion: true,
-		});
-
-		(window as unknown as { __lenis?: Lenis }).__lenis = lenisInstance;
-
-		if (window.location.hash === "#hero" || window.location.hash === "#top") {
-			lenisInstance.scrollTo(0, { immediate: true });
-		}
+function initLenis() {
+	if (lenisInstance) {
+		lenisInstance.destroy();
 	}
 
-	function setupAnchorOverrides() {
-		if ((window as unknown as { __heroAnchorSetup?: boolean }).__heroAnchorSetup)
-			return;
-		(
-			window as unknown as { __heroAnchorSetup?: boolean }
-		).__heroAnchorSetup = true;
+	lenisInstance = new Lenis({
+		autoRaf: true,
+		anchors: true,
+		duration: 1.2,
+		easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)),
+		orientation: "vertical",
+		gestureOrientation: "vertical",
+		smoothWheel: true,
+		respectReducedMotion: true,
+	});
 
-		document.addEventListener(
-			"click",
-			(e) => {
-				const link = (e.target as HTMLElement)?.closest?.("a");
-				if (!link) return;
-				const href = link.getAttribute("href");
-				if (!href) return;
+	(window as unknown as { __lenis?: Lenis }).__lenis = lenisInstance;
 
-				if (
-					href === "#hero" ||
-					href === "#top" ||
-					href.endsWith("/#hero") ||
-					href.endsWith("/#top")
-				) {
-					try {
-						const url = new URL(link.href, window.location.href);
-						if (
-							url.origin === window.location.origin &&
-							url.pathname === window.location.pathname
-						) {
-							e.preventDefault();
-							if (lenisInstance) {
-								lenisInstance.scrollTo(0, { duration: 1.2 });
-							} else {
-								window.scrollTo({ top: 0, behavior: "smooth" });
-							}
-							if (url.hash) {
-								history.pushState(null, "", url.hash);
-							}
+	if (window.location.hash === "#hero" || window.location.hash === "#top") {
+		lenisInstance.scrollTo(0, { immediate: true });
+	}
+}
+
+function setupAnchorOverrides() {
+	if ((window as unknown as { __heroAnchorSetup?: boolean }).__heroAnchorSetup)
+		return;
+	(window as unknown as { __heroAnchorSetup?: boolean }).__heroAnchorSetup =
+		true;
+
+	document.addEventListener(
+		"click",
+		(e) => {
+			const link = (e.target as HTMLElement)?.closest?.("a");
+			if (!link) return;
+			const href = link.getAttribute("href");
+			if (!href) return;
+
+			if (
+				href === "#hero" ||
+				href === "#top" ||
+				href.endsWith("/#hero") ||
+				href.endsWith("/#top")
+			) {
+				try {
+					const url = new URL(link.href, window.location.href);
+					if (
+						url.origin === window.location.origin &&
+						url.pathname === window.location.pathname
+					) {
+						e.preventDefault();
+						if (lenisInstance) {
+							lenisInstance.scrollTo(0, { duration: 1.2 });
+						} else {
+							window.scrollTo({ top: 0, behavior: "smooth" });
 						}
-					} catch {
-						// Ignored
+						if (url.hash) {
+							history.pushState(null, "", url.hash);
+						}
 					}
+				} catch {
+					// Ignored
 				}
-			},
-			{ capture: true },
-		);
-	}
+			}
+		},
+		{ capture: true },
+	);
+}
 
+initLenis();
+setupAnchorOverrides();
+
+document.addEventListener("astro:page-load", () => {
 	initLenis();
 	setupAnchorOverrides();
-
-	document.addEventListener("astro:page-load", () => {
-		initLenis();
-		setupAnchorOverrides();
-	});
+});
 </script>
 
 <style is:global>
-	html.lenis,
-	html.lenis body {
-		height: auto;
-	}
+html.lenis,
+html.lenis body {
+	height: auto;
+}
 
-	.lenis.lenis-smooth {
-		scroll-behavior: auto !important;
-	}
+.lenis.lenis-smooth {
+	scroll-behavior: auto !important;
+}
 
-	.lenis.lenis-smooth [data-lenis-prevent] {
-		overscroll-behavior: contain;
-	}
+.lenis.lenis-smooth [data-lenis-prevent] {
+	overscroll-behavior: contain;
+}
 
-	.lenis.lenis-stopped {
-		overflow: hidden;
-	}
+.lenis.lenis-stopped {
+	overflow: hidden;
+}
 
-	.lenis.lenis-smooth iframe {
-		pointer-events: none;
-	}
+.lenis.lenis-smooth iframe {
+	pointer-events: none;
+}
 </style>

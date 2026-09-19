@@ -1,11 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 32 32"
+  width="32"
+  height="32"
+>
   <style>
-    .bg { fill: #0c0d0e; }
-    .mark { fill: #fafafa; }
-    @media (prefers-color-scheme: light) {
-      .bg { fill: #fafafa; }
-      .mark { fill: #0c0d0e; }
+  .bg {
+    fill: #0c0d0e;
+  }
+  .mark {
+    fill: #fafafa;
+  }
+  @media (prefers-color-scheme: light) {
+    .bg {
+      fill: #fafafa;
     }
+    .mark {
+      fill: #0c0d0e;
+    }
+  }
   </style>
   <rect width="32" height="32" rx="4" class="bg" />
   <text
@@ -18,5 +31,7 @@
     font-size="15"
     letter-spacing="-0.5"
     class="mark"
-  >iB</text>
+  >
+    iB
+  </text>
 </svg>
