@@ -22,11 +22,67 @@ import "lenis/dist/lenis.css";
 			smoothWheel: true,
 			respectReducedMotion: true,
 		});
+
+		(window as unknown as { __lenis?: Lenis }).__lenis = lenisInstance;
+
+		if (window.location.hash === "#hero" || window.location.hash === "#top") {
+			lenisInstance.scrollTo(0, { immediate: true });
+		}
+	}
+
+	function setupAnchorOverrides() {
+		if ((window as unknown as { __heroAnchorSetup?: boolean }).__heroAnchorSetup)
+			return;
+		(
+			window as unknown as { __heroAnchorSetup?: boolean }
+		).__heroAnchorSetup = true;
+
+		document.addEventListener(
+			"click",
+			(e) => {
+				const link = (e.target as HTMLElement)?.closest?.("a");
+				if (!link) return;
+				const href = link.getAttribute("href");
+				if (!href) return;
+
+				if (
+					href === "#hero" ||
+					href === "#top" ||
+					href.endsWith("/#hero") ||
+					href.endsWith("/#top")
+				) {
+					try {
+						const url = new URL(link.href, window.location.href);
+						if (
+							url.origin === window.location.origin &&
+							url.pathname === window.location.pathname
+						) {
+							e.preventDefault();
+							if (lenisInstance) {
+								lenisInstance.scrollTo(0, { duration: 1.2 });
+							} else {
+								window.scrollTo({ top: 0, behavior: "smooth" });
+							}
+							if (url.hash) {
+								history.pushState(null, "", url.hash);
+							}
+						}
+					} catch {
+						// Ignored
+					}
+				}
+			},
+			{ capture: true },
+		);
 	}
 
 	initLenis();
+	setupAnchorOverrides();
 
-	document.addEventListener("astro:page-load", initLenis);
+	document.addEventListener("astro:page-load", () => {
+		initLenis();
+		setupAnchorOverrides();
+	});
 </script>
 
 <style is:global>
