@@ -6,6 +6,9 @@ const pages = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/pages" }),
   schema: z.object({
     title: z.string(),
+    description: z.string().optional(),
+    seoTitle: z.string().optional(),
+    seoDescription: z.string().optional(),
     badge: z.string().optional(),
     subtitle: z.string().optional(),
   }),
@@ -97,16 +100,10 @@ const home = defineCollection({
     lead: z.string().optional(),
 
     // Hero section fields
-    name: z.string().optional(),
-    role: z.string().optional(),
     scrollCueText: z.string().optional(),
-    githubUrl: z.string().optional(),
-    linkedinUrl: z.string().optional(),
 
     // About section fields
     text: z.string().optional(),
-    authorName: z.string().optional(),
-    authorRole: z.string().optional(),
 
     // Directions section fields
     items: z.array(directionItemSchema).optional(),
@@ -123,9 +120,6 @@ const home = defineCollection({
 
     // Footer section fields
     bio: z.string().optional(),
-    email: z.string().optional(),
-    producedBy: z.string().optional(),
-    producedByUrl: z.string().optional(),
     navAnchors: z
       .array(
         z.object({
@@ -141,6 +135,8 @@ const projects = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/projects" }),
   schema: z.object({
     title: z.string(),
+    seoTitle: z.string().optional(),
+    seoDescription: z.string().optional(),
     category: z.string(),
     description: z.string(),
     year: z.string(),
