@@ -1,0 +1,52 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import Select, { type SelectOption } from "@components/ui/Select.astro";
+import { defaultLang, type Lang, languages } from "@i18n/languages";
+import { getCleanPathname } from "@i18n/utils";
+
+export interface Props {
+	size?: "sm" | "md" | "lg";
+	class?: string;
+	ariaLabel?: string;
+}
+
+const {
+	size = "md",
+	class: className = "",
+	ariaLabel = "Select language",
+} = Astro.props;
+
+const currentLang = (Astro.currentLocale ?? defaultLang) as Lang;
+const cleanPathname = getCleanPathname(Astro.url.pathname);
+const targetPath = cleanPathname === "/" ? "" : cleanPathname;
+
+const options: SelectOption[] = (Object.keys(languages) as Lang[]).map(
+	(langCode) => ({
+		value: getRelativeLocaleUrl(langCode, targetPath),
+		label: `${langCode.toUpperCase()} — ${languages[langCode]}`,
+		selected: langCode === currentLang,
+		dataLang: langCode,
+	}),
+);
+---
+
+<div class:list={["language-select-wrap", className]}>
+	<Select
+		options={options}
+		size={size}
+		ariaLabel={ariaLabel}
+		onchange="localStorage.setItem('preferred_lang', this.options[this.selectedIndex].getAttribute('data-lang') || ''); window.location.href = this.value;"
+	/>
+</div>
+
+<style>
+.language-select-wrap {
+	display: inline-flex;
+	align-items: center;
+	box-sizing: border-box;
+}
+
+.language-select-wrap :global(.select-wrapper) {
+	width: 100%;
+}
+</style>

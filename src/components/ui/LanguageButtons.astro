@@ -1,0 +1,53 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import Button, { type ButtonSize } from "@components/ui/Button.astro";
+import { defaultLang, type Lang, languages } from "@i18n/languages";
+import { getCleanPathname } from "@i18n/utils";
+
+export interface Props {
+	size?: ButtonSize;
+	class?: string;
+	ariaLabel?: string;
+}
+
+const {
+	size = "md",
+	class: className = "",
+	ariaLabel = "Language selection",
+} = Astro.props;
+
+const currentLang = (Astro.currentLocale ?? defaultLang) as Lang;
+const cleanPathname = getCleanPathname(Astro.url.pathname);
+const targetPath = cleanPathname === "/" ? "" : cleanPathname;
+const localeCodes = Object.keys(languages) as Lang[];
+---
+
+<nav
+	class:list={["language-buttons", `language-buttons--${size}`, className]}
+	aria-label={ariaLabel}
+>
+	{localeCodes.map((code) => {
+			const isCurrent = code === currentLang;
+			const url = getRelativeLocaleUrl(code, targetPath);
+			return (
+				<Button
+					href={url}
+					variant={isCurrent ? "accent" : "primary"}
+					size={size}
+					aria-current={isCurrent ? "page" : undefined}
+					onclick={`localStorage.setItem('preferred_lang', '${code}')`}
+				>
+					{code.toUpperCase()}
+				</Button>
+			);
+		})}
+</nav>
+
+<style>
+.language-buttons {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	box-sizing: border-box;
+}
+</style>
