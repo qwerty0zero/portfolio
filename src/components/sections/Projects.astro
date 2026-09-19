@@ -2,7 +2,7 @@
 import Button from "@components/ui/Button.astro";
 import IconArrow from "@components/ui/icons/IconArrow.astro";
 import ProjectCard from "@components/ui/ProjectCard.astro";
-
+import Badge from "@components/ui/Badge.astro";
 export interface ProjectItem {
 	title: string;
 	category: string;
@@ -54,7 +54,8 @@ const allProjectsUrl = `${langPrefix}/projects`;
 			<div class="projects-track" data-projects-track>
 				<!-- Intro Panel (First ~50-60vw) -->
 				<header class="projects-intro-panel">
-					<span class="intro-badge">{badge}</span>
+					<Badge text={badge} />
+
 					<h2 id="projects-heading" class="intro-title">
 						{title}
 					</h2>
@@ -180,11 +181,7 @@ const allProjectsUrl = `${langPrefix}/projects`;
 
 <style>
 	.projects-section {
-		position: relative;
-		width: 100%;
-		background-color: var(--background);
-		border-top: 1px solid var(--border);
-		box-sizing: border-box;
+		padding: 0;
 	}
 
 	.projects-sticky-track {
@@ -223,16 +220,6 @@ const allProjectsUrl = `${langPrefix}/projects`;
 		padding: var(--space-12) var(--space-8) var(--space-12) 0;
 		box-sizing: border-box;
 	}
-
-	.intro-badge {
-		font-family: var(--font-mono);
-		font-size: 0.8125rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: var(--accent);
-		font-weight: 700;
-	}
-
 	.intro-title {
 		font-family: var(--font-heading);
 		font-size: clamp(2.25rem, 4.5vw, 4rem);
