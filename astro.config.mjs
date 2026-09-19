@@ -7,7 +7,28 @@ export default defineConfig({
   output: "static",
   compressHTML: true,
 
-  integrations: [sitemap()],
+  i18n: {
+    defaultLocale: "ru",
+    locales: ["ru", "en", "pl", "uk"],
+    routing: {
+      prefixDefaultLocale: false,
+      redirectToDefaultLocale: false,
+    },
+  },
+
+  integrations: [
+    sitemap({
+      i18n: {
+        defaultLocale: "ru",
+        locales: {
+          ru: "ru",
+          en: "en",
+          pl: "pl",
+          uk: "uk",
+        },
+      },
+    }),
+  ],
 
   build: {
     inlineStylesheets: "always",

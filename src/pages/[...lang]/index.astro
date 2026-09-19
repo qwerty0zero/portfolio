@@ -7,7 +7,8 @@ import Footer from "@components/sections/Footer.astro";
 import Hero from "@components/sections/Hero.astro";
 import Projects from "@components/sections/Projects.astro";
 import Showcase from "@components/sections/Showcase.astro";
-import { getI18nStaticPaths, resolveLang, useTranslations } from "@i18n/utils";
+import { defaultLang, type Lang } from "@i18n/languages";
+import { getI18nStaticPaths, useTranslations } from "@i18n/utils";
 import { getProjectsByLang } from "@/utils/projects";
 import { SITE } from "@/constants/site";
 import Layout from "@layouts/Layout.astro";
@@ -16,7 +17,7 @@ export async function getStaticPaths() {
 	return getI18nStaticPaths();
 }
 
-const currentLang = resolveLang(Astro.params.lang);
+const currentLang = (Astro.currentLocale ?? defaultLang) as Lang;
 const t = useTranslations(currentLang);
 
 const [
@@ -51,11 +52,7 @@ const projectsData = projectsEntry?.data;
 const showcaseData = showcaseEntry?.data;
 ---
 
-<Layout
-	title={fullTitle}
-	description={pageDescription}
-	lang={currentLang}
->
+<Layout title={fullTitle} description={pageDescription} lang={currentLang}>
 	<main id="main-content">
 		<Hero />
 		<About

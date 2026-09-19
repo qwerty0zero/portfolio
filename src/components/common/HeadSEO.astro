@@ -1,11 +1,8 @@
 ---
 import { SITE } from "@/constants/site";
+import { getAbsoluteLocaleUrl } from "astro:i18n";
 import { defaultLang, type Lang, locales, ogLocales } from "@i18n/languages";
-import {
-	getAlternateOgLocales,
-	getCleanPathname,
-	useTranslatedPath,
-} from "@i18n/utils";
+import { getAlternateOgLocales, getCleanPathname } from "@i18n/utils";
 
 interface Props {
 	title?: string;
@@ -83,67 +80,82 @@ const jsonLd = {
 
 <!-- Basic Page Info -->
 <title>{pageTitle}</title>
-<meta name="description" content={description} />
-<meta name="author" content={SITE.author} />
-<link rel="canonical" href={canonicalURL.href} />
-<link rel="sitemap" href="/sitemap-index.xml" />
+<meta name="description" content={description}>
+<meta name="author" content={SITE.author}>
+<link rel="canonical" href={canonicalURL.href}>
+<link rel="sitemap" href="/sitemap-index.xml">
 
 <!-- Indexing Directives -->
-<meta name="robots" content="index, follow" />
+<meta name="robots" content="index, follow">
 <meta
 	name="googlebot"
 	content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
-/>
+>
 
 <!-- Browser Theming & Viewport -->
-<meta name="theme-color" content={SITE.themeColorLight} media="(prefers-color-scheme: light)" />
-<meta name="theme-color" content={SITE.themeColorDark} media="(prefers-color-scheme: dark)" />
-<meta name="color-scheme" content="dark light" />
+<meta
+	name="theme-color"
+	content={SITE.themeColorLight}
+	media="(prefers-color-scheme: light)"
+>
+<meta
+	name="theme-color"
+	content={SITE.themeColorDark}
+	media="(prefers-color-scheme: dark)"
+>
+<meta name="color-scheme" content="dark light">
 
 <!-- Favicon Suite -->
-<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-<link rel="icon" href="/favicon.ico" sizes="32x32" />
-<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
 <!-- i18n Alternate Links -->
 {locales.map((localeCode) => {
-	const localePath = useTranslatedPath(localeCode)(cleanPathname);
+	const localeUrl = getAbsoluteLocaleUrl(
+		localeCode,
+		cleanPathname === "/" ? "" : cleanPathname,
+	);
 	return (
 		<link
 			rel="alternate"
 			hreflang={localeCode}
-			href={new URL(localePath, siteOrigin).href}
+			href={localeUrl}
 		/>
 	);
 })}
 <link
 	rel="alternate"
 	hreflang="x-default"
-	href={new URL(useTranslatedPath(defaultLang)(cleanPathname), siteOrigin).href}
-/>
+	href={getAbsoluteLocaleUrl(defaultLang, cleanPathname === "/" ? "" : cleanPathname)}
+>
 
 <!-- Open Graph / Facebook / Telegram / LinkedIn -->
-<meta property="og:site_name" content={SITE.nickname} />
-<meta property="og:title" content={pageTitle} />
-<meta property="og:description" content={description} />
-<meta property="og:url" content={canonicalURL.href} />
-<meta property="og:type" content={ogType} />
-<meta property="og:image" content={absoluteOgImage} />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta property="og:image:type" content="image/jpeg" />
-<meta property="og:image:alt" content={pageTitle} />
-<meta property="og:locale" content={currentLocale} />
+<meta property="og:site_name" content={SITE.nickname}>
+<meta property="og:title" content={pageTitle}>
+<meta property="og:description" content={description}>
+<meta property="og:url" content={canonicalURL.href}>
+<meta property="og:type" content={ogType}>
+<meta property="og:image" content={absoluteOgImage}>
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:alt" content={pageTitle}>
+<meta property="og:locale" content={currentLocale}>
 {alternateLocales.map((alt) => (
 	<meta property="og:locale:alternate" content={alt} />
 ))}
 
 <!-- Twitter Cards -->
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content={pageTitle} />
-<meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={absoluteOgImage} />
-<meta name="twitter:image:alt" content={pageTitle} />
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content={pageTitle}>
+<meta name="twitter:description" content={description}>
+<meta name="twitter:image" content={absoluteOgImage}>
+<meta name="twitter:image:alt" content={pageTitle}>
 
 <!-- Schema.org Structured Data (JSON-LD) -->
-<script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+<script
+	is:inline
+	type="application/ld+json"
+	set:html={JSON.stringify(jsonLd)}
+/>

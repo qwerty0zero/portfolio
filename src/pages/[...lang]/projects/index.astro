@@ -5,8 +5,9 @@ import IconArrow from "@components/ui/icons/IconArrow.astro";
 import ProjectCard from "@components/ui/ProjectCard.astro";
 import Footer from "@components/sections/Footer.astro";
 import { SITE } from "@/constants/site";
-import { defaultLang } from "@i18n/languages";
-import { getI18nStaticPaths, resolveLang, useTranslations } from "@i18n/utils";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { defaultLang, type Lang } from "@i18n/languages";
+import { getI18nStaticPaths, useTranslations } from "@i18n/utils";
 import { getProjectsByLang } from "@/utils/projects";
 import Layout from "@layouts/Layout.astro";
 
@@ -14,11 +15,10 @@ export async function getStaticPaths() {
 	return getI18nStaticPaths();
 }
 
-const currentLang = resolveLang(Astro.params.lang);
+const currentLang = (Astro.currentLocale ?? defaultLang) as Lang;
 
 const t = useTranslations(currentLang);
-const langPrefix = currentLang === defaultLang ? "" : `/${currentLang}`;
-const homeUrl = langPrefix || "/";
+const homeUrl = getRelativeLocaleUrl(currentLang, "");
 
 const projectsPageEntry = await getEntry("pages", `${currentLang}/projects`);
 const allProjects = await getCollection("projects");
@@ -32,20 +32,11 @@ const catalogBadge = projectsPageEntry?.data.badge;
 const catalogSubtitle = projectsPageEntry?.data.subtitle;
 ---
 
-<Layout
-	title={fullTitle}
-	description={seoDescription}
-	lang={currentLang}
->
+<Layout title={fullTitle} description={seoDescription} lang={currentLang}>
 	<main id="main-content" class="projects-catalog-page">
 		<header class="catalog-header">
 			<nav class="catalog-nav" aria-label="Breadcrumb">
-				<Button
-					href={homeUrl}
-					variant="outline"
-					size="sm"
-					class="back-btn"
-				>
+				<Button href={homeUrl} variant="outline" size="sm" class="back-btn">
 					<IconArrow size={14} direction="left" />
 					<span>{t("project.back")}</span>
 				</Button>
@@ -53,7 +44,9 @@ const catalogSubtitle = projectsPageEntry?.data.subtitle;
 
 			<div class="catalog-title-group">
 				{catalogBadge && <span class="catalog-badge">{catalogBadge}</span>}
-				<h1 class="catalog-heading">{projectsPageEntry?.data.title || t("nav.projects")}</h1>
+				<h1 class="catalog-heading">
+					{projectsPageEntry?.data.title || t("nav.projects")}
+				</h1>
 				{catalogSubtitle && <p class="catalog-subtitle">{catalogSubtitle}</p>}
 			</div>
 		</header>
@@ -72,7 +65,7 @@ const catalogSubtitle = projectsPageEntry?.data.subtitle;
 						githubUrl={project.githubUrl}
 						liveUrl={project.liveUrl}
 						viewCaseLabel={t("projects.viewCase")}
-						projectUrl={`${langPrefix}/projects/${project.slug}`}
+						projectUrl={getRelativeLocaleUrl(currentLang, `projects/${project.slug}`)}
 					/>
 				))}
 			</div>
@@ -82,85 +75,85 @@ const catalogSubtitle = projectsPageEntry?.data.subtitle;
 </Layout>
 
 <style>
+.projects-catalog-page {
+	padding: var(--space-16) var(--space-12) var(--space-24);
+	box-sizing: border-box;
+	min-height: 100vh;
+}
+
+.catalog-header {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-8);
+	border-bottom: 1px solid var(--border);
+	padding-bottom: var(--space-12);
+	margin-bottom: var(--space-12);
+}
+
+.catalog-nav {
+	display: flex;
+	align-items: center;
+}
+
+.catalog-title-group {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-4);
+	max-width: 800px;
+}
+
+.catalog-badge {
+	font-family: var(--font-mono);
+	font-size: 0.8125rem;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	color: var(--accent);
+	font-weight: 700;
+}
+
+.catalog-heading {
+	font-family: var(--font-heading);
+	font-size: clamp(2.5rem, 5vw, 4.5rem);
+	line-height: 1.1;
+	color: var(--text);
+	text-transform: uppercase;
+	margin: 0;
+}
+
+.catalog-subtitle {
+	font-family: var(--font-body);
+	font-size: clamp(1.125rem, 1.4vw, 1.25rem);
+	line-height: 1.55;
+	color: var(--text-dim);
+	margin: 0;
+}
+
+.catalog-grid-section {
+	width: 100%;
+}
+
+.catalog-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+	gap: var(--space-8);
+	width: 100%;
+	box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
 	.projects-catalog-page {
-		padding: var(--space-16) var(--space-12) var(--space-24);
-		box-sizing: border-box;
-		min-height: 100vh;
+		padding: var(--space-8) var(--space-4) var(--space-16);
 	}
 
 	.catalog-header {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-8);
-		border-bottom: 1px solid var(--border);
-		padding-bottom: var(--space-12);
-		margin-bottom: var(--space-12);
-	}
-
-	.catalog-nav {
-		display: flex;
-		align-items: center;
-	}
-
-	.catalog-title-group {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-4);
-		max-width: 800px;
-	}
-
-	.catalog-badge {
-		font-family: var(--font-mono);
-		font-size: 0.8125rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: var(--accent);
-		font-weight: 700;
-	}
-
-	.catalog-heading {
-		font-family: var(--font-heading);
-		font-size: clamp(2.5rem, 5vw, 4.5rem);
-		line-height: 1.1;
-		color: var(--text);
-		text-transform: uppercase;
-		margin: 0;
-	}
-
-	.catalog-subtitle {
-		font-family: var(--font-body);
-		font-size: clamp(1.125rem, 1.4vw, 1.25rem);
-		line-height: 1.55;
-		color: var(--text-dim);
-		margin: 0;
-	}
-
-	.catalog-grid-section {
-		width: 100%;
+		padding-bottom: var(--space-8);
+		margin-bottom: var(--space-8);
+		gap: var(--space-6);
 	}
 
 	.catalog-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-		gap: var(--space-8);
-		width: 100%;
-		box-sizing: border-box;
+		grid-template-columns: 1fr;
+		gap: var(--space-6);
 	}
-
-	@media (max-width: 768px) {
-		.projects-catalog-page {
-			padding: var(--space-8) var(--space-4) var(--space-16);
-		}
-
-		.catalog-header {
-			padding-bottom: var(--space-8);
-			margin-bottom: var(--space-8);
-			gap: var(--space-6);
-		}
-
-		.catalog-grid {
-			grid-template-columns: 1fr;
-			gap: var(--space-6);
-		}
-	}
+}
 </style>

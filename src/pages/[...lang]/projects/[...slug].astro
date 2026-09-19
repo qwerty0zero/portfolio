@@ -2,8 +2,7 @@
 import { getCollection, getEntry } from "astro:content";
 import Footer from "@components/sections/Footer.astro";
 import { SITE } from "@/constants/site";
-import { defaultLang } from "@i18n/languages";
-import { resolveLang } from "@i18n/utils";
+import { defaultLang, type Lang } from "@i18n/languages";
 import { getProjectsByLang, parseProjectSlug } from "@/utils/projects";
 import Layout from "@layouts/Layout.astro";
 
@@ -21,7 +20,7 @@ export async function getStaticPaths() {
 	});
 }
 
-const currentLang = resolveLang(Astro.params.lang);
+const currentLang = (Astro.currentLocale ?? defaultLang) as Lang;
 const { slug } = Astro.params;
 
 const [project, allProjects] = await Promise.all([
