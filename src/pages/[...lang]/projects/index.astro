@@ -4,60 +4,39 @@ import Button from "@components/ui/Button.astro";
 import IconArrow from "@components/ui/icons/IconArrow.astro";
 import ProjectCard from "@components/ui/ProjectCard.astro";
 import Footer from "@components/sections/Footer.astro";
-import { defaultLang, type Lang, languages } from "@i18n/languages";
-import { useTranslations } from "@i18n/utils";
+import { SITE } from "@/constants/site";
+import { defaultLang } from "@i18n/languages";
+import { getI18nStaticPaths, resolveLang, useTranslations } from "@i18n/utils";
+import { getProjectsByLang } from "@/utils/projects";
 import Layout from "@layouts/Layout.astro";
 
 export async function getStaticPaths() {
-	return Object.keys(languages).map((code) => {
-		const lang = code as Lang;
-		return {
-			params: {
-				lang: lang === defaultLang ? undefined : lang,
-			},
-		};
-	});
+	return getI18nStaticPaths();
 }
 
-const { lang } = Astro.params;
-const currentLang: Lang =
-	lang && lang in languages ? (lang as Lang) : defaultLang;
+const currentLang = resolveLang(Astro.params.lang);
 
 const t = useTranslations(currentLang);
 const langPrefix = currentLang === defaultLang ? "" : `/${currentLang}`;
 const homeUrl = langPrefix || "/";
 
-const [projectsPageEntry, heroEntry] = await Promise.all([
-	getEntry("pages", `${currentLang}/projects`),
-	getEntry("home", `${currentLang}/hero`),
-]);
-
+const projectsPageEntry = await getEntry("pages", `${currentLang}/projects`);
 const allProjects = await getCollection("projects");
-const langProjects = allProjects
-	.filter((project) => project.id.startsWith(`${currentLang}/`))
-	.sort((a, b) => a.data.order - b.data.order)
-	.map((project) => {
-		const cleanId = project.id.replace(/\.md$/, "");
-		const [, ...slugParts] = cleanId.split("/");
-		const slug = slugParts.join("/");
-		return {
-			slug,
-			title: project.data.title,
-			category: project.data.category,
-			description: project.data.description,
-			stack: project.data.stack,
-			year: project.data.year,
-			githubUrl: project.data.githubUrl,
-			liveUrl: project.data.liveUrl,
-		};
-	});
+const langProjects = getProjectsByLang(allProjects, currentLang);
 
-const pageTitle = `${projectsPageEntry?.data.title || t("nav.projects")} | Portfolio`;
+const pageTitle = projectsPageEntry?.data.title || t("nav.projects");
+const fullTitle = `${pageTitle} — ${SITE.nickname}`;
+const seoDescription =
+	projectsPageEntry?.data.seoDescription || projectsPageEntry?.data.subtitle;
 const catalogBadge = projectsPageEntry?.data.badge;
 const catalogSubtitle = projectsPageEntry?.data.subtitle;
 ---
 
-<Layout title={pageTitle} lang={currentLang}>
+<Layout
+	title={fullTitle}
+	description={seoDescription}
+	lang={currentLang}
+>
 	<main id="main-content" class="projects-catalog-page">
 		<header class="catalog-header">
 			<nav class="catalog-nav" aria-label="Breadcrumb">
@@ -99,14 +78,7 @@ const catalogSubtitle = projectsPageEntry?.data.subtitle;
 			</div>
 		</section>
 	</main>
-	<Footer
-		lang={currentLang}
-		authorName={heroEntry?.data.name}
-		authorRole={heroEntry?.data.role}
-		githubUrl={heroEntry?.data.githubUrl}
-		linkedinUrl={heroEntry?.data.linkedinUrl}
-		projects={langProjects}
-	/>
+	<Footer lang={currentLang} projects={langProjects} />
 </Layout>
 
 <style>

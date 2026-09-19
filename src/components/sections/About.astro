@@ -1,12 +1,11 @@
 ---
 import CodeWindow from "@components/ui/CodeWindow.astro";
+import { SITE } from "@/constants/site";
 
 export interface Props {
 	title: string;
 	leadText?: string;
 	text: string;
-	authorName: string;
-	authorRole: string;
 	lang: string;
 	id?: string;
 	class?: string;
@@ -16,8 +15,6 @@ const {
 	title,
 	leadText,
 	text,
-	authorName,
-	authorRole,
 	lang,
 	id = "about",
 	class: className = "",
@@ -47,8 +44,8 @@ const {
 					lang={lang}
 					title={title}
 					text={text}
-					author={authorName}
-					role={authorRole}
+					author={SITE.author}
+					role={SITE.role}
 				/>
 			</div>
 		</div>

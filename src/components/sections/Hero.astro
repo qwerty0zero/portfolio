@@ -2,25 +2,14 @@
 import DitherBackground from "@components/ui/DitherBackground.astro";
 import IconGithub from "@components/ui/icons/IconGithub.astro";
 import IconLinkedin from "@components/ui/icons/IconLinkedin.astro";
+import { SITE } from "@/constants/site";
 
 export interface Props {
-	name?: string;
-	role?: string;
-	githubUrl?: string;
-	linkedinUrl?: string;
-	scrollCueText?: string;
 	id?: string;
 	class?: string;
 }
 
-const {
-	name = "ihor kuhel",
-	role = "Software Developer",
-	githubUrl = "https://github.com/qwerty0zero",
-	linkedinUrl = "https://www.linkedin.com/in/ihor-kuhel-993399167/",
-	id = "hero",
-	class: className = "",
-} = Astro.props;
+const { id = "hero", class: className = "" } = Astro.props;
 ---
 
 <div id={id} class="hero-scroll-anchor" aria-hidden="true"></div>
@@ -44,12 +33,12 @@ const {
 
 	<div class="hero-content">
 		<h1 id="hero-heading" class="hero-title">
-			<span class="hero-name">{name}</span>
-			<span class="hero-role">{role}</span>
+			<span class="hero-name">{SITE.author}</span>
+			<span class="hero-role">{SITE.role}</span>
 		</h1>
 		<nav class="hero-socials" aria-label="Social links">
 			<a
-				href={githubUrl}
+				href={SITE.github}
 				target="_blank"
 				rel="noopener noreferrer"
 				class="hero-social-link"
@@ -59,7 +48,7 @@ const {
 				<IconGithub size={24} class="hero-social-icon" />
 			</a>
 			<a
-				href={linkedinUrl}
+				href={SITE.linkedin}
 				target="_blank"
 				rel="noopener noreferrer"
 				class="hero-social-link"

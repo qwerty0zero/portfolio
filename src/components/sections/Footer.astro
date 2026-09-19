@@ -1,12 +1,8 @@
 ---
 import { getEntry } from "astro:content";
+import { SITE } from "@/constants/site";
 import { defaultLang, type Lang } from "@i18n/languages";
 import { useTranslations } from "@i18n/utils";
-
-export interface NavAnchorItem {
-	id: string;
-	label: string;
-}
 
 export interface FooterProjectItem {
 	title: string;
@@ -17,76 +13,28 @@ export interface FooterProjectItem {
 
 export interface Props {
 	lang: Lang;
-	authorName?: string;
-	authorRole?: string;
-	authorBio?: string;
-	email?: string;
-	githubUrl?: string;
-	linkedinUrl?: string;
-	producedBy?: string;
-	producedByUrl?: string;
-	navAnchors?: NavAnchorItem[];
 	projects?: FooterProjectItem[];
-	allProjectsUrl?: string;
 	class?: string;
 	id?: string;
 }
 
 const {
 	lang = defaultLang,
-	authorName: propAuthorName,
-	authorRole: propAuthorRole,
-	authorBio: propAuthorBio,
-	email: propEmail,
-	githubUrl: propGithubUrl,
-	linkedinUrl: propLinkedinUrl,
-	producedBy: propProducedBy,
-	producedByUrl: propProducedByUrl,
-	navAnchors: propNavAnchors,
 	projects = [],
-	allProjectsUrl,
 	class: className = "",
 	id = "footer",
 } = Astro.props;
 
 const footerEntry = await getEntry("home", `${lang}/footer`);
-const footerData = footerEntry?.data;
-
-const authorName = propAuthorName || footerData?.name || "ihor kuhel";
-const authorRole = propAuthorRole || footerData?.role || "Software Developer";
-const authorBio = propAuthorBio || footerData?.bio || "";
-const email = propEmail || footerData?.email || "kuhel.ihor@gmail.com";
-const githubUrl =
-	propGithubUrl || footerData?.githubUrl || "https://github.com/qwerty0zero";
-const linkedinUrl =
-	propLinkedinUrl ||
-	footerData?.linkedinUrl ||
-	"https://www.linkedin.com/in/ihor-kuhel-993399167/";
-const producedBy = propProducedBy || footerData?.producedBy || "iBiltaz";
-const producedByUrl =
-	propProducedByUrl ||
-	footerData?.producedByUrl ||
-	"https://github.com/iBiltaz";
+const bio = footerEntry?.data.bio || "";
 
 const t = useTranslations(lang);
 const currentYear = new Date().getFullYear();
 const langPrefix = lang === defaultLang ? "" : `/${lang}`;
 const homeUrl = langPrefix || "/";
-const resolvedAllProjectsUrl = allProjectsUrl || `${langPrefix}/projects`;
+const allProjectsUrl = `${langPrefix}/projects`;
 
-const defaultAnchors: NavAnchorItem[] = [
-	{ id: "hero", label: t("nav.home") },
-	{ id: "about", label: "About" },
-	{ id: "projects", label: t("nav.projects") },
-	{ id: "directions", label: "Directions" },
-	{ id: "faq", label: "FAQ" },
-	{ id: "showcase", label: "Showcase" },
-];
-
-const rawNavAnchors =
-	propNavAnchors || footerData?.navAnchors || defaultAnchors;
-
-const navAnchors = rawNavAnchors.map((item) => ({
+const navAnchors = (footerEntry?.data.navAnchors ?? []).map((item) => ({
 	href: `${homeUrl}#${item.id}`,
 	label: item.label,
 }));
@@ -101,39 +49,6 @@ const topProjects = projects.slice(0, 3);
 	aria-label={t("footer.navTitle")}
 >
 	<div class="footer-container">
-		<!-- Animation Stage Mock Placeholder -->
-		<!-- <div class="footer-animation-stage" aria-hidden="true">
-			<div class="footer-anim-mock">
-				<div class="anim-mock-badge">ANIMATION_STAGE // MOCK</div>
-				<div class="anim-mock-track">
-					<div class="anim-mock-content">
-						<span>AVAILABLE FOR NEW OPPORTUNITIES</span>
-						<span class="bullet">■</span>
-						<span>FULL-STACK ARCHITECTURE</span>
-						<span class="bullet">■</span>
-						<span>CREATIVE INTERACTIONS</span>
-						<span class="bullet">■</span>
-						<span>PERFORMANCE-DRIVEN SSG</span>
-						<span class="bullet">■</span>
-						<span>MODERN WEB CRAFT</span>
-						<span class="bullet">■</span>
-					</div>
-					<div class="anim-mock-content" aria-hidden="true">
-						<span>AVAILABLE FOR NEW OPPORTUNITIES</span>
-						<span class="bullet">■</span>
-						<span>FULL-STACK ARCHITECTURE</span>
-						<span class="bullet">■</span>
-						<span>CREATIVE INTERACTIONS</span>
-						<span class="bullet">■</span>
-						<span>PERFORMANCE-DRIVEN SSG</span>
-						<span class="bullet">■</span>
-						<span>MODERN WEB CRAFT</span>
-						<span class="bullet">■</span>
-					</div>
-				</div>
-			</div>
-		</div> -->
-
 		<!-- Main 3 Columns Grid -->
 		<div class="footer-columns">
 			<!-- Column 1: Personal Info & Socials / Email -->
@@ -142,58 +57,42 @@ const topProjects = projects.slice(0, 3);
 				aria-labelledby="footer-author-heading"
 			>
 				<div class="author-branding">
-					<span class="author-name">{authorName}</span>
-					<span class="author-role">{authorRole}</span>
+					<span class="author-name">{SITE.author}</span>
+					<span class="author-role">{SITE.role}</span>
 				</div>
-				<p class="author-bio">{authorBio}</p>
+				<p class="author-bio">{bio}</p>
 
 				<div class="contacts-block">
 					<span class="col-subtitle">{t("footer.contactsTitle")}</span>
 					<ul class="contacts-list" role="list">
-						{
-							githubUrl && (
-								<li>
-									<a
-										href={githubUrl}
-										target="_blank"
-										rel="noopener noreferrer"
-										class="contact-link"
-									>
-										<span class="link-label">GitHub</span>
-										<span class="arrow-icon" aria-hidden="true">
-											↗
-										</span>
-									</a>
-								</li>
-							)
-						}
-						{
-							linkedinUrl && (
-								<li>
-									<a
-										href={linkedinUrl}
-										target="_blank"
-										rel="noopener noreferrer"
-										class="contact-link"
-									>
-										<span class="link-label">LinkedIn</span>
-										<span class="arrow-icon" aria-hidden="true">
-											↗
-										</span>
-									</a>
-								</li>
-							)
-						}
-						{
-							email && (
-								<li>
-									<a href={`mailto:${email}`} class="contact-link">
-										<span class="link-label">Email</span>
-										<span class="contact-value">({email})</span>
-									</a>
-								</li>
-							)
-						}
+						<li>
+							<a
+								href={SITE.github}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="contact-link"
+							>
+								<span class="link-label">GitHub</span>
+								<span class="arrow-icon" aria-hidden="true"> ↗ </span>
+							</a>
+						</li>
+						<li>
+							<a
+								href={SITE.linkedin}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="contact-link"
+							>
+								<span class="link-label">LinkedIn</span>
+								<span class="arrow-icon" aria-hidden="true"> ↗ </span>
+							</a>
+						</li>
+						<li>
+							<a href={`mailto:${SITE.email}`} class="contact-link">
+								<span class="link-label">Email</span>
+								<span class="contact-value">({SITE.email})</span>
+							</a>
+						</li>
 					</ul>
 				</div>
 			</section>
@@ -231,7 +130,7 @@ const topProjects = projects.slice(0, 3);
 					<h3 id="footer-projects-heading" class="col-title">
 						{t("footer.projectsTitle")}
 					</h3>
-					<a href={resolvedAllProjectsUrl} class="all-projects-link">
+					<a href={allProjectsUrl} class="all-projects-link">
 						<span>{t("projects.viewAll")}</span>
 						<span class="arrow" aria-hidden="true">→</span>
 					</a>
@@ -265,7 +164,7 @@ const topProjects = projects.slice(0, 3);
 			<div class="bottom-left">
 				<p class="copyright">
 					© {currentYear}
-					<span class="author-name-inline">{authorName}</span>. {
+					<span class="author-name-inline">{SITE.author}</span>. {
 						t("footer.rights")
 					}.
 				</p>
@@ -275,12 +174,12 @@ const topProjects = projects.slice(0, 3);
 				<p class="produced-by">
 					{t("footer.producedBy")}{" "}
 					<a
-						href={producedByUrl}
+						href={SITE.github}
 						target="_blank"
 						rel="noopener noreferrer"
 						class="producer-link"
 					>
-						{producedBy}
+						{SITE.nickname}
 					</a>
 				</p>
 			</div>
@@ -319,67 +218,6 @@ const topProjects = projects.slice(0, 3);
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-12);
-	}
-
-	/* Animation Stage Mock */
-	.footer-animation-stage {
-		width: 100%;
-		border: 1px dashed var(--border);
-		background-color: var(--background-tertiary);
-		padding: var(--space-4) var(--space-6);
-		box-sizing: border-box;
-		overflow: hidden;
-		position: relative;
-	}
-
-	.footer-anim-mock {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-3);
-		width: 100%;
-	}
-
-	.anim-mock-badge {
-		font-family: var(--font-mono);
-		font-size: 0.6875rem;
-		text-transform: uppercase;
-		letter-spacing: 0.12em;
-		color: var(--accent);
-		font-weight: 700;
-	}
-
-	.anim-mock-track {
-		display: flex;
-		width: 100%;
-		overflow: hidden;
-		user-select: none;
-		white-space: nowrap;
-	}
-
-	.anim-mock-content {
-		display: flex;
-		align-items: center;
-		gap: var(--space-4);
-		font-family: var(--font-mono);
-		font-size: 0.8125rem;
-		color: var(--text-muted);
-		letter-spacing: 0.08em;
-		animation: footerMarquee 28s linear infinite;
-		flex-shrink: 0;
-	}
-
-	.anim-mock-content .bullet {
-		color: var(--accent);
-		font-size: 0.5rem;
-	}
-
-	@keyframes footerMarquee {
-		0% {
-			transform: translate3d(0, 0, 0);
-		}
-		100% {
-			transform: translate3d(-100%, 0, 0);
-		}
 	}
 
 	/* Main Columns Grid */
@@ -755,10 +593,6 @@ const topProjects = projects.slice(0, 3);
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.anim-mock-content {
-			animation: none;
-		}
-
 		.nav-anchor-link:hover,
 		.all-projects-link:hover .arrow,
 		.back-to-top-btn:hover .arrow-up {

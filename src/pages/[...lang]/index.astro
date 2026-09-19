@@ -7,30 +7,20 @@ import Footer from "@components/sections/Footer.astro";
 import Hero from "@components/sections/Hero.astro";
 import Projects from "@components/sections/Projects.astro";
 import Showcase from "@components/sections/Showcase.astro";
-import { defaultLang, type Lang, languages } from "@i18n/languages";
-import { useTranslations } from "@i18n/utils";
+import { getI18nStaticPaths, resolveLang, useTranslations } from "@i18n/utils";
+import { getProjectsByLang } from "@/utils/projects";
+import { SITE } from "@/constants/site";
 import Layout from "@layouts/Layout.astro";
 
 export async function getStaticPaths() {
-	return Object.keys(languages).map((code) => {
-		const lang = code as Lang;
-		return {
-			params: {
-				lang: lang === defaultLang ? undefined : lang,
-			},
-		};
-	});
+	return getI18nStaticPaths();
 }
 
-const { lang } = Astro.params;
-const currentLang: Lang =
-	lang && lang in languages ? (lang as Lang) : defaultLang;
-
+const currentLang = resolveLang(Astro.params.lang);
 const t = useTranslations(currentLang);
 
 const [
 	homePageEntry,
-	heroEntry,
 	aboutEntry,
 	directionsEntry,
 	faqEntry,
@@ -39,7 +29,6 @@ const [
 	allProjects,
 ] = await Promise.all([
 	getEntry("pages", `${currentLang}/home`),
-	getEntry("home", `${currentLang}/hero`),
 	getEntry("home", `${currentLang}/about`),
 	getEntry("home", `${currentLang}/directions`),
 	getEntry("home", `${currentLang}/faq`),
@@ -48,28 +37,13 @@ const [
 	getCollection("projects"),
 ]);
 
-const pageTitle = homePageEntry?.data.title || "Portfolio";
+const pageTitle = homePageEntry?.data.title || SITE.role;
+const fullTitle = `${SITE.nickname} — ${pageTitle}`;
+const pageDescription =
+	homePageEntry?.data.description || homePageEntry?.data.seoDescription;
 
-const langProjects = allProjects
-	.filter((project) => project.id.startsWith(`${currentLang}/`))
-	.sort((a, b) => a.data.order - b.data.order)
-	.map((project) => {
-		const cleanId = project.id.replace(/\.md$/, "");
-		const [, ...slugParts] = cleanId.split("/");
-		const slug = slugParts.join("/");
-		return {
-			slug,
-			title: project.data.title,
-			category: project.data.category,
-			description: project.data.description,
-			stack: project.data.stack,
-			year: project.data.year,
-			githubUrl: project.data.githubUrl,
-			liveUrl: project.data.liveUrl,
-		};
-	});
+const langProjects = getProjectsByLang(allProjects, currentLang);
 
-const heroData = heroEntry?.data;
 const aboutData = aboutEntry?.data;
 const directionsData = directionsEntry?.data;
 const faqData = faqEntry?.data;
@@ -77,23 +51,17 @@ const projectsData = projectsEntry?.data;
 const showcaseData = showcaseEntry?.data;
 ---
 
-<Layout title={`${pageTitle}`} lang={currentLang}>
+<Layout
+	title={fullTitle}
+	description={pageDescription}
+	lang={currentLang}
+>
 	<main id="main-content">
-		<Hero
-			name={heroData?.name}
-			role={heroData?.role}
-			scrollCueText={heroData?.scrollCueText}
-			githubUrl={heroData?.githubUrl}
-			linkedinUrl={heroData?.linkedinUrl}
-		/>
+		<Hero />
 		<About
 			title={aboutData?.title || ""}
 			leadText={aboutData?.lead}
 			text={aboutData?.text || ""}
-			authorName={aboutData?.authorName || "ihor kuhel"}
-			authorRole={aboutData?.authorRole ||
-				heroData?.role ||
-				"Software Developer"}
 			lang={currentLang}
 		/>
 
@@ -131,12 +99,5 @@ const showcaseData = showcaseEntry?.data;
 			/>
 		)}
 	</main>
-	<Footer
-		lang={currentLang}
-		authorName={heroData?.name}
-		authorRole={heroData?.role}
-		githubUrl={heroData?.githubUrl}
-		linkedinUrl={heroData?.linkedinUrl}
-		projects={langProjects}
-	/>
+	<Footer lang={currentLang} projects={langProjects} />
 </Layout>
