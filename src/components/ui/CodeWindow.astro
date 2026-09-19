@@ -22,7 +22,7 @@ const {
 } = Astro.props;
 ---
 
-<div
+<section
 	class:list={["code-window", className]}
 	aria-label={`Code snippet ${fileName}`}
 >
@@ -31,6 +31,7 @@ const {
 			<span class="control-dot close">
 				<svg
 					class="control-icon"
+					aria-hidden="true"
 					viewBox="0 0 12 12"
 					width="7"
 					height="7"
@@ -46,6 +47,7 @@ const {
 			<span class="control-dot minimize">
 				<svg
 					class="control-icon"
+					aria-hidden="true"
 					viewBox="0 0 12 12"
 					width="7"
 					height="7"
@@ -60,12 +62,15 @@ const {
 			<span class="control-dot maximize">
 				<svg
 					class="control-icon"
+					aria-hidden="true"
 					viewBox="0 0 12 12"
 					width="6"
 					height="6"
 					fill="currentColor"
 				>
-					<path d="M1.5 1.5h4v1.5h-2.5v2.5h-1.5v-4zM6.5 10.5h4v-4h-1.5v2.5h-2.5v1.5z"></path>
+					<path
+						d="M1.5 1.5h4v1.5h-2.5v2.5h-1.5v-4zM6.5 10.5h4v-4h-1.5v2.5h-2.5v1.5z"
+					></path>
 				</svg>
 			</span>
 		</div>
@@ -90,7 +95,9 @@ const {
 			<span>11</span>
 			<span>12</span>
 		</div>
-		<pre class="code-content"><code><span class="token-doctype">&lt;!DOCTYPE html&gt;</span>
+		<pre
+			class="code-content"
+		><code><span class="token-doctype">&lt;!DOCTYPE html&gt;</span>
 <span class="token-tag">&lt;html</span> <span class="token-attr">lang</span>=<span class="token-string">"{lang}"</span><span class="token-tag">&gt;</span>
   <span class="token-tag">&lt;head&gt;</span>
     <span class="token-tag">&lt;meta</span> <span class="token-attr">name</span>=<span class="token-string">"author"</span> <span class="token-attr">content</span>=<span class="token-string">"{author}"</span> <span class="token-tag">/&gt;</span>
@@ -104,201 +111,201 @@ const {
   <span class="token-tag">&lt;/body&gt;</span>
 <span class="token-tag">&lt;/html&gt;</span></code></pre>
 	</div>
-</div>
+</section>
 
 <style>
-	.code-window {
-		width: 100%;
-		max-width: 100%;
-		min-width: 0;
-		box-sizing: border-box;
-		background-color: var(--background-secondary);
-		border: 1px solid var(--border);
-		overflow: hidden;
-		transition:
-			border-color var(--transition-fast),
-			background-color var(--transition-fast);
-	}
+.code-window {
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+	box-sizing: border-box;
+	background-color: var(--background-secondary);
+	border: 1px solid var(--border);
+	overflow: hidden;
+	transition:
+		border-color var(--transition-fast),
+		background-color var(--transition-fast);
+}
 
-	.code-window:hover {
-		border-color: var(--border-strong);
-	}
+.code-window:hover {
+	border-color: var(--border-strong);
+}
 
+.code-window-header {
+	display: flex;
+	align-items: center;
+	background-color: var(--background-tertiary);
+	border-bottom: 1px solid var(--border);
+	padding: var(--space-2) var(--space-4);
+	gap: var(--space-4);
+	min-height: 38px;
+	box-sizing: border-box;
+}
+
+.code-window-controls {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px;
+}
+
+.control-dot {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 12px;
+	height: 12px;
+	border-radius: var(--radius-full);
+	box-sizing: border-box;
+	transition:
+		filter var(--transition-fast),
+		background-color var(--transition-fast);
+}
+
+.control-dot.close {
+	background-color: var(--window-control-close);
+}
+
+.control-dot.minimize {
+	background-color: var(--window-control-minimize);
+}
+
+.control-dot.maximize {
+	background-color: var(--window-control-maximize);
+}
+
+.control-icon {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	opacity: 0;
+	color: var(--window-control-symbol);
+	pointer-events: none;
+	transition: opacity var(--transition-fast);
+}
+
+.code-window-controls:hover .control-icon {
+	opacity: 1;
+}
+
+.control-dot.close:hover {
+	background-color: var(--window-control-close-hover);
+}
+
+.control-dot.minimize:hover {
+	background-color: var(--window-control-minimize-hover);
+}
+
+.control-dot.maximize:hover {
+	background-color: var(--window-control-maximize-hover);
+}
+
+.code-window-tab {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	background-color: var(--background-secondary);
+	border-inline: 1px solid var(--border);
+	border-top: 2px solid var(--accent);
+	padding: var(--space-2) var(--space-3);
+	margin-block: calc(-1 * var(--space-2));
+	font-family: var(--font-mono);
+	font-size: 0.8125rem;
+	color: var(--text);
+}
+
+.file-icon {
+	color: var(--accent);
+	flex-shrink: 0;
+}
+
+.tab-title {
+	font-size: 0.75rem;
+	font-weight: 500;
+}
+
+.code-window-body {
+	display: flex;
+	align-items: stretch;
+	padding: var(--space-4) 0;
+	overflow-x: auto;
+	background-color: var(--background-secondary);
+	min-width: 0;
+	box-sizing: border-box;
+}
+
+.line-numbers {
+	display: flex;
+	flex-direction: column;
+	padding: 0 var(--space-4);
+	border-right: 1px solid var(--border-dim);
+	color: var(--text-muted);
+	font-family: var(--font-mono);
+	font-size: 0.8125rem;
+	line-height: 1.6;
+	user-select: none;
+	text-align: right;
+	flex-shrink: 0;
+}
+
+.code-content {
+	margin: 0;
+	padding: 0 var(--space-4);
+	font-family: var(--font-mono);
+	font-size: 0.8125rem;
+	line-height: 1.6;
+	color: var(--text);
+	overflow-x: hidden;
+	flex: 1;
+	min-width: 0;
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.token-doctype {
+	color: var(--text-muted);
+}
+
+.token-tag {
+	color: var(--accent);
+	font-weight: 700;
+}
+
+.token-attr {
+	color: var(--text-dim);
+}
+
+.token-string {
+	color: var(--text);
+	text-decoration: underline;
+	text-decoration-color: var(--border-strong);
+}
+
+.token-text {
+	color: var(--text);
+}
+
+.wrap-text {
+	display: inline-block;
+	word-break: break-word;
+}
+
+@media (max-width: 768px) {
 	.code-window-header {
-		display: flex;
-		align-items: center;
-		background-color: var(--background-tertiary);
-		border-bottom: 1px solid var(--border);
-		padding: var(--space-2) var(--space-4);
-		gap: var(--space-4);
-		min-height: 38px;
-		box-sizing: border-box;
-	}
-
-	.code-window-controls {
-		display: flex;
-		align-items: center;
-		gap: 6px;
-		padding: 4px;
-	}
-
-	.control-dot {
-		position: relative;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 12px;
-		height: 12px;
-		border-radius: var(--radius-full);
-		box-sizing: border-box;
-		transition:
-			filter var(--transition-fast),
-			background-color var(--transition-fast);
-	}
-
-	.control-dot.close {
-		background-color: var(--window-control-close);
-	}
-
-	.control-dot.minimize {
-		background-color: var(--window-control-minimize);
-	}
-
-	.control-dot.maximize {
-		background-color: var(--window-control-maximize);
-	}
-
-	.control-icon {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		opacity: 0;
-		color: var(--window-control-symbol);
-		pointer-events: none;
-		transition: opacity var(--transition-fast);
-	}
-
-	.code-window-controls:hover .control-icon {
-		opacity: 1;
-	}
-
-	.control-dot.close:hover {
-		background-color: var(--window-control-close-hover);
-	}
-
-	.control-dot.minimize:hover {
-		background-color: var(--window-control-minimize-hover);
-	}
-
-	.control-dot.maximize:hover {
-		background-color: var(--window-control-maximize-hover);
-	}
-
-	.code-window-tab {
-		display: inline-flex;
-		align-items: center;
+		padding: var(--space-2);
 		gap: var(--space-2);
-		background-color: var(--background-secondary);
-		border-inline: 1px solid var(--border);
-		border-top: 2px solid var(--accent);
-		padding: var(--space-2) var(--space-3);
-		margin-block: calc(-1 * var(--space-2));
-		font-family: var(--font-mono);
-		font-size: 0.8125rem;
-		color: var(--text);
-	}
-
-	.file-icon {
-		color: var(--accent);
-		flex-shrink: 0;
-	}
-
-	.tab-title {
-		font-size: 0.75rem;
-		font-weight: 500;
-	}
-
-	.code-window-body {
-		display: flex;
-		align-items: stretch;
-		padding: var(--space-4) 0;
-		overflow-x: auto;
-		background-color: var(--background-secondary);
-		min-width: 0;
-		box-sizing: border-box;
 	}
 
 	.line-numbers {
-		display: flex;
-		flex-direction: column;
-		padding: 0 var(--space-4);
-		border-right: 1px solid var(--border-dim);
-		color: var(--text-muted);
-		font-family: var(--font-mono);
-		font-size: 0.8125rem;
-		line-height: 1.6;
-		user-select: none;
-		text-align: right;
-		flex-shrink: 0;
+		padding: 0 var(--space-2);
+		font-size: 0.75rem;
 	}
 
 	.code-content {
-		margin: 0;
-		padding: 0 var(--space-4);
-		font-family: var(--font-mono);
-		font-size: 0.8125rem;
-		line-height: 1.6;
-		color: var(--text);
-		overflow-x: hidden;
-		flex: 1;
-		min-width: 0;
-		white-space: pre-wrap;
-		word-break: break-word;
+		padding: 0 var(--space-2);
+		font-size: 0.75rem;
 	}
-
-	.token-doctype {
-		color: var(--text-muted);
-	}
-
-	.token-tag {
-		color: var(--accent);
-		font-weight: 700;
-	}
-
-	.token-attr {
-		color: var(--text-dim);
-	}
-
-	.token-string {
-		color: var(--text);
-		text-decoration: underline;
-		text-decoration-color: var(--border-strong);
-	}
-
-	.token-text {
-		color: var(--text);
-	}
-
-	.wrap-text {
-		display: inline-block;
-		word-break: break-word;
-	}
-
-	@media (max-width: 768px) {
-		.code-window-header {
-			padding: var(--space-2);
-			gap: var(--space-2);
-		}
-
-		.line-numbers {
-			padding: 0 var(--space-2);
-			font-size: 0.75rem;
-		}
-
-		.code-content {
-			padding: 0 var(--space-2);
-			font-size: 0.75rem;
-		}
-	}
+}
 </style>

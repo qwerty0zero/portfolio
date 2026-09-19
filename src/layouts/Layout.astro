@@ -52,8 +52,8 @@ const preloadedFonts = fontsPreloadMap[lang] ?? fontsPreloadMap[defaultLang];
 <!doctype html>
 <html lang={lang} dir="ltr">
 	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 		<HeadSEO
 			title={title}
@@ -76,49 +76,47 @@ const preloadedFonts = fontsPreloadMap[lang] ?? fontsPreloadMap[defaultLang];
 
 		{/* Anti-FOUC Theme Initialization Script */}
 		<script is:inline>
-			(() => {
-				const storedTheme =
-					typeof localStorage !== "undefined"
-						? localStorage.getItem("theme")
-						: null;
-				const userTheme =
-					storedTheme ||
-					(window.matchMedia("(prefers-color-scheme: dark)").matches
-						? "dark"
-						: "light");
-				if (userTheme === "dark") {
-					document.documentElement.classList.add("dark");
-				} else {
-					document.documentElement.classList.remove("dark");
-				}
-			})();
+		(() => {
+			const storedTheme =
+				typeof localStorage !== "undefined"
+					? localStorage.getItem("theme")
+					: null;
+			const userTheme =
+				storedTheme ||
+				(window.matchMedia("(prefers-color-scheme: dark)").matches
+					? "dark"
+					: "light");
+			if (userTheme === "dark") {
+				document.documentElement.classList.add("dark");
+			} else {
+				document.documentElement.classList.remove("dark");
+			}
+		})();
 		</script>
 	</head>
 	<body>
 		<SmoothScroll />
-		<div class="layout-wrapper">
+		<div class="layout-wrapper fullscreen-min">
 			<slot />
 		</div>
 	</body>
 </html>
 
 <style>
-	.layout-wrapper {
-		width: calc(100% - 10vw);
-		max-width: 1920px;
-		margin-inline: auto;
-		min-height: 100vh;
-		min-height: 100dvh;
-		border-left: 1px solid var(--border);
-		border-right: 1px solid var(--border);
-		position: relative;
-	}
+.layout-wrapper {
+	width: calc(100% - 10vw);
+	max-width: 1920px;
+	margin-inline: auto;
+	border-left: 1px solid var(--border);
+	border-right: 1px solid var(--border);
+	position: relative;
+}
 
-	@media (max-width: 768px) {
-		.layout-wrapper {
-			width: 100%;
-			border-left: none;
-			border-right: none;
-		}
+@media (max-width: 768px) {
+	.layout-wrapper {
+		width: 100%;
+		border-left: none;
+		border-right: none;
 	}
+}
 </style>

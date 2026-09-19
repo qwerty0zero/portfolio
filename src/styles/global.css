@@ -435,3 +435,18 @@ section[id],
 footer[id] {
   scroll-margin-top: var(--space-8);
 }
+
+/* ==========================================================================
+   Fullscreen Viewport Utilities
+   ========================================================================== */
+/* biome-ignore lint/suspicious/noDuplicateProperties: progressive enhancement fallback for browsers without dvh support */
+.fullscreen {
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* biome-ignore lint/suspicious/noDuplicateProperties: progressive enhancement fallback for browsers without dvh support */
+.fullscreen-min {
+  min-height: 100vh;
+  min-height: 100dvh;
+}

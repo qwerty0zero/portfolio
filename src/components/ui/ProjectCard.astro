@@ -56,7 +56,7 @@ const formattedIndex = String(index).padStart(2, "0");
 
 	<div class="card-footer">
 		{stack && stack.length > 0 && (
-			<div class="card-stack" aria-label="Технологический стек">
+			<div class="card-stack">
 				{stack.map((tech) => (
 					<span class="stack-tag">{tech}</span>
 				))}
@@ -102,151 +102,151 @@ const formattedIndex = String(index).padStart(2, "0");
 </article>
 
 <style>
+.project-card {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	width: clamp(340px, 32vw, 440px);
+	height: 100%;
+	min-height: 480px;
+	background-color: var(--background-secondary);
+	border: 1px solid var(--border);
+	padding: var(--space-8);
+	box-sizing: border-box;
+	flex-shrink: 0;
+	position: relative;
+	transition:
+		border-color var(--transition-fast),
+		background-color var(--transition-fast);
+}
+
+.project-card:hover {
+	border-color: var(--border-strong);
+	background-color: var(--background-elevated);
+}
+
+/* Card Header */
+.card-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-bottom: var(--space-4);
+	border-bottom: 1px solid var(--border);
+}
+
+.card-meta {
+	display: flex;
+	align-items: center;
+	gap: var(--space-3);
+}
+
+.card-index {
+	font-family: var(--font-mono);
+	font-size: 0.8125rem;
+	color: var(--accent);
+	font-weight: 700;
+}
+
+.card-category {
+	font-family: var(--font-mono);
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: var(--text-dim);
+}
+
+.card-year {
+	font-family: var(--font-mono);
+	font-size: 0.75rem;
+	color: var(--text-muted);
+}
+
+/* Card Body */
+.card-body {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-4);
+	margin-block: auto;
+	padding-block: var(--space-4);
+}
+
+.card-title {
+	font-family: var(--font-heading);
+	font-size: clamp(1.5rem, 2vw, 2rem);
+	line-height: 1.25;
+	margin: 0;
+}
+
+.card-title-link {
+	color: var(--text);
+	text-decoration: none;
+	transition: color var(--transition-fast);
+}
+
+.card-title-link:hover {
+	color: var(--accent);
+}
+
+.card-description {
+	font-family: var(--font-body);
+	font-size: clamp(0.9375rem, 1.1vw, 1.125rem);
+	line-height: 1.55;
+	color: var(--text-dim);
+	margin: 0;
+}
+
+/* Card Footer */
+.card-footer {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-6);
+	padding-top: var(--space-4);
+	border-top: 1px solid var(--border);
+}
+
+.card-stack {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-2);
+}
+
+.stack-tag {
+	font-family: var(--font-mono);
+	font-size: 0.6875rem;
+	color: var(--text-dim);
+	background-color: var(--background-tertiary);
+	padding: 2px 8px;
+	border: 1px solid var(--border);
+	letter-spacing: 0.02em;
+}
+
+.card-actions {
+	display: flex;
+	align-items: center;
+	gap: var(--space-3);
+}
+
+.primary-action {
+	flex: 1;
+}
+
+@media (max-width: 768px) {
 	.project-card {
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		width: clamp(340px, 32vw, 440px);
-		height: 100%;
-		min-height: 480px;
-		background-color: var(--background-secondary);
-		border: 1px solid var(--border);
-		padding: var(--space-8);
-		box-sizing: border-box;
-		flex-shrink: 0;
-		position: relative;
-		transition:
-			border-color var(--transition-fast),
-			background-color var(--transition-fast);
-	}
-
-	.project-card:hover {
-		border-color: var(--border-strong);
-		background-color: var(--background-elevated);
-	}
-
-	/* Card Header */
-	.card-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding-bottom: var(--space-4);
-		border-bottom: 1px solid var(--border);
-	}
-
-	.card-meta {
-		display: flex;
-		align-items: center;
-		gap: var(--space-3);
-	}
-
-	.card-index {
-		font-family: var(--font-mono);
-		font-size: 0.8125rem;
-		color: var(--accent);
-		font-weight: 700;
-	}
-
-	.card-category {
-		font-family: var(--font-mono);
-		font-size: 0.75rem;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: var(--text-dim);
-	}
-
-	.card-year {
-		font-family: var(--font-mono);
-		font-size: 0.75rem;
-		color: var(--text-muted);
-	}
-
-	/* Card Body */
-	.card-body {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-4);
-		margin-block: auto;
-		padding-block: var(--space-4);
-	}
-
-	.card-title {
-		font-family: var(--font-heading);
-		font-size: clamp(1.5rem, 2vw, 2rem);
-		line-height: 1.25;
-		margin: 0;
-	}
-
-	.card-title-link {
-		color: var(--text);
-		text-decoration: none;
-		transition: color var(--transition-fast);
-	}
-
-	.card-title-link:hover {
-		color: var(--accent);
-	}
-
-	.card-description {
-		font-family: var(--font-body);
-		font-size: clamp(0.9375rem, 1.1vw, 1.125rem);
-		line-height: 1.55;
-		color: var(--text-dim);
-		margin: 0;
-	}
-
-	/* Card Footer */
-	.card-footer {
-		display: flex;
-		flex-direction: column;
+		width: 100%;
+		max-width: 100%;
+		height: auto;
+		min-height: auto;
+		padding: var(--space-6);
 		gap: var(--space-6);
-		padding-top: var(--space-4);
-		border-top: 1px solid var(--border);
 	}
 
-	.card-stack {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-2);
+	.card-body {
+		margin-block: var(--space-2);
+		padding-block: 0;
 	}
 
-	.stack-tag {
-		font-family: var(--font-mono);
-		font-size: 0.6875rem;
-		color: var(--text-dim);
-		background-color: var(--background-tertiary);
-		padding: 2px 8px;
-		border: 1px solid var(--border);
-		letter-spacing: 0.02em;
+	.card-footer {
+		gap: var(--space-4);
 	}
-
-	.card-actions {
-		display: flex;
-		align-items: center;
-		gap: var(--space-3);
-	}
-
-	.primary-action {
-		flex: 1;
-	}
-
-	@media (max-width: 768px) {
-		.project-card {
-			width: 100%;
-			max-width: 100%;
-			height: auto;
-			min-height: auto;
-			padding: var(--space-6);
-			gap: var(--space-6);
-		}
-
-		.card-body {
-			margin-block: var(--space-2);
-			padding-block: 0;
-		}
-
-		.card-footer {
-			gap: var(--space-4);
-		}
-	}
+}
 </style>

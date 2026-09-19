@@ -36,7 +36,7 @@ const {
 	aria-labelledby="directions-heading"
 >
 	<!-- Full viewport sticky stage containing pinned background, header, and stacking cards -->
-	<div class="directions-sticky-stage">
+	<div class="directions-sticky-stage fullscreen">
 		<!-- Animated Background Canvas Placeholder -->
 		<div class="directions-bg-canvas" aria-hidden="true">
 			<div class="cyber-grid-overlay"></div>
@@ -59,16 +59,14 @@ const {
 			<div class="directions-cards-viewport">
 				<!-- Stacking Sticky Cards Track -->
 				<div class="directions-stack-track">
-					{
-						directions.map((direction, idx) => (
+					{directions.map((direction, idx) => (
 							<div
 								class="direction-card-wrapper"
 								style={`--card-index: ${idx};`}
 							>
 								<DirectionCard {...direction} />
 							</div>
-						))
-					}
+						))}
 				</div>
 			</div>
 		</div>
@@ -76,242 +74,240 @@ const {
 </section>
 
 <style>
+.directions-section {
+	padding: 0;
+	min-height: 280vh;
+}
+
+/* Fixed/Sticky stage spanning 100vh/100dvh */
+.directions-sticky-stage {
+	position: sticky;
+	top: 0;
+	width: 100%;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+}
+
+/* Animated Background Placeholder */
+.directions-bg-canvas {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	overflow: hidden;
+	z-index: 0;
+}
+
+.cyber-grid-overlay {
+	position: absolute;
+	inset: 0;
+	background-image:
+		linear-gradient(to right, var(--border-dim) 1px, transparent 1px),
+		linear-gradient(to bottom, var(--border-dim) 1px, transparent 1px);
+	background-size: 48px 48px;
+	opacity: 0.45;
+	mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 80%);
+	-webkit-mask-image: radial-gradient(
+		circle at 50% 50%,
+		black 30%,
+		transparent 80%
+	);
+}
+
+.scanlines-overlay {
+	position: absolute;
+	inset: 0;
+	background: repeating-linear-gradient(
+		0deg,
+		transparent,
+		transparent 3px,
+		var(--border-dim) 3px,
+		var(--border-dim) 4px
+	);
+	opacity: 0.15;
+}
+
+.directions-container {
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	margin-inline: auto;
+	padding: var(--space-8) var(--space-12);
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	height: 100%;
+	gap: var(--space-8);
+}
+
+/* Top Section Header: Pinned directly above the cards */
+.directions-header {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-3);
+	width: 100%;
+}
+
+.header-top-row {
+	display: flex;
+	align-items: baseline;
+	gap: var(--space-6);
+	flex-wrap: wrap;
+}
+
+.directions-badge {
+	font-family: var(--font-mono);
+	font-size: 0.8125rem;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	color: var(--accent);
+	font-weight: 700;
+}
+
+.directions-title {
+	font-family: var(--font-heading);
+	font-size: clamp(2rem, 3.5vw, 3rem);
+	line-height: 1.1;
+	color: var(--text);
+	text-transform: uppercase;
+	margin: 0;
+}
+
+.directions-lead {
+	font-family: var(--font-body);
+	font-size: clamp(1.0625rem, 1.25vw, 1.25rem);
+	line-height: 1.5;
+	color: var(--text-dim);
+	margin: 0;
+	max-width: 900px;
+}
+
+/* Cards Container underneath the header */
+.directions-cards-viewport {
+	position: relative;
+	width: 100%;
+	height: 440px;
+}
+
+.directions-stack-track {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+/* Stacking Cards on Desktop */
+@media (min-width: 769px) {
+	.direction-card-wrapper {
+		position: absolute;
+		inset-inline: 0;
+		top: calc(var(--card-index) * 36px);
+		z-index: calc(var(--card-index) + 1);
+		transition: transform 300ms cubic-bezier(0.2, 0, 0, 1);
+		will-change: transform;
+	}
+}
+
+/* Mobile layout */
+@media (max-width: 768px) {
 	.directions-section {
-		padding: 0;
-		min-height: 280vh;
+		min-height: auto;
 	}
 
-	/* Fixed/Sticky stage spanning 100vh/100dvh */
 	.directions-sticky-stage {
-		position: sticky;
-		top: 0;
-		height: 100vh;
-		height: 100dvh;
-		width: 100%;
-		overflow: hidden;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		box-sizing: border-box;
-	}
-
-	/* Animated Background Placeholder */
-	.directions-bg-canvas {
-		position: absolute;
-		inset: 0;
-		pointer-events: none;
-		overflow: hidden;
-		z-index: 0;
-	}
-
-	.cyber-grid-overlay {
-		position: absolute;
-		inset: 0;
-		background-image:
-			linear-gradient(to right, var(--border-dim) 1px, transparent 1px),
-			linear-gradient(to bottom, var(--border-dim) 1px, transparent 1px);
-		background-size: 48px 48px;
-		opacity: 0.45;
-		mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 80%);
-		-webkit-mask-image: radial-gradient(
-			circle at 50% 50%,
-			black 30%,
-			transparent 80%
-		);
-	}
-
-	.scanlines-overlay {
-		position: absolute;
-		inset: 0;
-		background: repeating-linear-gradient(
-			0deg,
-			transparent,
-			transparent 3px,
-			var(--border-dim) 3px,
-			var(--border-dim) 4px
-		);
-		opacity: 0.15;
+		position: static;
+		height: auto;
+		overflow: visible;
+		padding-block: var(--space-12);
 	}
 
 	.directions-container {
-		position: relative;
-		z-index: 1;
-		width: 100%;
-		margin-inline: auto;
-		padding: var(--space-8) var(--space-12);
-		box-sizing: border-box;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		height: 100%;
-		gap: var(--space-8);
-	}
-
-	/* Top Section Header: Pinned directly above the cards */
-	.directions-header {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-3);
-		width: 100%;
+		padding: 0 var(--space-4);
+		gap: var(--space-6);
+		height: auto;
 	}
 
 	.header-top-row {
-		display: flex;
-		align-items: baseline;
-		gap: var(--space-6);
-		flex-wrap: wrap;
+		flex-direction: column;
+		gap: var(--space-2);
 	}
 
-	.directions-badge {
-		font-family: var(--font-mono);
-		font-size: 0.8125rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: var(--accent);
-		font-weight: 700;
-	}
-
-	.directions-title {
-		font-family: var(--font-heading);
-		font-size: clamp(2rem, 3.5vw, 3rem);
-		line-height: 1.1;
-		color: var(--text);
-		text-transform: uppercase;
-		margin: 0;
-	}
-
-	.directions-lead {
-		font-family: var(--font-body);
-		font-size: clamp(1.0625rem, 1.25vw, 1.25rem);
-		line-height: 1.5;
-		color: var(--text-dim);
-		margin: 0;
-		max-width: 900px;
-	}
-
-	/* Cards Container underneath the header */
 	.directions-cards-viewport {
-		position: relative;
-		width: 100%;
-		height: 440px;
+		height: auto;
 	}
 
 	.directions-stack-track {
-		position: relative;
-		width: 100%;
-		height: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-6);
+		height: auto;
 	}
 
-	/* Stacking Cards on Desktop */
-	@media (min-width: 769px) {
-		.direction-card-wrapper {
-			position: absolute;
-			inset-inline: 0;
-			top: calc(var(--card-index) * 36px);
-			z-index: calc(var(--card-index) + 1);
-			transition: transform 300ms cubic-bezier(0.2, 0, 0, 1);
-			will-change: transform;
-		}
+	.direction-card-wrapper {
+		position: sticky;
+		top: calc(8vh + (var(--card-index) * 20px));
+		z-index: calc(var(--card-index) + 1);
 	}
-
-	/* Mobile layout */
-	@media (max-width: 768px) {
-		.directions-section {
-			min-height: auto;
-		}
-
-		.directions-sticky-stage {
-			position: static;
-			height: auto;
-			overflow: visible;
-			padding-block: var(--space-12);
-		}
-
-		.directions-container {
-			padding: 0 var(--space-4);
-			gap: var(--space-6);
-			height: auto;
-		}
-
-		.header-top-row {
-			flex-direction: column;
-			gap: var(--space-2);
-		}
-
-		.directions-cards-viewport {
-			height: auto;
-		}
-
-		.directions-stack-track {
-			display: flex;
-			flex-direction: column;
-			gap: var(--space-6);
-			height: auto;
-		}
-
-		.direction-card-wrapper {
-			position: sticky;
-			top: calc(8vh + (var(--card-index) * 20px));
-			z-index: calc(var(--card-index) + 1);
-		}
-	}
+}
 </style>
 
 <script>
-	function setupDirectionsScroll() {
-		const section = document.querySelector<HTMLElement>(".directions-section");
-		const cards = document.querySelectorAll<HTMLElement>(
-			".directions-stack-track .direction-card-wrapper",
-		);
+function setupDirectionsScroll() {
+	const section = document.querySelector<HTMLElement>(".directions-section");
+	const cards = document.querySelectorAll<HTMLElement>(
+		".directions-stack-track .direction-card-wrapper",
+	);
 
-		if (!section || cards.length === 0) return;
-		const currentSection = section;
+	if (!section || cards.length === 0) return;
+	const currentSection = section;
 
-		function onScroll() {
-			if (window.innerWidth <= 768) {
-				cards.forEach((card) => {
-					card.style.transform = "none";
-				});
+	function onScroll() {
+		if (window.innerWidth <= 768) {
+			cards.forEach((card) => {
+				card.style.transform = "none";
+			});
+			return;
+		}
+
+		const rect = currentSection.getBoundingClientRect();
+		const totalScrollable = currentSection.offsetHeight - window.innerHeight;
+		if (totalScrollable <= 0) return;
+
+		// Progress from 0 to 1 as the section is scrolled through
+		const progress = Math.min(Math.max(-rect.top / totalScrollable, 0), 1);
+		const totalCards = cards.length;
+
+		cards.forEach((card, idx) => {
+			if (idx === 0) {
+				card.style.transform = "translate3d(0, 0, 0)";
 				return;
 			}
 
-			const rect = currentSection.getBoundingClientRect();
-			const totalScrollable = currentSection.offsetHeight - window.innerHeight;
-			if (totalScrollable <= 0) return;
+			// Threshold when this card starts entering and stacks onto previous ones
+			const startEntering = (idx - 0.6) / (totalCards - 0.5);
+			const finishEntering = idx / (totalCards - 0.5);
 
-			// Progress from 0 to 1 as the section is scrolled through
-			const progress = Math.min(Math.max(-rect.top / totalScrollable, 0), 1);
-			const totalCards = cards.length;
+			const cardProgress = Math.min(
+				Math.max(
+					(progress - startEntering) / (finishEntering - startEntering),
+					0,
+				),
+				1,
+			);
 
-			cards.forEach((card, idx) => {
-				if (idx === 0) {
-					card.style.transform = "translate3d(0, 0, 0)";
-					return;
-				}
-
-				// Threshold when this card starts entering and stacks onto previous ones
-				const startEntering = (idx - 0.6) / (totalCards - 0.5);
-				const finishEntering = idx / (totalCards - 0.5);
-
-				const cardProgress = Math.min(
-					Math.max(
-						(progress - startEntering) / (finishEntering - startEntering),
-						0,
-					),
-					1,
-				);
-
-				// Start 120% below and slide up cleanly into its stacked position
-				const translateY = (1 - cardProgress) * 120;
-				card.style.transform = `translate3d(0, ${translateY}%, 0)`;
-			});
-		}
-
-		window.addEventListener("scroll", onScroll, { passive: true });
-		window.addEventListener("resize", onScroll, { passive: true });
-		onScroll();
+			// Start 120% below and slide up cleanly into its stacked position
+			const translateY = (1 - cardProgress) * 120;
+			card.style.transform = `translate3d(0, ${translateY}%, 0)`;
+		});
 	}
 
-	setupDirectionsScroll();
-	document.addEventListener("astro:page-load", setupDirectionsScroll);
+	window.addEventListener("scroll", onScroll, { passive: true });
+	window.addEventListener("resize", onScroll, { passive: true });
+	onScroll();
+}
+
+setupDirectionsScroll();
+document.addEventListener("astro:page-load", setupDirectionsScroll);
 </script>
