@@ -1,6 +1,8 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { getEntry } from "astro:content";
+import LanguageButtons from "@components/ui/LanguageButtons.astro";
+import LanguageSelect from "@components/ui/LanguageSelect.astro";
 import { SITE } from "@/constants/site";
 import { defaultLang, type Lang } from "@i18n/languages";
 import { useTranslations } from "@i18n/utils";
@@ -179,16 +181,13 @@ const topProjects = projects.slice(0, 3);
 				</p>
 			</div>
 
-			<div class="bottom-right">
-				<button
-					type="button"
-					class="back-to-top-btn"
-					id="footer-back-to-top"
-					aria-label={t("footer.backToTop")}
-				>
-					<span class="arrow-up" aria-hidden="true">↑</span>
-					<span>{t("footer.backToTop")}</span>
-				</button>
+			<div class="bottom-right language-switch-area">
+				<div class="lang-desktop-wrapper">
+					<LanguageButtons />
+				</div>
+				<div class="lang-touch-wrapper">
+					<LanguageSelect />
+				</div>
 			</div>
 		</div>
 	</div>
@@ -501,36 +500,27 @@ const topProjects = projects.slice(0, 3);
 	color: var(--accent);
 }
 
-.back-to-top-btn {
+.language-switch-area {
 	display: inline-flex;
 	align-items: center;
-	gap: var(--space-2);
-	font-family: var(--font-mono);
-	font-size: 0.8125rem;
-	text-transform: uppercase;
-	letter-spacing: 0.08em;
-	color: var(--text);
-	background-color: var(--background-tertiary);
-	border: 1px solid var(--border);
-	padding: var(--space-2) var(--space-4);
-	transition:
-		border-color var(--transition-fast),
-		color var(--transition-fast),
-		background-color var(--transition-fast);
 }
 
-.back-to-top-btn:hover {
-	border-color: var(--accent);
-	color: var(--accent);
-	background-color: var(--background-elevated);
+.lang-desktop-wrapper {
+	display: inline-flex;
 }
 
-.arrow-up {
-	transition: transform var(--transition-fast);
+.lang-touch-wrapper {
+	display: none;
 }
 
-.back-to-top-btn:hover .arrow-up {
-	transform: translateY(-2px);
+@media (hover: none), (max-width: 768px) {
+	.lang-desktop-wrapper {
+		display: none;
+	}
+
+	.lang-touch-wrapper {
+		display: inline-flex;
+	}
 }
 
 /* Tablet Layout (769px - 1024px) */
@@ -560,8 +550,7 @@ const topProjects = projects.slice(0, 3);
 	/* Touch targets >= 44px for accessibility */
 	.contact-link,
 	.nav-anchor-link,
-	.all-projects-link,
-	.back-to-top-btn {
+	.all-projects-link {
 		min-height: 44px;
 		display: inline-flex;
 		align-items: center;
@@ -581,51 +570,28 @@ const topProjects = projects.slice(0, 3);
 		width: 100%;
 	}
 
-	.back-to-top-btn {
+	.lang-desktop-wrapper {
+		display: none;
+	}
+
+	.lang-touch-wrapper {
+		display: inline-flex;
 		width: 100%;
-		justify-content: center;
+	}
+	.nav-links-list,
+	.contacts-list {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+	}
+	.contact-value {
+		display: none;
 	}
 }
 
 @media (prefers-reduced-motion: reduce) {
 	.nav-anchor-link:hover,
-	.all-projects-link:hover .arrow,
-	.back-to-top-btn:hover .arrow-up {
+	.all-projects-link:hover .arrow {
 		transform: none;
 	}
 }
 </style>
-
-<script>
-function setupFooter() {
-	const btn = document.getElementById("footer-back-to-top");
-	if (!btn || btn.dataset.initialized) return;
-	btn.dataset.initialized = "true";
-
-	btn.addEventListener("click", () => {
-		const prefersReducedMotion = window.matchMedia(
-			"(prefers-reduced-motion: reduce)",
-		).matches;
-
-		const lenis = (
-			window as unknown as {
-				__lenis?: {
-					scrollTo: (target: number, opts?: { immediate?: boolean }) => void;
-				};
-			}
-		).__lenis;
-
-		if (lenis) {
-			lenis.scrollTo(0, { immediate: prefersReducedMotion });
-		} else {
-			window.scrollTo({
-				top: 0,
-				behavior: prefersReducedMotion ? "auto" : "smooth",
-			});
-		}
-	});
-}
-
-setupFooter();
-document.addEventListener("astro:page-load", setupFooter);
-</script>

@@ -65,18 +65,32 @@ const preloadedFonts = fontsPreloadMap[lang] ?? fontsPreloadMap[defaultLang];
 
 		{/* Smart Language-Specific Font Preloading */}
 		{preloadedFonts.map((fontHref) => (
-			<link
-				rel="preload"
-				href={fontHref}
-				as="font"
-				type="font/woff2"
-				crossorigin="anonymous"
-			/>
-		))}
+				<link
+					rel="preload"
+					href={fontHref}
+					as="font"
+					type="font/woff2"
+					crossorigin="anonymous"
+				/>
+			))}
 
-		{/* Anti-FOUC Theme Initialization Script */}
+		{/* Client Preferences & Anti-FOUC Theme Script */}
 		<script is:inline>
 		(() => {
+			try {
+				const savedLang = localStorage.getItem("preferred_lang");
+				const path = window.location.pathname;
+				if (
+					savedLang &&
+					(path === "/" || path === "") &&
+					savedLang !== "ru" &&
+					["en", "pl", "uk"].includes(savedLang)
+				) {
+					window.location.replace("/" + savedLang);
+					return;
+				}
+			} catch (_) {}
+
 			const storedTheme =
 				typeof localStorage !== "undefined"
 					? localStorage.getItem("theme")
