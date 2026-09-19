@@ -1,8 +1,8 @@
 ---
-import { SITE } from "@/constants/site";
 import { getAbsoluteLocaleUrl } from "astro:i18n";
 import { defaultLang, type Lang, locales, ogLocales } from "@i18n/languages";
 import { getAlternateOgLocales, getCleanPathname } from "@i18n/utils";
+import { SITE } from "@/constants/site";
 
 interface Props {
 	title?: string;
@@ -106,9 +106,10 @@ const jsonLd = {
 <meta name="color-scheme" content="dark light">
 
 <!-- Favicon Suite -->
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="/favicon.ico" sizes="32x32">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
 <!-- i18n Alternate Links -->
 {locales.map((localeCode) => {
