@@ -19,13 +19,26 @@ const t = useTranslations(lang);
 const homeUrl = getRelativeLocaleUrl(lang, "");
 const projectsUrl = getRelativeLocaleUrl(lang, "projects");
 
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+
 const footerEntry = await getEntry("home", `${lang}/footer`);
-const menuItems = (footerEntry?.data.navAnchors ?? []).flatMap((anchor) => [
-	{ label: anchor.label, href: `${homeUrl}#${anchor.id}` },
-	...(anchor.id === "projects"
-		? [{ label: t("nav.allProjects"), href: projectsUrl }]
-		: []),
-]);
+const menuItems = (footerEntry?.data.navAnchors ?? [])
+	.flatMap((anchor) => [
+		{ label: anchor.label, href: `${homeUrl}#${anchor.id}` },
+		...(anchor.id === "projects"
+			? [{ label: t("nav.allProjects"), href: projectsUrl }]
+			: []),
+	])
+	.map((item) => {
+		const [itemPath] = item.href.split("#");
+		const normalizedItemPath = itemPath.replace(/\/$/, "") || "/";
+		const hasHash = item.href.includes("#");
+		const isActive = !hasHash && normalizedItemPath === currentPath;
+		return {
+			...item,
+			isActive,
+		};
+	});
 ---
 
 <header class:list={["site-header", className]}>
@@ -101,7 +114,11 @@ const menuItems = (footerEntry?.data.navAnchors ?? []).flatMap((anchor) => [
 					{menuItems.map((item, index) => (
 							<li class="nav-item" style={`--item-index: ${index};`}>
 								<div class="line-mask">
-									<a href={item.href} class="menu-link">
+									<a
+										href={item.href}
+										class:list={["menu-link", { "is-active": item.isActive }]}
+										aria-current={item.isActive ? "page" : undefined}
+									>
 										<span class="link-number">
 											{String(index + 1).padStart(2, "0")}
 										</span>
@@ -570,10 +587,6 @@ const menuItems = (footerEntry?.data.navAnchors ?? []).flatMap((anchor) => [
 		padding-inline: var(--space-4);
 	}
 
-	.brand-role {
-		display: none;
-	}
-
 	.menu-btn-desktop {
 		display: none;
 	}
@@ -660,6 +673,9 @@ interface LenisInstance {
 const getLenis = () =>
 	(window as unknown as { __lenis?: LenisInstance }).__lenis;
 
+// AbortController to cleanly remove event listeners across repeated Astro page loads
+let currentAbortController: AbortController | null = null;
+
 function initHeaderMenu() {
 	const overlay = document.getElementById("fullscreen-navigation-menu");
 	if (!overlay) return;
@@ -667,6 +683,10 @@ function initHeaderMenu() {
 	const toggleBtns = document.querySelectorAll<HTMLElement>(
 		"#menu-toggle-desktop, #menu-toggle-mobile",
 	);
+
+	currentAbortController?.abort();
+	currentAbortController = new AbortController();
+	const { signal } = currentAbortController;
 
 	let isOpen = false;
 	let isClosing = false;
@@ -708,14 +728,12 @@ function initHeaderMenu() {
 		setExpanded(true);
 		getLenis()?.stop();
 
-		// Move focus to first navigation link or toggle button
-		const firstLink = menuOverlay.querySelector<HTMLElement>(".menu-link");
-		if (firstLink) {
-			firstLink.focus();
-		} else {
-			const focusable = getFocusableElements();
-			if (focusable.length > 0) focusable[0].focus();
-		}
+		// Defer focus so browser starts transitions without jump/flicker on mobile
+		requestAnimationFrame(() => {
+			const firstLink = menuOverlay.querySelector<HTMLElement>(".menu-link");
+			const target = firstLink ?? getFocusableElements()[0];
+			target?.focus({ preventScroll: true });
+		});
 	}
 
 	function closeMenu() {
@@ -738,12 +756,30 @@ function initHeaderMenu() {
 			lastActiveElement.focus();
 		}
 
-		setTimeout(() => {
+		const curtain = menuOverlay.querySelector<HTMLElement>(".curtain-right");
+		let cleanedUp = false;
+
+		const cleanup = () => {
+			if (cleanedUp) return;
+			cleanedUp = true;
 			document.documentElement.classList.remove("menu-closing");
 			menuOverlay.setAttribute("aria-hidden", "true");
 			menuOverlay.setAttribute("inert", "");
 			isClosing = false;
-		}, 460);
+			curtain?.removeEventListener("transitionend", onCurtainTransitionEnd);
+		};
+
+		const onCurtainTransitionEnd = (e: TransitionEvent) => {
+			if (e.target !== curtain || e.propertyName !== "transform") return;
+			cleanup();
+		};
+
+		curtain?.addEventListener("transitionend", onCurtainTransitionEnd);
+
+		// Fallback safety net (e.g. prefers-reduced-motion: reduce 0.01ms or hidden tab)
+		setTimeout(() => {
+			cleanup();
+		}, 600);
 	}
 
 	function toggleMenu() {
@@ -755,69 +791,77 @@ function initHeaderMenu() {
 	}
 
 	toggleBtns.forEach((btn) => {
-		btn.onclick = toggleMenu;
+		btn.addEventListener("click", toggleMenu, { signal });
 	});
 
-	document.addEventListener("keydown", (e) => {
-		if (!isOpen) return;
+	document.addEventListener(
+		"keydown",
+		(e) => {
+			if (!isOpen) return;
 
-		if (e.key === "Escape") {
-			e.preventDefault();
-			closeMenu();
-			return;
-		}
+			if (e.key === "Escape") {
+				e.preventDefault();
+				closeMenu();
+				return;
+			}
 
-		if (e.key === "Tab") {
-			const focusable = getFocusableElements();
-			if (focusable.length === 0) return;
+			if (e.key === "Tab") {
+				const focusable = getFocusableElements();
+				if (focusable.length === 0) return;
 
-			const first = focusable[0];
-			const last = focusable[focusable.length - 1];
-			const active = document.activeElement as HTMLElement | null;
+				const first = focusable[0];
+				const last = focusable[focusable.length - 1];
+				const active = document.activeElement as HTMLElement | null;
 
-			if (e.shiftKey) {
-				if (
-					active === first ||
-					(active &&
-						!menuOverlay.contains(active) &&
-						!Array.from(toggleBtns).includes(active))
-				) {
-					e.preventDefault();
-					last.focus();
-				}
-			} else {
-				if (active === last) {
-					e.preventDefault();
-					first.focus();
+				if (e.shiftKey) {
+					if (
+						active === first ||
+						(active &&
+							!menuOverlay.contains(active) &&
+							!Array.from(toggleBtns).includes(active))
+					) {
+						e.preventDefault();
+						last.focus();
+					}
+				} else {
+					if (active === last) {
+						e.preventDefault();
+						first.focus();
+					}
 				}
 			}
-		}
-	});
+		},
+		{ signal },
+	);
 
 	menuOverlay
 		.querySelectorAll<HTMLAnchorElement>(".menu-link")
 		.forEach((link) => {
-			link.addEventListener("click", (e) => {
-				const isSamePage =
-					link.pathname.replace(/\/$/, "") ===
-						location.pathname.replace(/\/$/, "") && link.hash;
+			link.addEventListener(
+				"click",
+				(e) => {
+					const isSamePage =
+						link.pathname.replace(/\/$/, "") ===
+							location.pathname.replace(/\/$/, "") && link.hash;
 
-				closeMenu();
+					closeMenu();
 
-				if (isSamePage) {
-					e.preventDefault();
-					const target = document.querySelector(link.hash);
-					if (target) {
-						const lenis = getLenis();
-						if (lenis) {
-							lenis.scrollTo(target, { duration: 1.2 });
-						} else {
-							target.scrollIntoView({ behavior: "smooth" });
+					if (isSamePage) {
+						e.preventDefault();
+						const target = document.querySelector(link.hash);
+						if (target) {
+							const lenis = getLenis();
+							if (lenis) {
+								lenis.scrollTo(target, { duration: 1.2 });
+							} else {
+								target.scrollIntoView({ behavior: "smooth" });
+							}
+							history.pushState(null, "", link.hash);
 						}
-						history.pushState(null, "", link.hash);
 					}
-				}
-			});
+				},
+				{ signal },
+			);
 		});
 }
 
