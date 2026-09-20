@@ -15,25 +15,25 @@ const { tabs, class: className = "" } = Astro.props;
 	aria-label="Project Highlights Navigation"
 >
 	{tabs.map((tab, index) => (
-		<button
-			type="button"
-			role="tab"
-			id={`showcase-tab-${index}`}
-			aria-selected={index === 0 ? "true" : "false"}
-			aria-controls={`showcase-panel-${index}`}
-			tabindex={index === 0 ? 0 : -1}
-			class:list={["showcase-tab", { "is-active": index === 0 }]}
-			data-tab-index={index}
-		>
-			<div class="tab-timer-track" aria-hidden="true">
-				<div class="tab-timer-progress"></div>
-			</div>
-			<div class="tab-content-wrap">
-				<span class="tab-index">{tab.index}</span>
-				<span class="tab-title">{tab.tabTitle}</span>
-			</div>
-		</button>
-	))}
+			<button
+				type="button"
+				role="tab"
+				id={`showcase-tab-${index}`}
+				aria-selected={index === 0 ? "true" : "false"}
+				aria-controls={`showcase-panel-${index}`}
+				tabindex={index === 0 ? 0 : -1}
+				class:list={["showcase-tab", { "is-active": index === 0 }]}
+				data-tab-index={index}
+			>
+				<div class="tab-timer-track" aria-hidden="true">
+					<div class="tab-timer-progress" />
+				</div>
+				<div class="tab-content-wrap">
+					<span class="tab-index">{tab.index}</span>
+					<span class="tab-title">{tab.tabTitle}</span>
+				</div>
+			</button>
+		))}
 </div>
 
 <style>
@@ -42,7 +42,6 @@ const { tabs, class: className = "" } = Astro.props;
 	flex-direction: column;
 	gap: var(--space-3);
 	width: 100%;
-	box-sizing: border-box;
 }
 
 .showcase-tab {
@@ -57,7 +56,6 @@ const { tabs, class: className = "" } = Astro.props;
 	text-align: left;
 	cursor: pointer;
 	outline: none;
-	box-sizing: border-box;
 	min-height: 48px;
 	transition:
 		background-color 0.2s ease,

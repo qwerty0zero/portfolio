@@ -37,29 +37,31 @@ const {
 
 		<div class="card-details-grid">
 			{responsibilities && responsibilities.length > 0 && (
-				<div class="details-column">
-					<h4 class="block-label">Core Responsibilities</h4>
-					<ul class="responsibilities-list">
-						{responsibilities.map((item) => (
-							<li class="responsibility-item">
-								<span class="bullet" aria-hidden="true">■</span>
-								<span>{item}</span>
-							</li>
-						))}
-					</ul>
-				</div>
-			)}
+					<div class="details-column">
+						<h4 class="block-label">Core Responsibilities</h4>
+						<ul class="responsibilities-list">
+							{responsibilities.map((item) => (
+								<li class="responsibility-item">
+									<span class="bullet" aria-hidden="true">
+										■
+									</span>
+									<span>{item}</span>
+								</li>
+							))}
+						</ul>
+					</div>
+				)}
 
 			{skills && skills.length > 0 && (
-				<div class="details-column">
-					<h4 class="block-label">Key Stack & Methodology</h4>
-					<div class="skills-chips">
-						{skills.map((skill) => (
-							<span class="skill-chip">{skill}</span>
-						))}
+					<div class="details-column">
+						<h4 class="block-label">Key Stack & Methodology</h4>
+						<div class="skills-chips">
+							{skills.map((skill) => (
+								<span class="skill-chip">{skill}</span>
+							))}
+						</div>
 					</div>
-				</div>
-			)}
+				)}
 		</div>
 	</div>
 </article>
@@ -71,7 +73,6 @@ const {
 	background-color: var(--background-secondary);
 	border: 1px solid var(--border-strong);
 	padding: var(--space-8);
-	box-sizing: border-box;
 	position: relative;
 	transition:
 		border-color var(--transition-fast),

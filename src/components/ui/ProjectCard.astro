@@ -56,12 +56,12 @@ const formattedIndex = String(index).padStart(2, "0");
 
 	<div class="card-footer">
 		{stack && stack.length > 0 && (
-			<div class="card-stack">
-				{stack.map((tech) => (
-					<span class="stack-tag">{tech}</span>
-				))}
-			</div>
-		)}
+				<div class="card-stack">
+					{stack.map((tech) => (
+						<span class="stack-tag">{tech}</span>
+					))}
+				</div>
+			)}
 
 		<div class="card-actions">
 			<Button
@@ -75,28 +75,28 @@ const formattedIndex = String(index).padStart(2, "0");
 			</Button>
 
 			{liveUrl && (
-				<Button
-					href={liveUrl}
-					variant="icon"
-					target="_blank"
-					rel="noopener noreferrer"
-					aria-label="Live Demo"
-				>
-					<IconExternalLink size={14} />
-				</Button>
-			)}
+					<Button
+						href={liveUrl}
+						variant="icon"
+						target="_blank"
+						rel="noopener noreferrer"
+						aria-label="Live Demo"
+					>
+						<IconExternalLink size={14} />
+					</Button>
+				)}
 
 			{githubUrl && (
-				<Button
-					href={githubUrl}
-					variant="icon"
-					target="_blank"
-					rel="noopener noreferrer"
-					aria-label="GitHub Repository"
-				>
-					<IconGithub size={14} />
-				</Button>
-			)}
+					<Button
+						href={githubUrl}
+						variant="icon"
+						target="_blank"
+						rel="noopener noreferrer"
+						aria-label="GitHub Repository"
+					>
+						<IconGithub size={14} />
+					</Button>
+				)}
 		</div>
 	</div>
 </article>
@@ -112,7 +112,6 @@ const formattedIndex = String(index).padStart(2, "0");
 	background-color: var(--background-secondary);
 	border: 1px solid var(--border);
 	padding: var(--space-8);
-	box-sizing: border-box;
 	flex-shrink: 0;
 	position: relative;
 	transition:

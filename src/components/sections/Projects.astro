@@ -85,7 +85,10 @@ const allProjectsUrl = getRelativeLocaleUrl(lang, "projects");
 								githubUrl={project.githubUrl}
 								liveUrl={project.liveUrl}
 								viewCaseLabel={viewCaseLabel}
-								projectUrl={getRelativeLocaleUrl(lang, `projects/${project.slug}`)}
+								projectUrl={getRelativeLocaleUrl(
+									lang,
+									`projects/${project.slug}`,
+								)}
 							/>
 						))}
 				</div>
@@ -192,7 +195,6 @@ document.addEventListener("astro:page-load", setupHorizontalScroll);
 	overflow: hidden;
 	display: flex;
 	align-items: stretch;
-	box-sizing: border-box;
 }
 
 .projects-track {
@@ -200,7 +202,6 @@ document.addEventListener("astro:page-load", setupHorizontalScroll);
 	align-items: stretch;
 	padding-left: var(--space-16);
 	height: 100%;
-	box-sizing: border-box;
 	will-change: transform;
 }
 
@@ -212,7 +213,6 @@ document.addEventListener("astro:page-load", setupHorizontalScroll);
 	justify-content: center;
 	gap: var(--space-6);
 	padding: var(--space-12) var(--space-8) var(--space-12) 0;
-	box-sizing: border-box;
 }
 .intro-title {
 	font-family: var(--font-heading);
@@ -266,7 +266,6 @@ document.addEventListener("astro:page-load", setupHorizontalScroll);
 	display: flex;
 	align-items: stretch;
 	height: 100%;
-	box-sizing: border-box;
 }
 
 .mobile-cta-wrapper {

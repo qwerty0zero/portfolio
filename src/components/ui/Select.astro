@@ -38,15 +38,15 @@ const {
 		{...rest}
 	>
 		{options.map((opt) => (
-			<option
-				value={opt.value}
-				selected={opt.selected}
-				disabled={opt.disabled}
-				data-lang={opt.dataLang}
-			>
-				{opt.label}
-			</option>
-		))}
+				<option
+					value={opt.value}
+					selected={opt.selected}
+					disabled={opt.disabled}
+					data-lang={opt.dataLang}
+				>
+					{opt.label}
+				</option>
+			))}
 	</select>
 	<span class="select-arrow" aria-hidden="true">
 		<svg
@@ -70,7 +70,6 @@ const {
 	position: relative;
 	display: inline-flex;
 	align-items: center;
-	box-sizing: border-box;
 	vertical-align: middle;
 }
 
@@ -87,7 +86,6 @@ const {
 	font-weight: 500;
 	letter-spacing: 0.04em;
 	cursor: pointer;
-	box-sizing: border-box;
 	transition:
 		border-color var(--transition-fast),
 		background-color var(--transition-fast),
