@@ -664,6 +664,7 @@ function initHeaderMenu() {
 
 	let isOpen = false;
 	let isClosing = false;
+	let lastActiveElement: HTMLElement | null = null;
 
 	const setExpanded = (expanded: boolean) => {
 		toggleBtns.forEach((btn) => {
@@ -671,15 +672,44 @@ function initHeaderMenu() {
 		});
 	};
 
+	function getFocusableElements(): HTMLElement[] {
+		const selector =
+			'a[href], button:not([disabled]), select:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
+		const menuItems = Array.from(
+			menuOverlay.querySelectorAll<HTMLElement>(selector),
+		);
+		const headerBtns = Array.from(toggleBtns);
+		const all = [...headerBtns, ...menuItems];
+		return all.filter((el) => el.getClientRects().length > 0);
+	}
+
 	function openMenu() {
 		if (isOpen || isClosing) return;
 		isOpen = true;
+		lastActiveElement = document.activeElement as HTMLElement | null;
+
 		document.documentElement.classList.remove("menu-closing");
 		document.documentElement.classList.add("menu-open");
 		menuOverlay.removeAttribute("inert");
 		menuOverlay.setAttribute("aria-hidden", "false");
+
+		const layoutWrapper =
+			document.querySelector<HTMLElement>(".layout-wrapper");
+		if (layoutWrapper) {
+			layoutWrapper.setAttribute("inert", "");
+		}
+
 		setExpanded(true);
 		getLenis()?.stop();
+
+		// Move focus to first navigation link or toggle button
+		const firstLink = menuOverlay.querySelector<HTMLElement>(".menu-link");
+		if (firstLink) {
+			firstLink.focus();
+		} else {
+			const focusable = getFocusableElements();
+			if (focusable.length > 0) focusable[0].focus();
+		}
 	}
 
 	function closeMenu() {
@@ -688,8 +718,19 @@ function initHeaderMenu() {
 		isOpen = false;
 		document.documentElement.classList.add("menu-closing");
 		document.documentElement.classList.remove("menu-open");
+
+		const layoutWrapper =
+			document.querySelector<HTMLElement>(".layout-wrapper");
+		if (layoutWrapper) {
+			layoutWrapper.removeAttribute("inert");
+		}
+
 		setExpanded(false);
 		getLenis()?.start();
+
+		if (lastActiveElement && typeof lastActiveElement.focus === "function") {
+			lastActiveElement.focus();
+		}
 
 		setTimeout(() => {
 			document.documentElement.classList.remove("menu-closing");
@@ -712,7 +753,39 @@ function initHeaderMenu() {
 	});
 
 	document.addEventListener("keydown", (e) => {
-		if (e.key === "Escape" && isOpen) closeMenu();
+		if (!isOpen) return;
+
+		if (e.key === "Escape") {
+			e.preventDefault();
+			closeMenu();
+			return;
+		}
+
+		if (e.key === "Tab") {
+			const focusable = getFocusableElements();
+			if (focusable.length === 0) return;
+
+			const first = focusable[0];
+			const last = focusable[focusable.length - 1];
+			const active = document.activeElement as HTMLElement | null;
+
+			if (e.shiftKey) {
+				if (
+					active === first ||
+					(active &&
+						!menuOverlay.contains(active) &&
+						!Array.from(toggleBtns).includes(active))
+				) {
+					e.preventDefault();
+					last.focus();
+				}
+			} else {
+				if (active === last) {
+					e.preventDefault();
+					first.focus();
+				}
+			}
+		}
 	});
 
 	menuOverlay
