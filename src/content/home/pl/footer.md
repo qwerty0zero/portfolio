@@ -13,4 +13,6 @@ navAnchors:
     label: "FAQ"
   - id: "showcase"
     label: "Benchmarki"
+  - id: "footer"
+    label: "Kontakt"
 ---

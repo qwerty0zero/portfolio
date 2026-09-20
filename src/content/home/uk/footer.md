@@ -13,4 +13,6 @@ navAnchors:
     label: "FAQ"
   - id: "showcase"
     label: "Бенчмарки"
+  - id: "footer"
+    label: "Контакти"
 ---

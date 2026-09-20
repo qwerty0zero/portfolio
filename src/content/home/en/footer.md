@@ -13,4 +13,6 @@ navAnchors:
     label: "FAQ"
   - id: "showcase"
     label: "Showcase"
+  - id: "footer"
+    label: "Contact"
 ---
