@@ -25,13 +25,13 @@ const { tabs, class: className = "" } = Astro.props;
 				class:list={["showcase-tab", { "is-active": index === 0 }]}
 				data-tab-index={index}
 			>
-				<div class="tab-timer-track" aria-hidden="true">
-					<div class="tab-timer-progress" />
-				</div>
-				<div class="tab-content-wrap">
+				<span class="tab-timer-track">
+					<span class="tab-timer-progress"></span>
+				</span>
+				<span class="tab-content-wrap">
 					<span class="tab-index">{tab.index}</span>
 					<span class="tab-title">{tab.tabTitle}</span>
-				</div>
+				</span>
 			</button>
 		))}
 </div>

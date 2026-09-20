@@ -43,20 +43,12 @@ const navAnchors = (footerEntry?.data.navAnchors ?? []).map((item) => ({
 const topProjects = projects.slice(0, 3);
 ---
 
-<footer
-	id={id}
-	class:list={["site-footer", className]}
-	role="contentinfo"
-	aria-label={t("footer.navTitle")}
->
+<footer id={id} class:list={["site-footer", className]}>
 	<div class="footer-container">
 		{/* Main 3 Columns Grid */}
 		<div class="footer-columns">
 			{/* Column 1: Personal Info & Socials / Email */}
-			<section
-				class="footer-col footer-col-author"
-				aria-labelledby="footer-author-heading"
-			>
+			<div class="footer-col footer-col-author">
 				<div class="author-branding">
 					<span class="author-name">{SITE.author}</span>
 					<span class="author-role">{SITE.role}</span>
@@ -96,16 +88,16 @@ const topProjects = projects.slice(0, 3);
 						</li>
 					</ul>
 				</div>
-			</section>
+			</div>
 
 			{/* Column 2: Anchor Navigation */}
 			<nav
 				class="footer-col footer-col-nav"
 				aria-labelledby="footer-nav-heading"
 			>
-				<h3 id="footer-nav-heading" class="col-title">
+				<h2 id="footer-nav-heading" class="col-title">
 					{t("footer.navTitle")}
-				</h3>
+				</h2>
 				<ul class="nav-links-list">
 					{navAnchors.map((anchor) => (
 							<li>
@@ -121,14 +113,11 @@ const topProjects = projects.slice(0, 3);
 			</nav>
 
 			{/* Column 3: Projects (All Projects + Top 3) */}
-			<section
-				class="footer-col footer-col-projects"
-				aria-labelledby="footer-projects-heading"
-			>
+			<div class="footer-col footer-col-projects">
 				<div class="projects-header-row">
-					<h3 id="footer-projects-heading" class="col-title">
+					<h2 id="footer-projects-heading" class="col-title">
 						{t("footer.projectsTitle")}
-					</h3>
+					</h2>
 					<a href={allProjectsUrl} class="all-projects-link">
 						<span>{t("projects.viewAll")}</span>
 						<span class="arrow" aria-hidden="true">→</span>
@@ -153,7 +142,7 @@ const topProjects = projects.slice(0, 3);
 							</li>
 						))}
 				</ul>
-			</section>
+			</div>
 		</div>
 
 		{/* Bottom Bar */}

@@ -39,16 +39,16 @@ const {
 			{items.map((item) => (
 					<details class="faq-item" id={`faq-item-${item.id}`}>
 						<summary class="faq-summary">
-							<div class="faq-summary-content">
+							<span class="faq-summary-content">
 								<span class="faq-index">{item.index}</span>
-								<div class="faq-question-wrap">
+								<span class="faq-question-wrap">
 									{item.category && (
 										<span class="faq-category">{item.category}</span>
 									)}
-									<h3 class="faq-question">{item.question}</h3>
-								</div>
-							</div>
-							<span class="faq-icon" aria-hidden="true">
+									<span class="faq-question">{item.question}</span>
+								</span>
+							</span>
+							<span class="faq-icon">
 								+
 							</span>
 						</summary>

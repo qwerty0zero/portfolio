@@ -22,7 +22,7 @@ const {
 } = Astro.props;
 ---
 
-<section class:list={["benchmark-card", className]} aria-label={title}>
+<div class:list={["benchmark-card", className]}>
 	<div class="benchmark-header">
 		<div class="benchmark-title-wrap">
 			<span class="benchmark-indicator" aria-hidden="true"></span>
@@ -75,7 +75,7 @@ const {
 	<div class="benchmark-footer">
 		<span class="footer-note">{note}</span>
 	</div>
-</section>
+</div>
 
 <style>
 .benchmark-card {

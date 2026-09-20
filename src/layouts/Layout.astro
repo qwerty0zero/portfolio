@@ -56,14 +56,6 @@ const preloadedFonts = fontsPreloadMap[lang] ?? fontsPreloadMap[defaultLang];
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<HeadSEO
-			title={title}
-			description={description}
-			ogImage={ogImage}
-			ogType={ogType}
-			lang={lang}
-		/>
-
 		{/* Smart Language-Specific Font Preloading */}
 		{preloadedFonts.map((fontHref) => (
 				<link
@@ -74,6 +66,14 @@ const preloadedFonts = fontsPreloadMap[lang] ?? fontsPreloadMap[defaultLang];
 					crossorigin="anonymous"
 				/>
 			))}
+
+		<HeadSEO
+			title={title}
+			description={description}
+			ogImage={ogImage}
+			ogType={ogType}
+			lang={lang}
+		/>
 
 		{/* Client Preferences & Anti-FOUC Theme Script */}
 		<script is:inline>

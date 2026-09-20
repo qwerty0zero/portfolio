@@ -51,7 +51,13 @@ const catalogSubtitle = projectsPageEntry?.data.subtitle;
 			</div>
 		</header>
 
-		<section class="catalog-grid-section" aria-label={t("nav.projects")}>
+		<section
+			class="catalog-grid-section"
+			aria-labelledby="catalog-grid-heading"
+		>
+			<h2 id="catalog-grid-heading" class="sr-only">
+				{projectsPageEntry?.data.title || t("nav.projects")}
+			</h2>
 			<div class="catalog-grid">
 				{langProjects.map((project, index) => (
 						<ProjectCard

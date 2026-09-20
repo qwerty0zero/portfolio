@@ -22,10 +22,7 @@ const {
 } = Astro.props;
 ---
 
-<section
-	class:list={["code-window", className]}
-	aria-label={`Code snippet ${fileName}`}
->
+<div class:list={["code-window", className]}>
 	<div class="code-window-header">
 		<div class="code-window-controls" aria-hidden="true">
 			<span class="control-dot close">
@@ -111,7 +108,7 @@ const {
   <span class="token-tag">&lt;/body&gt;</span>
 <span class="token-tag">&lt;/html&gt;</span></code></pre>
 	</div>
-</section>
+</div>
 
 <style>
 .code-window {
