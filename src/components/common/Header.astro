@@ -1,0 +1,744 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { getEntry } from "astro:content";
+import Button from "@components/ui/Button.astro";
+import LanguageSwitcher from "@components/ui/LanguageSwitcher.astro";
+import { defaultLang, type Lang } from "@i18n/languages";
+import { useTranslations } from "@i18n/utils";
+import { SITE } from "@/constants/site";
+
+export interface Props {
+	lang?: Lang;
+	class?: string;
+}
+
+const { lang = defaultLang, class: className = "" } = Astro.props;
+const t = useTranslations(lang);
+
+const homeUrl = getRelativeLocaleUrl(lang, "");
+const projectsUrl = getRelativeLocaleUrl(lang, "projects");
+
+const footerEntry = await getEntry("home", `${lang}/footer`);
+const menuItems = (footerEntry?.data.navAnchors ?? []).flatMap((anchor) => [
+	{ label: anchor.label, href: `${homeUrl}#${anchor.id}` },
+	...(anchor.id === "projects"
+		? [{ label: t("nav.allProjects"), href: projectsUrl }]
+		: []),
+]);
+---
+
+<header class:list={["site-header", className]}>
+	<div class="header-inner">
+		{/* Controls (Desktop text button & Mobile burger) */}
+		<div class="header-controls">
+			{/* Desktop Text Button */}
+			<Button
+				type="button"
+				variant="secondary"
+				size="md"
+				class="menu-btn-desktop"
+				id="menu-toggle-desktop"
+				aria-expanded="false"
+				aria-controls="fullscreen-navigation-menu"
+				aria-label={t("nav.menu")}
+			>
+				<span class="bracket" aria-hidden="true">[</span>
+				<span class="btn-text-open">{t("nav.menu")}</span>
+				<span class="btn-text-close">{t("nav.close")} ✕</span>
+				<span class="bracket" aria-hidden="true">]</span>
+			</Button>
+
+			{/* Mobile Burger Button */}
+			<Button
+				type="button"
+				variant="icon"
+				size="md"
+				class="menu-btn-mobile"
+				id="menu-toggle-mobile"
+				aria-expanded="false"
+				aria-controls="fullscreen-navigation-menu"
+				aria-label={t("nav.menu")}
+			>
+				<span class="burger-box" aria-hidden="true">
+					<span class="burger-bar bar-top"></span>
+					<span class="burger-bar bar-bottom"></span>
+				</span>
+			</Button>
+		</div>
+	</div>
+</header>
+
+{/* Fullscreen Navigation Modal / Overlay */}
+<div
+	id="fullscreen-navigation-menu"
+	class="nav-overlay"
+	role="dialog"
+	aria-modal="true"
+	aria-hidden="true"
+	aria-label={t("nav.menu")}
+>
+	{/* Curtains: Left & Right meet in center on desktop; Right curtain slides from right on mobile */}
+	<div class="curtain curtain-left" aria-hidden="true"></div>
+	<div class="curtain curtain-right" aria-hidden="true"></div>
+
+	{/* Modal Content */}
+	<div class="menu-stage">
+		{/* Top Header Row inside menu */}
+		<div class="menu-top-row">
+			<div class="menu-badge">
+				<span class="badge-dot">●</span>
+				<span class="badge-title">SYSTEM // NAVIGATION</span>
+			</div>
+		</div>
+
+		{/* Center Body: Navigation Links */}
+		<div class="menu-body">
+			{/* Links Column */}
+			<nav class="menu-nav-column" aria-label="Main navigation links">
+				<ul class="nav-items-list">
+					{menuItems.map((item, index) => (
+							<li class="nav-item" style={`--item-index: ${index};`}>
+								<div class="line-mask">
+									<a href={item.href} class="menu-link">
+										<span class="link-number">
+											{String(index + 1).padStart(2, "0")}
+										</span>
+										<span class="link-title-wrapper">
+											<span
+												class="link-bracket link-bracket-l"
+												aria-hidden="true"
+											>
+												[
+											</span>
+											<span class="link-title">{item.label}</span>
+											<span
+												class="link-bracket link-bracket-r"
+												aria-hidden="true"
+											>
+												]
+											</span>
+										</span>
+									</a>
+								</div>
+							</li>
+						))}
+				</ul>
+			</nav>
+		</div>
+
+		{/* Bottom Footer Row inside menu */}
+		<div class="menu-footer-row">
+			<div class="menu-copyright">
+				© {new Date().getFullYear()}
+				{SITE.author.toUpperCase()}
+				—
+				{SITE.nickname}.
+			</div>
+			<div class="menu-bottom-role">
+				<LanguageSwitcher size="sm" />
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+/* ==========================================================================
+   Header Bar (Fixed Sticky Top Navigation)
+   ========================================================================== */
+.site-header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 64px;
+	z-index: 101; /* Above layout content and above the curtain background */
+	pointer-events: none; /* Allows clicking through empty areas */
+}
+
+.header-inner {
+	width: calc(100% - 10vw);
+	max-width: 1920px;
+	height: 100%;
+	margin-inline: auto;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	padding-inline: var(--space-4);
+}
+
+/* Controls */
+.header-controls {
+	pointer-events: auto;
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-3);
+}
+
+/* Desktop Text Button */
+.menu-btn-desktop {
+	font-weight: 700;
+	letter-spacing: 0.08em;
+}
+
+.menu-btn-desktop:hover {
+	border-color: var(--accent);
+	color: var(--accent);
+}
+
+.menu-btn-desktop .bracket {
+	color: var(--accent);
+	font-weight: 700;
+}
+
+.menu-btn-desktop .btn-text-close {
+	display: none;
+}
+
+/* When Menu is Open on Desktop */
+:global(html.menu-open) .menu-btn-desktop {
+	border-color: var(--accent);
+	background-color: var(--accent);
+	color: var(--accent-foreground);
+}
+
+:global(html.menu-open) .menu-btn-desktop .bracket {
+	color: var(--accent-foreground);
+}
+
+:global(html.menu-open) .menu-btn-desktop .btn-text-open {
+	display: none;
+}
+
+:global(html.menu-open) .menu-btn-desktop .btn-text-close {
+	display: inline;
+}
+
+/* Mobile Burger Button */
+.menu-btn-mobile {
+	display: none;
+	width: 44px;
+	height: 44px;
+}
+
+.burger-box {
+	position: relative;
+	width: 20px;
+	height: 12px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.burger-bar {
+	display: block;
+	width: 100%;
+	height: 2px;
+	background-color: var(--text);
+	transition:
+		transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+		background-color var(--transition-fast);
+	transform-origin: center;
+}
+
+:global(html.menu-open) .menu-btn-mobile {
+	border-color: var(--accent);
+	background-color: var(--background-elevated);
+}
+
+:global(html.menu-open) .bar-top {
+	transform: translateY(5px) rotate(45deg);
+	background-color: var(--accent);
+}
+
+:global(html.menu-open) .bar-bottom {
+	transform: translateY(-5px) rotate(-45deg);
+	background-color: var(--accent);
+}
+
+/* ==========================================================================
+   Fullscreen Navigation Modal / Overlay
+   ========================================================================== */
+.nav-overlay {
+	position: fixed;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 100;
+	pointer-events: none;
+	visibility: hidden;
+	overflow: hidden;
+}
+
+:global(html.menu-open) .nav-overlay,
+:global(html.menu-closing) .nav-overlay {
+	visibility: visible;
+}
+
+:global(html.menu-open) .nav-overlay {
+	pointer-events: auto;
+}
+
+:global(html.menu-closing) .nav-overlay {
+	pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Curtains: Desktop Left & Right meet in Center on Open, Part on Close
+   -------------------------------------------------------------------------- */
+.curtain {
+	position: absolute;
+	top: 0;
+	height: 100%;
+	background-color: var(--background);
+	will-change: transform;
+}
+
+.curtain-left {
+	left: 0;
+	width: 50vw;
+	border-right: 1px solid var(--border-dim);
+	transform: translateX(-100%);
+	transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.curtain-right {
+	right: 0;
+	width: 50vw;
+	border-left: 1px solid var(--border-dim);
+	transform: translateX(100%);
+	transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* When Open: Both curtains slide inward to 0 (meeting in the center) */
+:global(html.menu-open) .curtain-left {
+	transform: translateX(0);
+	transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:global(html.menu-open) .curtain-right {
+	transform: translateX(0);
+	transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* When Closing: Curtains slide back out */
+:global(html.menu-closing) .curtain-left {
+	transform: translateX(-100%);
+	transition: transform 0.45s cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+:global(html.menu-closing) .curtain-right {
+	transform: translateX(100%);
+	transition: transform 0.45s cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+/* --------------------------------------------------------------------------
+   Stage / Inner Content
+   -------------------------------------------------------------------------- */
+.menu-stage {
+	position: relative;
+	z-index: 2;
+	width: calc(100% - 10vw);
+	max-width: 1920px;
+	height: 100%;
+	margin-inline: auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding: var(--space-6) var(--space-4) var(--space-8);
+}
+
+/* Top Row */
+.menu-top-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding-top: var(--space-2);
+	border-bottom: 1px dashed var(--border-dim);
+	padding-bottom: var(--space-4);
+	opacity: 0;
+	transform: translateY(-10px);
+	transition:
+		opacity 0.4s ease,
+		transform 0.4s ease;
+}
+
+:global(html.menu-open) .menu-top-row {
+	opacity: 1;
+	transform: translateY(0);
+	transition-delay: 0.35s;
+}
+
+:global(html.menu-closing) .menu-top-row {
+	opacity: 0;
+	transform: translateY(-10px);
+	transition:
+		opacity 0.2s ease,
+		transform 0.2s ease;
+	transition-delay: 0s;
+}
+
+.menu-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+	font-family: var(--font-mono);
+	font-size: 0.8125rem;
+	letter-spacing: 0.08em;
+	color: var(--text-muted);
+}
+
+.badge-dot {
+	color: var(--accent);
+	font-size: 0.625rem;
+}
+
+/* Center Body */
+.menu-body {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	margin-block: auto;
+	padding-block: var(--space-4);
+}
+
+/* Navigation Links Column */
+.menu-nav-column {
+	display: flex;
+	flex-direction: column;
+}
+
+.nav-items-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-2);
+}
+
+.nav-item {
+	display: block;
+}
+
+/* SplitText-style Line Mask (Overflow Hidden Mask) */
+.line-mask {
+	overflow: hidden;
+	display: block;
+	padding-block: 2px;
+}
+
+.menu-link {
+	display: inline-flex;
+	align-items: baseline;
+	gap: var(--space-4);
+	text-decoration: none;
+	color: var(--text-dim);
+	cursor: pointer;
+	transform: translateY(115%);
+	opacity: 0;
+	transition:
+		transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+		opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+		color var(--transition-fast);
+}
+
+/* Staggered entry when open */
+:global(html.menu-open) .menu-link {
+	transform: translateY(0);
+	opacity: 1;
+	transition-delay: calc(0.35s + (var(--item-index, 0) * 0.05s));
+}
+
+/* Swift exit when closing */
+:global(html.menu-closing) .menu-link {
+	transform: translateY(115%);
+	opacity: 0;
+	transition:
+		transform 0.25s cubic-bezier(0.7, 0, 0.84, 0),
+		opacity 0.2s ease;
+	transition-delay: 0s;
+}
+
+.link-number {
+	font-family: var(--font-mono);
+	font-size: clamp(0.875rem, 1.2vw, 1.125rem);
+	color: var(--accent);
+	letter-spacing: 0.06em;
+}
+
+.link-title-wrapper {
+	display: inline-flex;
+	align-items: baseline;
+}
+
+.link-title {
+	font-family: var(--font-heading);
+	font-size: clamp(1.75rem, 3.2vw, 3.25rem);
+	line-height: 1.15;
+	text-transform: uppercase;
+	letter-spacing: -0.02em;
+	transition: color var(--transition-fast);
+}
+
+.link-bracket {
+	font-family: var(--font-mono);
+	font-size: clamp(1.5rem, 2.8vw, 2.75rem);
+	color: var(--accent);
+	opacity: 0;
+	transform: scale(0.8);
+	transition:
+		opacity var(--transition-fast),
+		transform var(--transition-fast);
+}
+
+.link-bracket-l {
+	margin-right: var(--space-1);
+}
+
+.link-bracket-r {
+	margin-left: var(--space-1);
+}
+
+/* Hover and Active State on Link */
+.menu-link:hover,
+.menu-link.is-active {
+	color: var(--text);
+}
+
+.menu-link:hover .link-title,
+.menu-link.is-active .link-title {
+	color: var(--accent);
+}
+
+.menu-link:hover .link-bracket,
+.menu-link.is-active .link-bracket {
+	opacity: 1;
+	transform: scale(1);
+}
+
+/* Bottom Row */
+.menu-footer-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding-top: var(--space-4);
+	border-top: 1px solid var(--border-dim);
+	opacity: 0;
+	transform: translateY(10px);
+	transition:
+		opacity 0.4s ease,
+		transform 0.4s ease;
+}
+
+:global(html.menu-open) .menu-footer-row {
+	opacity: 1;
+	transform: translateY(0);
+	transition-delay: 0.4s;
+}
+
+:global(html.menu-closing) .menu-footer-row {
+	opacity: 0;
+	transform: translateY(10px);
+	transition:
+		opacity 0.2s ease,
+		transform 0.2s ease;
+	transition-delay: 0s;
+}
+
+.menu-copyright,
+.menu-bottom-role {
+	font-family: var(--font-mono);
+	font-size: 0.75rem;
+	color: var(--text-muted);
+	letter-spacing: 0.06em;
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+
+@media (max-width: 768px) {
+	.header-inner {
+		width: 100%;
+		padding-inline: var(--space-4);
+	}
+
+	.brand-role {
+		display: none;
+	}
+
+	.menu-btn-desktop {
+		display: none;
+	}
+
+	.menu-btn-mobile {
+		display: flex;
+	}
+
+	/* Curtains on Mobile: Right Curtain covers 100% and slides from right to left */
+	.curtain-left {
+		display: none;
+	}
+
+	.curtain-right {
+		width: 100vw;
+		right: 0;
+		left: auto;
+		border-left: none;
+		transform: translateX(100%);
+		transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	:global(html.menu-open) .curtain-right {
+		transform: translateX(0);
+		transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	:global(html.menu-closing) .curtain-right {
+		transform: translateX(100%);
+		transition: transform 0.4s cubic-bezier(0.7, 0, 0.84, 0);
+	}
+
+	.menu-stage {
+		width: 100%;
+		padding: var(--space-6) var(--space-4) var(--space-6);
+	}
+
+	.menu-link {
+		gap: var(--space-3);
+		min-height: 48px;
+		display: inline-flex;
+		align-items: center;
+	}
+
+	.link-title {
+		font-size: clamp(1.5rem, 6.5vw, 2.25rem);
+	}
+
+	.menu-footer-row {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--space-2);
+	}
+}
+
+:global(html.menu-open) {
+	overflow-y: hidden;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+	.curtain-left,
+	.curtain-right,
+	.menu-link,
+	.menu-top-row,
+	.menu-footer-row,
+	.burger-bar {
+		transition-duration: 0.01ms;
+		animation-duration: 0.01ms;
+	}
+}
+</style>
+
+<script>
+interface LenisInstance {
+	stop: () => void;
+	start: () => void;
+	scrollTo: (
+		target: Element | string | number,
+		opts?: { duration?: number },
+	) => void;
+}
+
+const getLenis = () =>
+	(window as unknown as { __lenis?: LenisInstance }).__lenis;
+
+function initHeaderMenu() {
+	const overlay = document.getElementById("fullscreen-navigation-menu");
+	if (!overlay) return;
+	const menuOverlay = overlay;
+	const toggleBtns = document.querySelectorAll<HTMLElement>(
+		"#menu-toggle-desktop, #menu-toggle-mobile",
+	);
+
+	let isOpen = false;
+	let isClosing = false;
+
+	const setExpanded = (expanded: boolean) => {
+		toggleBtns.forEach((btn) => {
+			btn.setAttribute("aria-expanded", String(expanded));
+		});
+	};
+
+	function openMenu() {
+		if (isOpen || isClosing) return;
+		isOpen = true;
+		document.documentElement.classList.remove("menu-closing");
+		document.documentElement.classList.add("menu-open");
+		menuOverlay.setAttribute("aria-hidden", "false");
+		setExpanded(true);
+		getLenis()?.stop();
+	}
+
+	function closeMenu() {
+		if (!isOpen || isClosing) return;
+		isClosing = true;
+		isOpen = false;
+		document.documentElement.classList.add("menu-closing");
+		document.documentElement.classList.remove("menu-open");
+		setExpanded(false);
+		getLenis()?.start();
+
+		setTimeout(() => {
+			document.documentElement.classList.remove("menu-closing");
+			menuOverlay.setAttribute("aria-hidden", "true");
+			isClosing = false;
+		}, 460);
+	}
+
+	function toggleMenu() {
+		if (isOpen) {
+			closeMenu();
+		} else {
+			openMenu();
+		}
+	}
+
+	toggleBtns.forEach((btn) => {
+		btn.onclick = toggleMenu;
+	});
+
+	document.addEventListener("keydown", (e) => {
+		if (e.key === "Escape" && isOpen) closeMenu();
+	});
+
+	menuOverlay
+		.querySelectorAll<HTMLAnchorElement>(".menu-link")
+		.forEach((link) => {
+			link.addEventListener("click", (e) => {
+				const isSamePage =
+					link.pathname.replace(/\/$/, "") ===
+						location.pathname.replace(/\/$/, "") && link.hash;
+
+				closeMenu();
+
+				if (isSamePage) {
+					e.preventDefault();
+					const target = document.querySelector(link.hash);
+					if (target) {
+						const lenis = getLenis();
+						if (lenis) {
+							lenis.scrollTo(target, { duration: 1.2 });
+						} else {
+							target.scrollIntoView({ behavior: "smooth" });
+						}
+						history.pushState(null, "", link.hash);
+					}
+				}
+			});
+		});
+}
+
+initHeaderMenu();
+document.addEventListener("astro:page-load", initHeaderMenu);
+</script>

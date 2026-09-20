@@ -1,6 +1,7 @@
 ---
 import "@styles/global.css";
 import HeadSEO from "@components/common/HeadSEO.astro";
+import Header from "@components/common/Header.astro";
 import SmoothScroll from "@components/common/SmoothScroll.astro";
 import { defaultLang, type Lang } from "@i18n/languages";
 
@@ -110,6 +111,7 @@ const preloadedFonts = fontsPreloadMap[lang] ?? fontsPreloadMap[defaultLang];
 	</head>
 	<body>
 		<SmoothScroll />
+		<Header lang={lang} />
 		<div class="layout-wrapper fullscreen-min">
 			<slot />
 		</div>
