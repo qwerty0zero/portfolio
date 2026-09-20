@@ -22,23 +22,30 @@ const projectsUrl = getRelativeLocaleUrl(lang, "projects");
 const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 
 const footerEntry = await getEntry("home", `${lang}/footer`);
-const menuItems = (footerEntry?.data.navAnchors ?? [])
-	.flatMap((anchor) => [
-		{ label: anchor.label, href: `${homeUrl}#${anchor.id}` },
-		...(anchor.id === "projects"
-			? [{ label: t("nav.allProjects"), href: projectsUrl }]
-			: []),
-	])
-	.map((item) => {
-		const [itemPath] = item.href.split("#");
-		const normalizedItemPath = itemPath.replace(/\/$/, "") || "/";
-		const hasHash = item.href.includes("#");
-		const isActive = !hasHash && normalizedItemPath === currentPath;
-		return {
-			...item,
-			isActive,
-		};
-	});
+const navAnchors = footerEntry?.data.navAnchors ?? [];
+const hasAboutAnchor = navAnchors.some((a) => a.id === "about");
+
+const rawItems = navAnchors.flatMap((anchor) => [
+	{ label: anchor.label, href: `${homeUrl}#${anchor.id}` },
+	...(anchor.id === "about" || (!hasAboutAnchor && anchor.id === "home")
+		? [{ label: t("projects.viewAll"), href: projectsUrl }]
+		: []),
+]);
+
+if (!rawItems.some((item) => item.href === projectsUrl)) {
+	rawItems.push({ label: t("projects.viewAll"), href: projectsUrl });
+}
+
+const menuItems = rawItems.map((item) => {
+	const [itemPath] = item.href.split("#");
+	const normalizedItemPath = itemPath.replace(/\/$/, "") || "/";
+	const hasHash = item.href.includes("#");
+	const isActive = !hasHash && normalizedItemPath === currentPath;
+	return {
+		...item,
+		isActive,
+	};
+});
 ---
 
 <header class:list={["site-header", className]}>

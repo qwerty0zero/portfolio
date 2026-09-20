@@ -5,8 +5,6 @@ navAnchors:
     label: "Home"
   - id: "about"
     label: "About"
-  - id: "projects"
-    label: "Projects"
   - id: "directions"
     label: "Directions"
   - id: "faq"

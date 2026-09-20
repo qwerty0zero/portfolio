@@ -5,8 +5,6 @@ navAnchors:
     label: "Главная"
   - id: "about"
     label: "Обо мне"
-  - id: "projects"
-    label: "Проекты"
   - id: "directions"
     label: "Направления"
   - id: "faq"
