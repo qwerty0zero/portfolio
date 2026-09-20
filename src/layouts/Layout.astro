@@ -92,20 +92,28 @@ const preloadedFonts = fontsPreloadMap[lang] ?? fontsPreloadMap[defaultLang];
 				}
 			} catch (_) {}
 
-			const storedTheme =
-				typeof localStorage !== "undefined"
-					? localStorage.getItem("theme")
-					: null;
-			const userTheme =
-				storedTheme ||
-				(window.matchMedia("(prefers-color-scheme: dark)").matches
-					? "dark"
-					: "light");
-			if (userTheme === "dark") {
-				document.documentElement.classList.add("dark");
-			} else {
-				document.documentElement.classList.remove("dark");
-			}
+			try {
+				const storedTheme = localStorage.getItem("theme");
+				const prefersDark = window.matchMedia(
+					"(prefers-color-scheme: dark)",
+				).matches;
+				const userTheme =
+					storedTheme === "dark" || storedTheme === "light"
+						? storedTheme
+						: prefersDark
+							? "dark"
+							: "light";
+
+				if (userTheme === "dark") {
+					document.documentElement.classList.add("dark");
+					document.documentElement.classList.remove("light");
+					document.documentElement.setAttribute("data-theme", "dark");
+				} else {
+					document.documentElement.classList.remove("dark");
+					document.documentElement.classList.add("light");
+					document.documentElement.setAttribute("data-theme", "light");
+				}
+			} catch (_) {}
 		})();
 		</script>
 	</head>

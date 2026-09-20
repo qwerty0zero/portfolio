@@ -1,0 +1,21 @@
+---
+export interface Props {
+	size?: number;
+	class?: string;
+}
+
+const { size = 20, class: className = "" } = Astro.props;
+---
+
+<svg
+	class={className}
+	width={size}
+	height={size}
+	viewBox="0 0 24 24"
+	fill="currentColor"
+	aria-hidden="true"
+>
+	<path
+		d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm-1-5v3a1 1 0 0 0 2 0V2a1 1 0 0 0-2 0zm0 17v3a1 1 0 0 0 2 0v-3a1 1 0 0 0-2 0zM4 11H1a1 1 0 0 0 0 2h3a1 1 0 0 0 0-2zm19 0h-3a1 1 0 0 0 0 2h3a1 1 0 0 0 0-2zm-14.95-6.36a1 1 0 0 0-1.41 1.41l2.12 2.12a1 1 0 0 0 1.41-1.41L8.05 4.64zm9.9 9.9a1 1 0 0 0-1.41 1.41l2.12 2.12a1 1 0 0 0 1.41-1.41l-2.12-2.12zm1.41-9.9a1 1 0 0 0-1.41 0l-2.12 2.12a1 1 0 0 0 1.41 1.41l2.12-2.12a1 1 0 0 0 0-1.41zM6.64 15.95a1 1 0 0 0-1.41 0l-2.12 2.12a1 1 0 0 0 1.41 1.41l2.12-2.12a1 1 0 0 0 0-1.41z"
+	></path>
+</svg>

@@ -1,0 +1,161 @@
+---
+import Button, {
+	type ButtonSize,
+	type ButtonVariant,
+} from "@components/ui/Button.astro";
+import IconMoon from "@components/ui/icons/IconMoon.astro";
+import IconSun from "@components/ui/icons/IconSun.astro";
+import { defaultLang, type Lang } from "@i18n/languages";
+import { useTranslations } from "@i18n/utils";
+
+export interface Props {
+	variant?: ButtonVariant;
+	size?: ButtonSize;
+	iconSize?: number;
+	class?: string;
+	ariaLabel?: string;
+	lang?: Lang;
+	labels?: {
+		light?: string;
+		dark?: string;
+	};
+}
+
+const {
+	variant = "icon",
+	size = "md",
+	iconSize,
+	class: className = "",
+	ariaLabel,
+	lang = (Astro.currentLocale ?? defaultLang) as Lang,
+	labels,
+} = Astro.props;
+
+const defaultIconSizes: Record<ButtonSize, number> = {
+	sm: 14,
+	md: 18,
+	lg: 22,
+};
+const currentIconSize = iconSize ?? defaultIconSizes[size] ?? 18;
+
+const t = useTranslations(lang);
+const labelAria = ariaLabel ?? t("theme.toggle");
+const lightText = labels?.light ?? t("theme.light");
+const darkText = labels?.dark ?? t("theme.dark");
+---
+
+<nav
+	class:list={["theme-buttons", `theme-buttons--${size}`, className]}
+	aria-label={labelAria}
+>
+	<Button
+		type="button"
+		variant={variant}
+		size={size}
+		class="theme-btn"
+		data-theme-value="light"
+		aria-pressed="false"
+		aria-label={lightText}
+		title={lightText}
+	>
+		<IconSun size={currentIconSize} />
+	</Button>
+	<Button
+		type="button"
+		variant={variant}
+		size={size}
+		class="theme-btn"
+		data-theme-value="dark"
+		aria-pressed="false"
+		aria-label={darkText}
+		title={darkText}
+	>
+		<IconMoon size={currentIconSize} />
+	</Button>
+</nav>
+
+<style>
+.theme-buttons {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--space-2);
+}
+
+/* Active theme button state based on html class (Zero-FOUC instant rendering) */
+:global(html:not(.dark)) .theme-btn[data-theme-value="light"],
+:global(html.light) .theme-btn[data-theme-value="light"],
+:global(:root[data-theme="light"]) .theme-btn[data-theme-value="light"],
+:global(html.dark) .theme-btn[data-theme-value="dark"],
+:global(:root[data-theme="dark"]) .theme-btn[data-theme-value="dark"] {
+	background-color: var(--accent);
+	border-color: var(--accent);
+	color: var(--accent-foreground);
+	font-weight: 700;
+}
+</style>
+
+<script>
+function syncThemeButtons() {
+	const isDark =
+		document.documentElement.classList.contains("dark") ||
+		document.documentElement.getAttribute("data-theme") === "dark";
+	const currentTheme = isDark ? "dark" : "light";
+
+	document
+		.querySelectorAll<HTMLButtonElement>(".theme-btn[data-theme-value]")
+		.forEach((btn) => {
+			const isCurrent = btn.dataset.themeValue === currentTheme;
+			btn.setAttribute("aria-pressed", isCurrent ? "true" : "false");
+		});
+}
+
+function setTheme(targetTheme: "light" | "dark") {
+	if (targetTheme === "dark") {
+		document.documentElement.classList.add("dark");
+		document.documentElement.classList.remove("light");
+		document.documentElement.setAttribute("data-theme", "dark");
+	} else {
+		document.documentElement.classList.remove("dark");
+		document.documentElement.classList.add("light");
+		document.documentElement.setAttribute("data-theme", "light");
+	}
+
+	try {
+		localStorage.setItem("theme", targetTheme);
+	} catch (_) {}
+
+	syncThemeButtons();
+
+	document.dispatchEvent(
+		new CustomEvent("themechange", { detail: { theme: targetTheme } }),
+	);
+}
+
+function initThemeButtons() {
+	syncThemeButtons();
+
+	document
+		.querySelectorAll<HTMLButtonElement>(".theme-btn[data-theme-value]")
+		.forEach((btn) => {
+			btn.onclick = () => {
+				const theme = btn.dataset.themeValue as "light" | "dark" | undefined;
+				if (theme) {
+					setTheme(theme);
+				}
+			};
+		});
+}
+
+initThemeButtons();
+document.addEventListener("astro:page-load", initThemeButtons);
+
+window
+	.matchMedia("(prefers-color-scheme: dark)")
+	.addEventListener("change", (e) => {
+		try {
+			if (!localStorage.getItem("theme")) {
+				setTheme(e.matches ? "dark" : "light");
+			}
+		} catch (_) {}
+	});
+</script>
