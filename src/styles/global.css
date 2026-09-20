@@ -235,14 +235,6 @@ html.dark,
   --accent-subtle: oklch(0.6329 0.2075 31.49 / 16%);
   --accent-muted: oklch(63.384% 0.20668 31.708);
 
-  --window-control-close: oklch(0.63 0.22 25);
-  --window-control-close-hover: oklch(0.55 0.23 25);
-  --window-control-minimize: oklch(0.82 0.17 80);
-  --window-control-minimize-hover: oklch(0.74 0.18 80);
-  --window-control-maximize: oklch(0.76 0.18 140);
-  --window-control-maximize-hover: oklch(0.68 0.19 140);
-  --window-control-symbol: oklch(0.15 0 0 / 70%);
-
   --background: oklch(0.1448 0 0);
   --background-secondary: oklch(0.18 0 0);
   --background-tertiary: oklch(0.21 0 0);
@@ -257,73 +249,7 @@ html.dark,
   --border-dim: oklch(0.9465 0.0099 87.47 / 10%);
   --border-strong: oklch(0.9465 0.0099 87.47 / 24%);
 
-  /* Design System Semantic Aliases */
-  --bg-primary: var(--background);
-  --bg-secondary: var(--background-secondary);
-  --bg-tertiary: var(--background-tertiary);
   --bg-surface: var(--background-secondary);
-  --bg-elevated: var(--background-elevated);
-
-  --text-primary: var(--text);
-  --text-secondary: var(--text-dim);
-  --border-default: var(--border);
-  --border-subtle: var(--border-dim);
-  --color-primary: var(--accent);
-  --color-primary-hover: var(--accent-hover);
-  --color-primary-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-}
-
-/* Fallback: System-level dark preference if no explicit class/attribute is set */
-@media (prefers-color-scheme: dark) {
-  :root:not(.light):not([data-theme="light"]) {
-    color-scheme: dark;
-    --accent: oklch(0.6329 0.2075 31.49);
-    --accent-hover: oklch(0.69 0.21 31.49);
-    --accent-foreground: oklch(0.985 0.004 87.47);
-    --accent-subtle: oklch(0.6329 0.2075 31.49 / 16%);
-    --accent-muted: oklch(63.384% 0.20668 31.708 / 0.699);
-
-    --window-control-close: oklch(0.63 0.22 25);
-    --window-control-close-hover: oklch(0.55 0.23 25);
-    --window-control-minimize: oklch(0.82 0.17 80);
-    --window-control-minimize-hover: oklch(0.74 0.18 80);
-    --window-control-maximize: oklch(0.76 0.18 140);
-    --window-control-maximize-hover: oklch(0.68 0.19 140);
-    --window-control-symbol: oklch(0.15 0 0 / 70%);
-
-    --background: oklch(0.1448 0 0);
-    --background-secondary: oklch(0.18 0 0);
-    --background-tertiary: oklch(0.21 0 0);
-    --background-elevated: oklch(0.23 0 0);
-
-    --text: oklch(0.9465 0.0099 87.47);
-    --text-dim: oklch(0.9465 0.0099 87.47 / 75%);
-    --text-muted: oklch(0.9465 0.0099 87.47 / 50%);
-    --text-inverse: oklch(0.1448 0 0);
-
-    --border: oklch(0.9465 0.0099 87.47 / 14%);
-    --border-dim: oklch(0.9465 0.0099 87.47 / 10%);
-    --border-strong: oklch(0.9465 0.0099 87.47 / 24%);
-
-    /* Design System Semantic Aliases */
-    --bg-primary: var(--background);
-    --bg-secondary: var(--background-secondary);
-    --bg-tertiary: var(--background-tertiary);
-    --bg-surface: var(--background-secondary);
-    --bg-elevated: var(--background-elevated);
-
-    --text-primary: var(--text);
-    --text-secondary: var(--text-dim);
-    --border-default: var(--border);
-    --border-subtle: var(--border-dim);
-    --color-primary: var(--accent);
-    --color-primary-hover: var(--accent-hover);
-    --color-primary-foreground: var(--accent-foreground);
-    --color-accent: var(--accent);
-    --color-accent-foreground: var(--accent-foreground);
-  }
 }
 
 /* ==========================================================================
@@ -339,12 +265,7 @@ html.dark,
 
 ::selection {
   background-color: var(--accent);
-  color: var(--text);
-}
-
-::-moz-selection {
-  background-color: var(--accent);
-  color: var(--text);
+  color: var(--accent-foreground);
 }
 
 html {
