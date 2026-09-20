@@ -2,6 +2,7 @@
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { getEntry } from "astro:content";
 import LanguageSwitcher from "@components/ui/LanguageSwitcher.astro";
+import ThemeButtons from "@components/ui/ThemeButtons.astro";
 import { SITE } from "@/constants/site";
 import { defaultLang, type Lang } from "@i18n/languages";
 import { useTranslations } from "@i18n/utils";
@@ -170,6 +171,8 @@ const topProjects = projects.slice(0, 3);
 			</div>
 
 			<div class="bottom-right">
+				<ThemeButtons />
+
 				<LanguageSwitcher />
 			</div>
 		</div>
@@ -446,6 +449,13 @@ const topProjects = projects.slice(0, 3);
 	gap: var(--space-6);
 	padding-top: var(--space-8);
 	border-top: 1px solid var(--border);
+}
+
+.bottom-right {
+	display: flex;
+	align-items: end;
+
+	gap: 1.5rem;
 }
 
 .copyright {
