@@ -1,8 +1,7 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { getEntry } from "astro:content";
-import LanguageButtons from "@components/ui/LanguageButtons.astro";
-import LanguageSelect from "@components/ui/LanguageSelect.astro";
+import LanguageSwitcher from "@components/ui/LanguageSwitcher.astro";
 import { SITE } from "@/constants/site";
 import { defaultLang, type Lang } from "@i18n/languages";
 import { useTranslations } from "@i18n/utils";
@@ -181,13 +180,8 @@ const topProjects = projects.slice(0, 3);
 				</p>
 			</div>
 
-			<div class="bottom-right language-switch-area">
-				<div class="lang-desktop-wrapper">
-					<LanguageButtons />
-				</div>
-				<div class="lang-touch-wrapper">
-					<LanguageSelect />
-				</div>
+			<div class="bottom-right">
+				<LanguageSwitcher />
 			</div>
 		</div>
 	</div>
@@ -199,7 +193,6 @@ const topProjects = projects.slice(0, 3);
 	width: 100%;
 	background-color: var(--background-secondary);
 	border-top: 1px solid var(--border);
-	box-sizing: border-box;
 	z-index: 1;
 }
 
@@ -208,7 +201,6 @@ const topProjects = projects.slice(0, 3);
 	max-width: 1400px;
 	margin-inline: auto;
 	padding: var(--space-12) var(--space-8) var(--space-8);
-	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
 	gap: var(--space-12);
@@ -220,7 +212,6 @@ const topProjects = projects.slice(0, 3);
 	grid-template-columns: 1.4fr 1fr 1.3fr;
 	gap: var(--space-12);
 	width: 100%;
-	box-sizing: border-box;
 }
 
 .footer-col {
@@ -500,29 +491,6 @@ const topProjects = projects.slice(0, 3);
 	color: var(--accent);
 }
 
-.language-switch-area {
-	display: inline-flex;
-	align-items: center;
-}
-
-.lang-desktop-wrapper {
-	display: inline-flex;
-}
-
-.lang-touch-wrapper {
-	display: none;
-}
-
-@media (hover: none), (max-width: 768px) {
-	.lang-desktop-wrapper {
-		display: none;
-	}
-
-	.lang-touch-wrapper {
-		display: inline-flex;
-	}
-}
-
 /* Tablet Layout (769px - 1024px) */
 @media (max-width: 1024px) {
 	.footer-columns {
@@ -570,14 +538,6 @@ const topProjects = projects.slice(0, 3);
 		width: 100%;
 	}
 
-	.lang-desktop-wrapper {
-		display: none;
-	}
-
-	.lang-touch-wrapper {
-		display: inline-flex;
-		width: 100%;
-	}
 	.nav-links-list,
 	.contacts-list {
 		display: grid;

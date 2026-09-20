@@ -1,0 +1,47 @@
+---
+import LanguageButtons from "@components/ui/LanguageButtons.astro";
+import LanguageSelect from "@components/ui/LanguageSelect.astro";
+import type { ButtonSize } from "@components/ui/Button.astro";
+
+export interface Props {
+	size?: ButtonSize;
+	class?: string;
+}
+
+const { size = "md", class: className = "" } = Astro.props;
+---
+
+<div class:list={["language-switch-area", className]}>
+	<div class="lang-desktop-wrapper">
+		<LanguageButtons size={size} />
+	</div>
+	<div class="lang-touch-wrapper">
+		<LanguageSelect size={size} />
+	</div>
+</div>
+
+<style>
+.language-switch-area {
+	display: inline-flex;
+	align-items: center;
+}
+
+.lang-desktop-wrapper {
+	display: inline-flex;
+}
+
+.lang-touch-wrapper {
+	display: none;
+}
+
+@media (hover: none), (max-width: 768px) {
+	.lang-desktop-wrapper {
+		display: none;
+	}
+
+	.lang-touch-wrapper {
+		display: inline-flex;
+		width: 100%;
+	}
+}
+</style>
