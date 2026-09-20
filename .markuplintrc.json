@@ -1,0 +1,62 @@
+{
+  "$schema": "https://markuplint.dev/markuplint-runner.schema.json",
+  "parser": {
+    "\\.astro$": "@markuplint/astro-parser"
+  },
+  "extends": ["markuplint:recommended"],
+  "rules": {
+    "no-aria-on-unsupported-element": { "severity": "error" },
+    "no-unknown-role": { "severity": "error" },
+    "no-abstract-role": { "severity": "error" },
+    "permitted-roles": { "severity": "error" },
+    "no-redundant-role": { "severity": "error" },
+    "no-redundant-aria-prop": { "severity": "error" },
+    "no-contradictory-aria-prop": { "severity": "error" },
+    "require-aria-prop": { "severity": "error" },
+    "role-supports-aria-prop": { "severity": "error" },
+    "no-prohibited-naming": { "severity": "error" },
+    "element-supports-aria-prop": { "severity": "error" },
+    "no-deprecated-role": { "severity": "error" },
+    "no-deprecated-aria-prop": { "severity": "error" },
+    "no-invalid-aria-prop-value": { "severity": "error" },
+    "require-owned-elements": { "severity": "error" },
+    "require-parent-role": { "severity": "error" },
+    "tab-requires-tabpanel": { "severity": "error" },
+    "no-aria-on-presentational-children": { "severity": "error" },
+    "aria-prop-requires-role": { "severity": "error" },
+    "no-default-aria-value": { "severity": "error" },
+    "no-focusable-in-aria-hidden": { "severity": "error" },
+    "no-aria-hidden-on-hidden-until-found": { "severity": "error" },
+    "require-accessible-name": { "severity": "error" },
+    "no-nested-top-level-landmark": { "severity": "error" },
+    "require-landmark-label": { "severity": "error" },
+
+    "no-malformed-character-reference": { "severity": "error" },
+    "no-unescaped-char": { "severity": "error" },
+    "no-deprecated-attr": { "severity": "error" },
+    "no-obsolete-attr": { "severity": "error" },
+    "no-deprecated-element": { "severity": "error" },
+    "no-obsolete-element": { "severity": "error" },
+    "permitted-contents": { "severity": "error" },
+    "require-h1": { "severity": "error" },
+    "no-duplicate-h1": { "severity": "error" },
+    "no-pseudo-list": { "severity": "error" },
+    "no-skipped-heading-level": { "severity": "error" },
+    "meta-charset-position": false,
+    "head-element-order": false
+  },
+  "nodeRules": [
+    {
+      "selector": "link[rel='sitemap']",
+      "rules": {
+        "no-invalid-attr-value": false
+      }
+    },
+    {
+      "selector": "#fullscreen-navigation-menu a",
+      "rules": {
+        "no-focusable-in-aria-hidden": false
+      }
+    }
+  ]
+}
