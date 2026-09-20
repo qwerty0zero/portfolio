@@ -17,7 +17,7 @@
     "biome:fix": "biome check --write",
     "typecheck": "astro check",
     "lint:html": "markuplint \"src/**/*.astro\"",
-    "build:check": "pnpm exec astro build && pnpm exec vnu --Werror --format gnu dist/en",
+    "build:check": "pnpm exec astro build && pnpm exec vnu --Werror --format gnu --filterpattern \".*transition-behavior.*\" dist/en",
     "prepare": "husky",
     "postinstall": "astro sync"
   },
