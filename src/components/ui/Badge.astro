@@ -1,8 +1,15 @@
 ---
 export interface Props {
 	text?: string;
-	variant?: "accent" | "muted" | "outline";
-	size?: "sm" | "md";
+	variant?:
+		| "accent"
+		| "muted"
+		| "outline"
+		| "tertiary"
+		| "dim"
+		| "accent-outline";
+	size?: "xs" | "sm" | "md";
+	dot?: boolean;
 	class?: string;
 }
 
@@ -10,12 +17,22 @@ const {
 	text,
 	variant = "accent",
 	size = "md",
+	dot = false,
 	class: className = "",
 } = Astro.props;
 ---
 
-<span class:list={["badge", `badge--${variant}`, `badge--${size}`, className]}>
-	<slot>{text}</slot>
+<span
+	class:list={[
+		"badge",
+		`badge--${variant}`,
+		`badge--${size}`,
+		{ "badge--has-dot": dot },
+		className,
+	]}
+>
+	{dot && <span class="badge-dot" aria-hidden="true">●</span>}
+	<span class="badge-label"><slot>{text}</slot></span>
 </span>
 
 <style>
@@ -28,6 +45,17 @@ const {
 	letter-spacing: var(--letter-spacing-wider);
 	width: fit-content;
 	user-select: none;
+	white-space: nowrap;
+}
+
+.badge--has-dot {
+	gap: var(--space-2);
+}
+
+.badge-dot {
+	color: var(--accent);
+	font-size: var(--font-size-2xs);
+	line-height: 1;
 }
 
 /* Sizes */
@@ -41,7 +69,12 @@ const {
 	line-height: var(--line-height-heading);
 }
 
-/* Variants */
+.badge--xs {
+	font-size: var(--font-size-xs);
+	line-height: var(--line-height-heading);
+}
+
+/* Text-only Eyebrow Variants */
 .badge--accent {
 	color: var(--accent);
 }
@@ -50,11 +83,57 @@ const {
 	color: var(--text-muted);
 }
 
+/* Chip & Bordered Variants */
+.badge--outline,
+.badge--tertiary,
+.badge--dim,
+.badge--accent-outline {
+	letter-spacing: var(--letter-spacing-mono);
+	border: 1px solid var(--border);
+}
+
+/* Chip paddings by size */
+.badge--outline.badge--md,
+.badge--tertiary.badge--md,
+.badge--dim.badge--md,
+.badge--accent-outline.badge--md {
+	padding: 4px 12px;
+}
+
+.badge--outline.badge--sm,
+.badge--tertiary.badge--sm,
+.badge--dim.badge--sm,
+.badge--accent-outline.badge--sm {
+	padding: 4px 10px;
+}
+
+.badge--outline.badge--xs,
+.badge--tertiary.badge--xs,
+.badge--dim.badge--xs,
+.badge--accent-outline.badge--xs {
+	padding: 2px 8px;
+}
+
+/* Chip surface backgrounds & text colors */
 .badge--outline {
 	color: var(--text);
 	background-color: var(--background-secondary);
-	border: 1px solid var(--border);
-	padding: 4px 10px;
-	letter-spacing: var(--letter-spacing-mono);
+}
+
+.badge--tertiary {
+	color: var(--text);
+	background-color: var(--background-tertiary);
+}
+
+.badge--dim {
+	color: var(--text-dim);
+	background-color: var(--background-tertiary);
+	border-color: var(--border);
+}
+
+.badge--accent-outline {
+	color: var(--accent);
+	background-color: var(--accent-subtle);
+	border-color: var(--accent);
 }
 </style>
