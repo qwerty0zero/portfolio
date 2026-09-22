@@ -132,10 +132,54 @@
    Design Tokens / CSS Custom Properties
    ========================================================================== */
 :root {
-  /* Typography Tokens */
+  /* Typography Tokens: Families */
   --font-heading: "Dela Gothic One", sans-serif;
   --font-body: "Fira Sans Extra Condensed", sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Typography Tokens: Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* Typography Tokens: Fixed Even Font Sizes (px equivalent at 16px base) */
+  --font-size-2xs: 0.625rem;
+  /* 10px */
+  --font-size-xs: 0.75rem;
+  /* 12px */
+  --font-size-sm: 0.875rem;
+  /* 14px */
+  --font-size-base: 1rem;
+  /* 16px */
+  --font-size-lg: 1.125rem;
+  /* 18px */
+  --font-size-xl: 1.25rem;
+  /* 20px */
+  --font-size-2xl: 1.5rem;
+  /* 24px */
+
+  /* Typography Tokens: Fluid Clamp Font Sizes */
+  --font-size-display: clamp(2.75rem, 7.5vw, 6.5rem);
+  --font-size-h1: clamp(2.5rem, 5vw, 4.5rem);
+  --font-size-h2: clamp(2rem, 4vw, 3.5rem);
+  --font-size-h3: clamp(1.5rem, 2.5vw, 2.25rem);
+  --font-size-h4: clamp(1.125rem, 1.8vw, 1.5rem);
+  --font-size-lead: clamp(1.0625rem, 1.4vw, 1.25rem);
+  --font-size-body-lg: clamp(1rem, 1.2vw, 1.125rem);
+
+  /* Typography Tokens: Line Heights */
+  --line-height-display: 1.1;
+  --line-height-heading: 1.2;
+  --line-height-snug: 1.35;
+  --line-height-body: 1.55;
+
+  /* Typography Tokens: Letter Spacing */
+  --letter-spacing-tighter: -0.02em;
+  --letter-spacing-tight: -0.01em;
+  --letter-spacing-mono: 0.04em;
+  --letter-spacing-wide: 0.08em;
+  --letter-spacing-wider: 0.1em;
+  --letter-spacing-widest: 0.16em;
 
   /* Spacing Scale (rem-based for accessibility & scaling) */
   --space-1: 0.25rem;
@@ -158,8 +202,6 @@
   /* 48px */
   --space-16: 4rem;
   /* 64px */
-  --space-20: 5rem;
-  /* 80px */
   --space-24: 6rem;
   /* 96px */
 
@@ -168,9 +210,22 @@
   --radius-full: 9999px;
   /* Only for requested round indicators/avatars */
 
-  /* Animation / Transition Tokens */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  /* Animation / Transition Easing & Duration Tokens */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-expo: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-spring: cubic-bezier(0.2, 0, 0, 1);
+
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-smooth: 300ms;
+  --duration-slow: 450ms;
+
+  --transition-fast: var(--duration-fast) var(--ease-standard);
+  --transition-base: var(--duration-normal) var(--ease-standard);
+  --transition-smooth: var(--duration-smooth) var(--ease-out-expo);
+  --transition-curtain-open: var(--duration-slow) var(--ease-out-expo);
+  --transition-curtain-close: var(--duration-slow) var(--ease-in-expo);
   --transition-theme:
     background-color 200ms ease, color 200ms ease, border-color 200ms ease;
 
@@ -286,19 +341,6 @@ body {
   overflow-x: clip;
 }
 
-/* Headings with typography token */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-heading);
-  font-weight: 400;
-  color: var(--text);
-  line-height: 1.2;
-}
-
 p,
 span,
 li {
@@ -388,4 +430,205 @@ footer[id] {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* ==========================================================================
+   Common Typography & Text Utility Classes
+   ========================================================================== */
+
+/* Headings (Elements & Utility Classes) */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.heading-display,
+.heading-1,
+.heading-2,
+.heading-3,
+.heading-4,
+.heading-5,
+.heading-6 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-heading);
+  color: var(--text);
+  text-transform: uppercase;
+}
+
+.heading-display {
+  font-size: var(--font-size-display);
+  line-height: var(--line-height-display);
+  letter-spacing: var(--letter-spacing-tighter);
+}
+
+h1,
+.heading-1 {
+  font-size: var(--font-size-h1);
+  line-height: var(--line-height-display);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h2,
+.heading-2 {
+  font-size: var(--font-size-h2);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h3,
+.heading-3 {
+  font-size: var(--font-size-h3);
+}
+
+h4,
+.heading-4 {
+  font-size: var(--font-size-h4);
+  line-height: var(--line-height-snug);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h5,
+.heading-5 {
+  font-size: var(--font-size-xl);
+}
+
+h6,
+.heading-6 {
+  font-size: var(--font-size-lg);
+}
+
+/* Monospace, Eyebrows & Labels (Strictly Even px Scale) */
+.text-mono,
+.text-mono-sm,
+.text-mono-xs,
+.text-mono-2xs,
+.mono-sm,
+.mono-xs,
+.mono-2xs,
+.text-code,
+.text-eyebrow,
+.text-mono-label {
+  font-family: var(--font-mono);
+}
+
+.text-mono,
+.text-mono-sm,
+.text-mono-xs,
+.text-mono-2xs,
+.mono-sm,
+.mono-xs,
+.mono-2xs {
+  letter-spacing: var(--letter-spacing-mono);
+}
+
+.text-mono {
+  font-size: var(--font-size-base);
+}
+
+.text-mono-sm,
+.mono-sm {
+  font-size: var(--font-size-sm);
+}
+
+.text-mono-xs,
+.mono-xs {
+  font-size: var(--font-size-xs);
+}
+
+.text-mono-2xs,
+.mono-2xs {
+  font-size: var(--font-size-2xs);
+}
+
+.text-code {
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}
+
+.text-eyebrow {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-wider);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.text-mono-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Body & Leads */
+.text-lead,
+.text-lead-accent,
+.text-body-lg,
+.text-body,
+.text-body-sm,
+.text-body-bold {
+  font-family: var(--font-body);
+}
+
+.text-lead,
+.text-body-lg,
+.text-body,
+.text-body-sm {
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-body);
+  color: var(--text-dim);
+}
+
+.text-lead,
+.text-lead-accent {
+  font-size: var(--font-size-lead);
+}
+
+.text-lead-accent {
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-snug);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.text-body-lg {
+  font-size: var(--font-size-body-lg);
+}
+
+.text-body {
+  font-size: var(--font-size-base);
+}
+
+.text-body-sm {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-snug);
+}
+
+.text-body-bold {
+  font-weight: var(--font-weight-bold);
+  color: var(--text);
+}
+
+/* Text Color Utilities */
+.text-accent {
+  color: var(--accent);
+}
+
+.text-primary {
+  color: var(--text);
+}
+
+.text-dim {
+  color: var(--text-dim);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.text-inverse {
+  color: var(--text-inverse);
 }
