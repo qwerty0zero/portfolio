@@ -204,7 +204,7 @@ const menuItems = rawItems.map((item) => {
 
 /* Desktop Text Button */
 .menu-btn-desktop {
-	font-weight: 700;
+	font-weight: var(--font-weight-bold);
 	letter-spacing: 0.08em;
 }
 
@@ -215,7 +215,7 @@ const menuItems = rawItems.map((item) => {
 
 .menu-btn-desktop .bracket {
 	color: var(--accent);
-	font-weight: 700;
+	font-weight: var(--font-weight-bold);
 }
 
 .menu-btn-desktop .btn-text-close {
@@ -263,7 +263,7 @@ const menuItems = rawItems.map((item) => {
 	height: 2px;
 	background-color: var(--text);
 	transition:
-		transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+		transform var(--transition-smooth),
 		background-color var(--transition-fast);
 	transform-origin: center;
 }
@@ -326,7 +326,7 @@ const menuItems = rawItems.map((item) => {
 	width: 50vw;
 	border-right: 1px solid var(--border-dim);
 	transform: translateX(-100%);
-	transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+	transition: transform var(--transition-curtain-open);
 }
 
 .curtain-right {
@@ -334,29 +334,29 @@ const menuItems = rawItems.map((item) => {
 	width: 50vw;
 	border-left: 1px solid var(--border-dim);
 	transform: translateX(100%);
-	transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+	transition: transform var(--transition-curtain-open);
 }
 
 /* When Open: Both curtains slide inward to 0 (meeting in the center) */
 :global(html.menu-open) .curtain-left {
 	transform: translateX(0);
-	transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+	transition: transform 0.5s var(--ease-out-expo);
 }
 
 :global(html.menu-open) .curtain-right {
 	transform: translateX(0);
-	transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+	transition: transform 0.5s var(--ease-out-expo);
 }
 
 /* When Closing: Curtains slide back out */
 :global(html.menu-closing) .curtain-left {
 	transform: translateX(-100%);
-	transition: transform 0.45s cubic-bezier(0.7, 0, 0.84, 0);
+	transition: transform var(--transition-curtain-close);
 }
 
 :global(html.menu-closing) .curtain-right {
 	transform: translateX(100%);
-	transition: transform 0.45s cubic-bezier(0.7, 0, 0.84, 0);
+	transition: transform var(--transition-curtain-close);
 }
 
 /* --------------------------------------------------------------------------
@@ -410,14 +410,14 @@ const menuItems = rawItems.map((item) => {
 	align-items: center;
 	gap: var(--space-2);
 	font-family: var(--font-mono);
-	font-size: 0.8125rem;
-	letter-spacing: 0.08em;
+	font-size: var(--font-size-sm);
+	letter-spacing: var(--letter-spacing-wide);
 	color: var(--text-muted);
 }
 
 .badge-dot {
 	color: var(--accent);
-	font-size: 0.625rem;
+	font-size: var(--font-size-2xs);
 }
 
 /* Center Body */
@@ -465,8 +465,8 @@ const menuItems = rawItems.map((item) => {
 	transform: translateY(115%);
 	opacity: 0;
 	transition:
-		transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-		opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+		transform 0.55s var(--ease-out-expo),
+		opacity 0.55s var(--ease-out-expo),
 		color var(--transition-fast);
 }
 
@@ -482,7 +482,7 @@ const menuItems = rawItems.map((item) => {
 	transform: translateY(115%);
 	opacity: 0;
 	transition:
-		transform 0.25s cubic-bezier(0.7, 0, 0.84, 0),
+		transform 0.25s var(--ease-in-expo),
 		opacity 0.2s ease;
 	transition-delay: 0s;
 }
@@ -510,7 +510,7 @@ const menuItems = rawItems.map((item) => {
 
 .link-bracket {
 	font-family: var(--font-mono);
-	font-size: clamp(1.5rem, 2.8vw, 2.75rem);
+	font-size: var(--font-size-h3);
 	color: var(--accent);
 	opacity: 0;
 	transform: scale(0.8);
@@ -576,9 +576,9 @@ const menuItems = rawItems.map((item) => {
 .menu-copyright,
 .menu-bottom-role {
 	font-family: var(--font-mono);
-	font-size: 0.75rem;
+	font-size: var(--font-size-xs);
 	color: var(--text-muted);
-	letter-spacing: 0.06em;
+	letter-spacing: var(--letter-spacing-mono);
 	display: flex;
 	align-items: end;
 	gap: 1.5rem;
@@ -613,17 +613,17 @@ const menuItems = rawItems.map((item) => {
 		left: auto;
 		border-left: none;
 		transform: translateX(100%);
-		transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+		transition: transform var(--transition-curtain-open);
 	}
 
 	:global(html.menu-open) .curtain-right {
 		transform: translateX(0);
-		transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+		transition: transform var(--transition-curtain-open);
 	}
 
 	:global(html.menu-closing) .curtain-right {
 		transform: translateX(100%);
-		transition: transform 0.4s cubic-bezier(0.7, 0, 0.84, 0);
+		transition: transform 0.4s var(--ease-in-expo);
 	}
 
 	.menu-stage {

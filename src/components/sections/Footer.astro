@@ -230,17 +230,17 @@ const topProjects = projects.slice(0, 3);
 
 .author-role {
 	font-family: var(--font-mono);
-	font-size: 0.875rem;
+	font-size: var(--font-size-sm);
 	text-transform: uppercase;
 	letter-spacing: 0.08em;
 	color: var(--accent);
-	font-weight: 700;
+	font-weight: var(--font-weight-bold);
 }
 
 .author-bio {
 	font-family: var(--font-body);
-	font-size: 1.0625rem;
-	line-height: 1.5;
+	font-size: var(--font-size-base);
+	line-height: var(--line-height-body);
 	color: var(--text-dim);
 	margin: 0;
 	max-width: 480px;
@@ -256,9 +256,9 @@ const topProjects = projects.slice(0, 3);
 
 .col-subtitle {
 	font-family: var(--font-mono);
-	font-size: 0.75rem;
+	font-size: var(--font-size-xs);
 	text-transform: uppercase;
-	letter-spacing: 0.1em;
+	letter-spacing: var(--letter-spacing-wider);
 	color: var(--text-muted);
 }
 
@@ -276,7 +276,7 @@ const topProjects = projects.slice(0, 3);
 	align-items: baseline;
 	gap: var(--space-2);
 	font-family: var(--font-body);
-	font-size: 1.0625rem;
+	font-size: var(--font-size-base);
 	color: var(--text);
 	transition: color var(--transition-fast);
 	width: fit-content;
@@ -288,7 +288,7 @@ const topProjects = projects.slice(0, 3);
 
 .arrow-icon {
 	font-family: var(--font-mono);
-	font-size: 0.8125rem;
+	font-size: var(--font-size-sm);
 	color: var(--accent);
 	transition: transform var(--transition-fast);
 }
@@ -299,18 +299,18 @@ const topProjects = projects.slice(0, 3);
 
 .contact-value {
 	font-family: var(--font-mono);
-	font-size: 0.8125rem;
+	font-size: var(--font-size-sm);
 	color: var(--text-dim);
 }
 
 /* Titles */
 .col-title {
 	font-family: var(--font-heading);
-	font-size: 1.125rem;
-	line-height: 1.2;
+	font-size: var(--font-size-lg);
+	line-height: var(--line-height-heading);
 	color: var(--text);
 	text-transform: uppercase;
-	letter-spacing: -0.01em;
+	letter-spacing: var(--letter-spacing-tight);
 	margin: 0;
 }
 
@@ -329,7 +329,7 @@ const topProjects = projects.slice(0, 3);
 	align-items: center;
 	gap: var(--space-3);
 	font-family: var(--font-body);
-	font-size: 1.0625rem;
+	font-size: var(--font-size-base);
 	color: var(--text-dim);
 	transition:
 		color var(--transition-fast),
@@ -339,7 +339,7 @@ const topProjects = projects.slice(0, 3);
 
 .nav-anchor-link .bullet {
 	color: var(--border-strong);
-	font-size: 0.5rem;
+	font-size: var(--font-size-2xs);
 	transition: color var(--transition-fast);
 }
 
@@ -366,11 +366,11 @@ const topProjects = projects.slice(0, 3);
 	align-items: center;
 	gap: var(--space-2);
 	font-family: var(--font-mono);
-	font-size: 0.8125rem;
+	font-size: var(--font-size-sm);
 	text-transform: uppercase;
-	letter-spacing: 0.08em;
+	letter-spacing: var(--letter-spacing-wide);
 	color: var(--accent);
-	font-weight: 700;
+	font-weight: var(--font-weight-bold);
 	transition: color var(--transition-fast);
 }
 
@@ -420,24 +420,24 @@ const topProjects = projects.slice(0, 3);
 
 .project-name {
 	font-family: var(--font-body);
-	font-size: 1rem;
-	font-weight: 700;
+	font-size: var(--font-size-base);
+	font-weight: var(--font-weight-bold);
 	color: var(--text);
 }
 
 .project-category {
 	font-family: var(--font-mono);
-	font-size: 0.75rem;
+	font-size: var(--font-size-xs);
 	text-transform: uppercase;
-	letter-spacing: 0.06em;
+	letter-spacing: var(--letter-spacing-mono);
 	color: var(--text-muted);
 }
 
 .project-year {
 	font-family: var(--font-mono);
-	font-size: 0.8125rem;
+	font-size: var(--font-size-sm);
 	color: var(--accent);
-	font-weight: 700;
+	font-weight: var(--font-weight-bold);
 }
 
 /* Bottom Bar */
@@ -460,27 +460,27 @@ const topProjects = projects.slice(0, 3);
 
 .copyright {
 	font-family: var(--font-body);
-	font-size: 0.9375rem;
+	font-size: var(--font-size-sm);
 	color: var(--text-dim);
 	margin: 0;
 }
 
 .author-name-inline {
 	text-transform: uppercase;
-	font-weight: 700;
+	font-weight: var(--font-weight-bold);
 	color: var(--text);
 }
 
 .produced-by {
 	font-family: var(--font-mono);
-	font-size: 0.8125rem;
+	font-size: var(--font-size-sm);
 	color: var(--text-muted);
 	margin: 0;
 }
 
 .producer-link {
 	color: var(--text);
-	font-weight: 700;
+	font-weight: var(--font-weight-bold);
 	text-decoration: underline;
 	text-underline-offset: 3px;
 	transition: color var(--transition-fast);

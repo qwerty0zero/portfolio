@@ -43,11 +43,11 @@ const catalogSubtitle = projectsPageEntry?.data.subtitle;
 			</nav>
 
 			<div class="catalog-title-group">
-				{catalogBadge && <span class="catalog-badge">{catalogBadge}</span>}
-				<h1 class="catalog-heading">
+				{catalogBadge && <span class="catalog-badge text-eyebrow">{catalogBadge}</span>}
+				<h1 class="catalog-heading heading-1">
 					{projectsPageEntry?.data.title || t("nav.projects")}
 				</h1>
-				{catalogSubtitle && <p class="catalog-subtitle">{catalogSubtitle}</p>}
+				{catalogSubtitle && <p class="catalog-subtitle text-lead">{catalogSubtitle}</p>}
 			</div>
 		</header>
 
@@ -110,29 +110,11 @@ const catalogSubtitle = projectsPageEntry?.data.subtitle;
 	max-width: 800px;
 }
 
-.catalog-badge {
-	font-family: var(--font-mono);
-	font-size: 0.8125rem;
-	text-transform: uppercase;
-	letter-spacing: 0.1em;
-	color: var(--accent);
-	font-weight: 700;
-}
-
 .catalog-heading {
-	font-family: var(--font-heading);
-	font-size: clamp(2.5rem, 5vw, 4.5rem);
-	line-height: 1.1;
-	color: var(--text);
-	text-transform: uppercase;
 	margin: 0;
 }
 
 .catalog-subtitle {
-	font-family: var(--font-body);
-	font-size: clamp(1.125rem, 1.4vw, 1.25rem);
-	line-height: 1.55;
-	color: var(--text-dim);
 	margin: 0;
 }
 

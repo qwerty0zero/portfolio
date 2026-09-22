@@ -56,16 +56,16 @@ const allProjectsUrl = getRelativeLocaleUrl(lang, "projects");
 				<header class="projects-intro-panel">
 					<Badge text={badge} />
 
-					<h2 id="projects-heading" class="intro-title">
+					<h2 id="projects-heading" class="intro-title heading-2">
 						{title}
 					</h2>
-					<p class="intro-description">{description}</p>
+					<p class="intro-description text-lead">{description}</p>
 
 					<div class="domains-container">
-						<span class="domains-label">Core Domains:</span>
+						<span class="domains-label text-mono-label">Core Domains:</span>
 						<div class="domains-chips">
 							{domains.map((domain) => (
-									<span class="domain-chip">{domain}</span>
+									<span class="domain-chip text-mono-xs">{domain}</span>
 								))}
 						</div>
 					</div>
@@ -215,19 +215,10 @@ document.addEventListener("astro:page-load", setupHorizontalScroll);
 	padding: var(--space-12) var(--space-8) var(--space-12) 0;
 }
 .intro-title {
-	font-family: var(--font-heading);
-	font-size: clamp(2.25rem, 4.5vw, 4rem);
-	line-height: 1.1;
-	color: var(--text);
-	text-transform: uppercase;
 	margin: 0;
 }
 
 .intro-description {
-	font-family: var(--font-body);
-	font-size: clamp(1.125rem, 1.4vw, 1.25rem);
-	line-height: 1.55;
-	color: var(--text-dim);
 	margin: 0;
 }
 
@@ -238,14 +229,6 @@ document.addEventListener("astro:page-load", setupHorizontalScroll);
 	margin-top: var(--space-4);
 }
 
-.domains-label {
-	font-family: var(--font-mono);
-	font-size: 0.75rem;
-	text-transform: uppercase;
-	letter-spacing: 0.08em;
-	color: var(--text-muted);
-}
-
 .domains-chips {
 	display: flex;
 	flex-wrap: wrap;
@@ -253,13 +236,10 @@ document.addEventListener("astro:page-load", setupHorizontalScroll);
 }
 
 .domain-chip {
-	font-family: var(--font-mono);
-	font-size: 0.75rem;
 	color: var(--text);
 	background-color: var(--background-secondary);
 	border: 1px solid var(--border);
 	padding: 4px 10px;
-	letter-spacing: 0.04em;
 }
 
 .projects-cards-list {

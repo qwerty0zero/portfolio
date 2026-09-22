@@ -36,8 +36,8 @@ const {
 	<div class="showcase-container">
 		<div class="showcase-header">
 			<Badge text={badge} />
-			<h2 id="showcase-heading" class="showcase-title">{title}</h2>
-			{lead && <p class="showcase-lead">{lead}</p>}
+			<h2 id="showcase-heading" class="showcase-title heading-2">{title}</h2>
+			{lead && <p class="showcase-lead text-lead">{lead}</p>}
 		</div>
 
 		<div class="showcase-grid">
@@ -59,22 +59,22 @@ const {
 								aria-hidden={index === 0 ? "false" : "true"}
 							>
 								<div class="panel-header">
-									<span class="panel-tag">{tab.index} / 03</span>
-									<h3 class="panel-heading">{tab.heading}</h3>
+									<span class="panel-tag text-eyebrow">{tab.index} / 03</span>
+									<h3 class="panel-heading heading-3">{tab.heading}</h3>
 								</div>
 
-								<p class="panel-text">{tab.text}</p>
+								<p class="panel-text text-body-lg">{tab.text}</p>
 
 								{/* Tab 1: Engineering Manifesto principles */}
 								{tab.manifesto && (
 									<div class="manifesto-card">
 										<div class="manifesto-header">
-											<span class="manifesto-badge">{tab.manifesto.badge}</span>
+											<span class="manifesto-badge text-eyebrow">{tab.manifesto.badge}</span>
 										</div>
 										<ul class="manifesto-list">
 											{tab.manifesto.items.map((item) => (
 												<li>
-													<strong class="manifesto-highlight">
+													<strong class="manifesto-highlight text-body-bold">
 														{item.highlight}
 													</strong>{" "}
 													{item.text}
@@ -99,9 +99,9 @@ const {
 									<div class="highlights-grid">
 										{tab.highlights.map((item) => (
 											<div class="highlight-card">
-												<span class="highlight-badge">{item.badge}</span>
-												<h4 class="highlight-title">{item.title}</h4>
-												<p class="highlight-desc">{item.description}</p>
+												<span class="highlight-badge text-mono-xs">{item.badge}</span>
+												<h4 class="highlight-title heading-4">{item.title}</h4>
+												<p class="highlight-desc text-body-sm">{item.description}</p>
 											</div>
 										))}
 									</div>
@@ -501,21 +501,12 @@ document.addEventListener("astro:page-load", setupShowcase);
 }
 
 .showcase-title {
-	font-family: var(--font-heading);
-	font-size: clamp(2rem, 4vw, 3.25rem);
-	line-height: 1.1;
-	color: var(--text);
 	margin: 0;
-	letter-spacing: -0.01em;
 }
 
 .showcase-lead {
-	font-family: var(--font-body);
-	font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
-	color: var(--text-dim);
 	max-width: 65ch;
 	margin: 0;
-	line-height: 1.4;
 }
 
 .showcase-grid {
@@ -568,9 +559,9 @@ document.addEventListener("astro:page-load", setupShowcase);
 	pointer-events: none;
 	transform: translateY(8px);
 	transition:
-		opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-		transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-		visibility 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+		opacity var(--transition-smooth),
+		transform var(--transition-smooth),
+		visibility var(--transition-smooth);
 }
 
 .showcase-panel.is-active {
@@ -588,27 +579,11 @@ document.addEventListener("astro:page-load", setupShowcase);
 	border-bottom: 1px solid var(--border-dim);
 }
 
-.panel-tag {
-	font-family: var(--font-mono);
-	font-size: 0.8125rem;
-	font-weight: 700;
-	color: var(--accent);
-	letter-spacing: 0.08em;
-}
-
 .panel-heading {
-	font-family: var(--font-heading);
-	font-size: clamp(1.375rem, 2.5vw, 2rem);
-	color: var(--text);
 	margin: 0;
-	line-height: 1.2;
 }
 
 .panel-text {
-	font-family: var(--font-body);
-	font-size: 1.125rem;
-	line-height: 1.5;
-	color: var(--text-dim);
 	margin: 0;
 }
 
@@ -626,14 +601,6 @@ document.addEventListener("astro:page-load", setupShowcase);
 	margin-bottom: var(--space-4);
 }
 
-.manifesto-badge {
-	font-family: var(--font-mono);
-	font-size: 0.75rem;
-	font-weight: 700;
-	color: var(--accent);
-	letter-spacing: 0.08em;
-}
-
 .manifesto-list {
 	list-style: none;
 	padding: 0;
@@ -645,8 +612,8 @@ document.addEventListener("astro:page-load", setupShowcase);
 
 .manifesto-list li {
 	font-family: var(--font-body);
-	font-size: 1rem;
-	line-height: 1.4;
+	font-size: var(--font-size-base);
+	line-height: var(--line-height-snug);
 	color: var(--text-dim);
 	position: relative;
 	padding-left: var(--space-6);
@@ -660,11 +627,6 @@ document.addEventListener("astro:page-load", setupShowcase);
 	width: 6px;
 	height: 6px;
 	background-color: var(--accent);
-}
-
-.manifesto-highlight {
-	color: var(--text);
-	font-weight: 700;
 }
 
 /* Highlights Grid (Tab 3) */
@@ -683,8 +645,8 @@ document.addEventListener("astro:page-load", setupShowcase);
 	flex-direction: column;
 	gap: var(--space-2);
 	transition:
-		border-color 0.2s ease,
-		background-color 0.2s ease;
+		border-color var(--transition-fast),
+		background-color var(--transition-fast);
 }
 
 .highlight-card:hover {
@@ -693,26 +655,15 @@ document.addEventListener("astro:page-load", setupShowcase);
 }
 
 .highlight-badge {
-	font-family: var(--font-mono);
-	font-size: 0.6875rem;
 	color: var(--accent);
 	text-transform: uppercase;
-	letter-spacing: 0.06em;
 }
 
 .highlight-title {
-	font-family: var(--font-heading);
-	font-size: 1.0625rem;
-	color: var(--text);
 	margin: 0;
-	line-height: 1.3;
 }
 
 .highlight-desc {
-	font-family: var(--font-body);
-	font-size: 0.9375rem;
-	line-height: 1.4;
-	color: var(--text-dim);
 	margin: 0;
 }
 

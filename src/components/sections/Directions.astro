@@ -47,12 +47,12 @@ const {
 			{/* Pinned Top Section Header (Placed directly above the cards, visible during the entire scroll sequence) */}
 			<header class="directions-header">
 				<div class="header-top-row">
-					<span class="directions-badge">{badge}</span>
-					<h2 id="directions-heading" class="directions-title">
+					<span class="directions-badge text-eyebrow">{badge}</span>
+					<h2 id="directions-heading" class="directions-title heading-2">
 						{title}
 					</h2>
 				</div>
-				<p class="directions-lead">{lead}</p>
+				<p class="directions-lead text-lead">{lead}</p>
 			</header>
 
 			{/* Stacking Cards Viewport beneath the header */}
@@ -156,29 +156,11 @@ const {
 	flex-wrap: wrap;
 }
 
-.directions-badge {
-	font-family: var(--font-mono);
-	font-size: 0.8125rem;
-	text-transform: uppercase;
-	letter-spacing: 0.1em;
-	color: var(--accent);
-	font-weight: 700;
-}
-
 .directions-title {
-	font-family: var(--font-heading);
-	font-size: clamp(2rem, 3.5vw, 3rem);
-	line-height: 1.1;
-	color: var(--text);
-	text-transform: uppercase;
 	margin: 0;
 }
 
 .directions-lead {
-	font-family: var(--font-body);
-	font-size: clamp(1.0625rem, 1.25vw, 1.25rem);
-	line-height: 1.5;
-	color: var(--text-dim);
 	margin: 0;
 	max-width: 900px;
 }
@@ -203,7 +185,7 @@ const {
 		inset-inline: 0;
 		top: calc(var(--card-index) * 36px);
 		z-index: calc(var(--card-index) + 1);
-		transition: transform 300ms cubic-bezier(0.2, 0, 0, 1);
+		transition: transform var(--duration-smooth) var(--ease-spring);
 		will-change: transform;
 	}
 }
