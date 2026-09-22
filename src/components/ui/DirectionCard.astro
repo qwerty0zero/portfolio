@@ -24,24 +24,24 @@ const {
 	<div class="card-header">
 		<div class="card-header-main">
 			<span class="card-index">{index}</span>
-			<h3 class="card-title">{title}</h3>
+			<h3 class="card-title heading-3">{title}</h3>
 		</div>
-		<span class="card-tagline">{tagline}</span>
+		<span class="card-tagline text-mono-sm">{tagline}</span>
 	</div>
 
 	<div class="card-content">
 		<div class="card-description-block">
-			<h4 class="block-label">Architecture & Philosophy</h4>
-			<p class="card-description">{description}</p>
+			<h4 class="block-label text-mono-label">Architecture & Philosophy</h4>
+			<p class="card-description text-body-lg">{description}</p>
 		</div>
 
 		<div class="card-details-grid">
 			{responsibilities && responsibilities.length > 0 && (
 					<div class="details-column">
-						<h4 class="block-label">Core Responsibilities</h4>
+						<h4 class="block-label text-mono-label">Core Responsibilities</h4>
 						<ul class="responsibilities-list">
 							{responsibilities.map((item) => (
-								<li class="responsibility-item">
+								<li class="responsibility-item text-body-sm">
 									<span class="bullet" aria-hidden="true">
 										■
 									</span>
@@ -54,10 +54,10 @@ const {
 
 			{skills && skills.length > 0 && (
 					<div class="details-column">
-						<h4 class="block-label">Key Stack & Methodology</h4>
+						<h4 class="block-label text-mono-label">Key Stack & Methodology</h4>
 						<div class="skills-chips">
 							{skills.map((skill) => (
-								<span class="skill-chip">{skill}</span>
+								<span class="skill-chip text-mono-xs">{skill}</span>
 							))}
 						</div>
 					</div>
@@ -104,25 +104,17 @@ const {
 .card-index {
 	font-family: var(--font-mono);
 	font-size: clamp(1.25rem, 2vw, 1.75rem);
-	font-weight: 700;
+	font-weight: var(--font-weight-bold);
 	color: var(--accent);
 	line-height: 1;
 }
 
 .card-title {
-	font-family: var(--font-heading);
-	font-size: clamp(1.5rem, 2.5vw, 2.25rem);
-	line-height: 1.15;
-	color: var(--text);
-	text-transform: uppercase;
 	margin: 0;
 }
 
 .card-tagline {
-	font-family: var(--font-mono);
-	font-size: 0.8125rem;
 	text-transform: uppercase;
-	letter-spacing: 0.06em;
 	color: var(--text-dim);
 }
 
@@ -140,20 +132,12 @@ const {
 }
 
 .block-label {
-	font-family: var(--font-mono);
-	font-size: 0.75rem;
-	text-transform: uppercase;
-	letter-spacing: 0.08em;
-	color: var(--text-muted);
 	margin: 0;
 }
 
 .card-description {
-	font-family: var(--font-body);
-	font-size: clamp(1.0625rem, 1.25vw, 1.25rem);
-	line-height: 1.55;
-	color: var(--text);
 	margin: 0;
+	color: var(--text);
 }
 
 .card-details-grid {
@@ -183,15 +167,11 @@ const {
 	display: flex;
 	align-items: flex-start;
 	gap: var(--space-2);
-	font-family: var(--font-body);
-	font-size: 0.9375rem;
-	line-height: 1.45;
-	color: var(--text-dim);
 }
 
 .bullet {
 	color: var(--accent);
-	font-size: 0.625rem;
+	font-size: var(--font-size-2xs);
 	line-height: 1.8;
 	flex-shrink: 0;
 }
@@ -203,13 +183,10 @@ const {
 }
 
 .skill-chip {
-	font-family: var(--font-mono);
-	font-size: 0.75rem;
 	color: var(--text);
 	background-color: var(--background-tertiary);
 	border: 1px solid var(--border);
 	padding: 4px 10px;
-	letter-spacing: 0.02em;
 }
 
 @media (max-width: 768px) {

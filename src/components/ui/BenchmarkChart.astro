@@ -111,22 +111,22 @@ const {
 
 .benchmark-title {
 	font-family: var(--font-mono);
-	font-size: 0.8125rem;
-	font-weight: 700;
-	letter-spacing: 0.08em;
+	font-size: var(--font-size-sm);
+	font-weight: var(--font-weight-bold);
+	letter-spacing: var(--letter-spacing-wide);
 	color: var(--text);
 	text-transform: uppercase;
 }
 
 .benchmark-badge {
 	font-family: var(--font-mono);
-	font-size: 0.6875rem;
+	font-size: var(--font-size-xs);
 	padding: var(--space-1) var(--space-2);
 	background-color: var(--background-tertiary);
 	border: 1px solid var(--border-dim);
 	color: var(--text-dim);
 	text-transform: uppercase;
-	letter-spacing: 0.04em;
+	letter-spacing: var(--letter-spacing-mono);
 }
 
 .benchmark-list {
@@ -151,15 +151,15 @@ const {
 
 .metric-label {
 	font-family: var(--font-body);
-	font-size: 1rem;
-	font-weight: 700;
+	font-size: var(--font-size-base);
+	font-weight: var(--font-weight-bold);
 	color: var(--text);
 	letter-spacing: 0.01em;
 }
 
 .metric-values {
 	font-family: var(--font-mono);
-	font-size: 0.8125rem;
+	font-size: var(--font-size-sm);
 	display: flex;
 	align-items: center;
 	gap: var(--space-2);
@@ -167,11 +167,11 @@ const {
 
 .val-astro {
 	color: var(--accent);
-	font-weight: 700;
+	font-weight: var(--font-weight-bold);
 }
 
 .val-tech {
-	font-size: 0.75rem;
+	font-size: var(--font-size-xs);
 	opacity: 0.85;
 	margin-right: 2px;
 }
@@ -199,7 +199,7 @@ const {
 
 .bar-name {
 	font-family: var(--font-mono);
-	font-size: 0.6875rem;
+	font-size: var(--font-size-xs);
 	color: var(--text-dim);
 }
 
@@ -224,7 +224,7 @@ const {
 }
 
 :global(.showcase-panel.is-active) .bar-fill {
-	animation: growBenchmarkBar 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+	animation: growBenchmarkBar 0.85s var(--ease-out-expo) forwards;
 	animation-delay: var(--bar-delay, 0.1s);
 }
 
@@ -260,7 +260,7 @@ const {
 
 .footer-note {
 	font-family: var(--font-mono);
-	font-size: 0.6875rem;
+	font-size: var(--font-size-2xs);
 	color: var(--text-muted);
 	font-style: italic;
 }

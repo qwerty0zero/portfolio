@@ -23,22 +23,22 @@ const {
 	display: inline-flex;
 	align-items: center;
 	font-family: var(--font-mono);
-	font-weight: 700;
+	font-weight: var(--font-weight-bold);
 	text-transform: uppercase;
-	letter-spacing: 0.1em;
+	letter-spacing: var(--letter-spacing-wider);
 	width: fit-content;
 	user-select: none;
 }
 
 /* Sizes */
 .badge--md {
-	font-size: 0.8125rem;
-	line-height: 1.2;
+	font-size: var(--font-size-sm);
+	line-height: var(--line-height-heading);
 }
 
 .badge--sm {
-	font-size: 0.75rem;
-	line-height: 1.2;
+	font-size: var(--font-size-xs);
+	line-height: var(--line-height-heading);
 }
 
 /* Variants */
@@ -55,6 +55,6 @@ const {
 	background-color: var(--background-secondary);
 	border: 1px solid var(--border);
 	padding: 4px 10px;
-	letter-spacing: 0.04em;
+	letter-spacing: var(--letter-spacing-mono);
 }
 </style>
