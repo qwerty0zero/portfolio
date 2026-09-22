@@ -51,13 +51,15 @@ const topProjects = projects.slice(0, 3);
 			{/* Column 1: Personal Info & Socials / Email */}
 			<div class="footer-col footer-col-author">
 				<div class="author-branding">
-					<span class="author-name">{SITE.author}</span>
-					<span class="author-role">{SITE.role}</span>
+					<span class="heading-3 author-name">{SITE.author}</span>
+					<span class="text-eyebrow author-role">{SITE.role}</span>
 				</div>
 				<p class="author-bio">{bio}</p>
 
 				<div class="contacts-block">
-					<span class="col-subtitle">{t("footer.contactsTitle")}</span>
+					<span class="text-mono-label col-subtitle"
+						>{t("footer.contactsTitle")}</span
+					>
 					<ul class="contacts-list">
 						<li>
 							<a
@@ -220,21 +222,12 @@ const topProjects = projects.slice(0, 3);
 }
 
 .author-name {
-	font-family: var(--font-heading);
-	font-size: var(--font-size-h3);
 	line-height: 1.1;
-	color: var(--text);
-	text-transform: uppercase;
-	letter-spacing: -0.01em;
+	letter-spacing: var(--letter-spacing-tight);
 }
 
 .author-role {
-	font-family: var(--font-mono);
-	font-size: var(--font-size-sm);
-	text-transform: uppercase;
-	letter-spacing: 0.08em;
 	color: var(--accent);
-	font-weight: var(--font-weight-bold);
 }
 
 .author-bio {
@@ -255,10 +248,6 @@ const topProjects = projects.slice(0, 3);
 }
 
 .col-subtitle {
-	font-family: var(--font-mono);
-	font-size: var(--font-size-xs);
-	text-transform: uppercase;
-	letter-spacing: var(--letter-spacing-wider);
 	color: var(--text-muted);
 }
 
@@ -306,12 +295,7 @@ const topProjects = projects.slice(0, 3);
 
 /* Titles */
 .col-title {
-	font-family: var(--font-heading);
 	font-size: var(--font-size-lg);
-	line-height: var(--line-height-heading);
-	color: var(--text);
-	text-transform: uppercase;
-	letter-spacing: var(--letter-spacing-tight);
 	margin: 0;
 }
 
@@ -457,12 +441,10 @@ const topProjects = projects.slice(0, 3);
 .bottom-right {
 	display: flex;
 	align-items: end;
-
-	gap: 1.5rem;
+	gap: var(--space-6);
 }
 
 .copyright {
-	font-family: var(--font-body);
 	font-size: var(--font-size-sm);
 	color: var(--text-dim);
 	margin: 0;

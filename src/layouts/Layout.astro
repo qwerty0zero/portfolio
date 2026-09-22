@@ -87,7 +87,7 @@ const preloadedFonts = fontsPreloadMap[lang] ?? fontsPreloadMap[defaultLang];
 					savedLang !== "ru" &&
 					["en", "pl", "uk"].includes(savedLang)
 				) {
-					window.location.replace("/" + savedLang);
+					window.location.replace(`/${savedLang}`);
 					return;
 				}
 			} catch (_) {}

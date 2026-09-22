@@ -258,6 +258,7 @@ document.addEventListener("astro:page-load", setupHorizontalScroll);
 
 @media (max-width: 768px) {
 	.projects-sticky-track {
+		/* biome-ignore lint/complexity/noImportantStyles: overrides JS inline styles on mobile */
 		height: auto !important;
 	}
 
@@ -273,6 +274,7 @@ document.addEventListener("astro:page-load", setupHorizontalScroll);
 		align-items: stretch;
 		gap: var(--space-6);
 		padding: 0 var(--space-4);
+		/* biome-ignore lint/complexity/noImportantStyles: overrides JS inline styles on mobile */
 		transform: none !important;
 	}
 

@@ -104,13 +104,15 @@ const { tabs, class: className = "" } = Astro.props;
 	backface-visibility: hidden;
 }
 
-.showcase-tab.is-active.is-timing .tab-timer-progress {
-	animation: timerProgressVertical 10s linear forwards;
+.showcase-tab.is-paused .tab-timer-progress {
+	animation-play-state: paused;
 }
 
-.showcase-tab.is-paused .tab-timer-progress,
-.showcase-tab.is-active.is-timing.is-paused .tab-timer-progress {
-	animation-play-state: paused !important;
+.showcase-tab.is-active.is-timing .tab-timer-progress {
+	animation-name: timerProgressVertical;
+	animation-duration: 10s;
+	animation-timing-function: linear;
+	animation-fill-mode: forwards;
 }
 
 @keyframes timerProgressVertical {
@@ -169,13 +171,12 @@ const { tabs, class: className = "" } = Astro.props;
 		backface-visibility: hidden;
 	}
 
-	.showcase-tab.is-active.is-timing .tab-timer-progress {
-		animation: timerProgressHorizontal 10s linear forwards;
+	.showcase-tab.is-paused .tab-timer-progress {
+		animation-play-state: paused;
 	}
 
-	.showcase-tab.is-paused .tab-timer-progress,
-	.showcase-tab.is-active.is-timing.is-paused .tab-timer-progress {
-		animation-play-state: paused !important;
+	.showcase-tab.is-active.is-timing .tab-timer-progress {
+		animation-name: timerProgressHorizontal;
 	}
 
 	@keyframes timerProgressHorizontal {
@@ -200,8 +201,8 @@ const { tabs, class: className = "" } = Astro.props;
 
 @media (prefers-reduced-motion: reduce) {
 	.showcase-tab.is-active.is-timing .tab-timer-progress {
-		animation: none !important;
-		transform: scale(1) !important;
+		animation: none;
+		transform: scale(1);
 	}
 }
 </style>
