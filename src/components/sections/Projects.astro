@@ -95,12 +95,7 @@ const allProjectsUrl = getRelativeLocaleUrl(lang, "projects");
 
 				{/* Mobile CTA Button after the 2nd project */}
 				<div class="mobile-cta-wrapper">
-					<Button
-						href={allProjectsUrl}
-						variant="accent"
-						size="lg"
-						class="view-all-projects-btn"
-					>
+					<Button href={allProjectsUrl} variant="accent" size="lg" block>
 						<span>{viewAllLabel}</span>
 						<IconArrow size={16} />
 					</Button>
@@ -310,12 +305,6 @@ document.addEventListener("astro:page-load", setupHorizontalScroll);
 		display: block;
 		width: 100%;
 		margin-top: var(--space-2);
-	}
-
-	.mobile-cta-wrapper :global(.view-all-projects-btn) {
-		width: 100%;
-		display: flex;
-		justify-content: center;
 	}
 }
 </style>
