@@ -1,5 +1,6 @@
 ---
 import { getCollection, getEntry } from "astro:content";
+import Badge from "@components/ui/Badge.astro";
 import Button from "@components/ui/Button.astro";
 import IconArrow from "@components/ui/icons/IconArrow.astro";
 import ProjectCard from "@components/ui/ProjectCard.astro";
@@ -43,7 +44,7 @@ const catalogSubtitle = projectsPageEntry?.data.subtitle;
 			</nav>
 
 			<div class="catalog-title-group">
-				{catalogBadge && <span class="catalog-badge text-eyebrow">{catalogBadge}</span>}
+				{catalogBadge && <Badge text={catalogBadge} />}
 				<h1 class="catalog-heading heading-1">
 					{projectsPageEntry?.data.title || t("nav.projects")}
 				</h1>

@@ -1,4 +1,5 @@
 ---
+import Badge from "@components/ui/Badge.astro";
 import Button from "@components/ui/Button.astro";
 import IconArrow from "@components/ui/icons/IconArrow.astro";
 import IconExternalLink from "@components/ui/icons/IconExternalLink.astro";
@@ -58,7 +59,7 @@ const formattedIndex = String(index).padStart(2, "0");
 		{stack && stack.length > 0 && (
 				<div class="card-stack">
 					{stack.map((tech) => (
-						<span class="stack-tag text-mono-xs">{tech}</span>
+						<Badge text={tech} variant="dim" size="xs" />
 					))}
 				</div>
 			)}
@@ -193,13 +194,6 @@ const formattedIndex = String(index).padStart(2, "0");
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--space-2);
-}
-
-.stack-tag {
-	color: var(--text-dim);
-	background-color: var(--background-tertiary);
-	padding: 2px 8px;
-	border: 1px solid var(--border);
 }
 
 .card-actions {

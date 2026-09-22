@@ -1,4 +1,6 @@
 ---
+import Badge from "@components/ui/Badge.astro";
+
 export interface Props {
 	index: string;
 	title: string;
@@ -57,7 +59,7 @@ const {
 						<h4 class="block-label text-mono-label">Key Stack & Methodology</h4>
 						<div class="skills-chips">
 							{skills.map((skill) => (
-								<span class="skill-chip text-mono-xs">{skill}</span>
+								<Badge text={skill} variant="tertiary" size="sm" />
 							))}
 						</div>
 					</div>
@@ -180,13 +182,6 @@ const {
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--space-2);
-}
-
-.skill-chip {
-	color: var(--text);
-	background-color: var(--background-tertiary);
-	border: 1px solid var(--border);
-	padding: 4px 10px;
 }
 
 @media (max-width: 768px) {

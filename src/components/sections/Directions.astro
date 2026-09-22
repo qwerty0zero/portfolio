@@ -1,4 +1,5 @@
 ---
+import Badge from "@components/ui/Badge.astro";
 import DirectionCard from "@components/ui/DirectionCard.astro";
 
 export interface DirectionItem {
@@ -47,7 +48,7 @@ const {
 			{/* Pinned Top Section Header (Placed directly above the cards, visible during the entire scroll sequence) */}
 			<header class="directions-header">
 				<div class="header-top-row">
-					<span class="directions-badge text-eyebrow">{badge}</span>
+					<Badge text={badge} />
 					<h2 id="directions-heading" class="directions-title heading-2">
 						{title}
 					</h2>

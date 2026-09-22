@@ -59,7 +59,7 @@ const {
 								aria-hidden={index === 0 ? "false" : "true"}
 							>
 								<div class="panel-header">
-									<span class="panel-tag text-eyebrow">{tab.index} / 03</span>
+									<Badge text={`${tab.index} / 03`} />
 									<h3 class="panel-heading heading-3">{tab.heading}</h3>
 								</div>
 
@@ -69,7 +69,7 @@ const {
 								{tab.manifesto && (
 									<div class="manifesto-card">
 										<div class="manifesto-header">
-											<span class="manifesto-badge text-eyebrow">{tab.manifesto.badge}</span>
+											<Badge text={tab.manifesto.badge} />
 										</div>
 										<ul class="manifesto-list">
 											{tab.manifesto.items.map((item) => (
@@ -99,7 +99,7 @@ const {
 									<div class="highlights-grid">
 										{tab.highlights.map((item) => (
 											<div class="highlight-card">
-												<span class="highlight-badge text-mono-xs">{item.badge}</span>
+												<Badge text={item.badge} size="sm" />
 												<h4 class="highlight-title heading-4">{item.title}</h4>
 												<p class="highlight-desc text-body-sm">{item.description}</p>
 											</div>
@@ -652,11 +652,6 @@ document.addEventListener("astro:page-load", setupShowcase);
 .highlight-card:hover {
 	border-color: var(--border-strong);
 	background-color: var(--background-tertiary);
-}
-
-.highlight-badge {
-	color: var(--accent);
-	text-transform: uppercase;
 }
 
 .highlight-title {

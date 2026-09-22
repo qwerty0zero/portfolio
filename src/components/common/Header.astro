@@ -1,6 +1,7 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { getEntry } from "astro:content";
+import Badge from "@components/ui/Badge.astro";
 import Button from "@components/ui/Button.astro";
 import LanguageSwitcher from "@components/ui/LanguageSwitcher.astro";
 import ThemeButtons from "@components/ui/ThemeButtons.astro";
@@ -107,10 +108,7 @@ const menuItems = rawItems.map((item) => {
 	<div class="menu-stage">
 		{/* Top Header Row inside menu */}
 		<div class="menu-top-row">
-			<div class="menu-badge">
-				<span class="badge-dot">●</span>
-				<span class="badge-title">SYSTEM // NAVIGATION</span>
-			</div>
+			<Badge variant="muted" dot>SYSTEM // NAVIGATION</Badge>
 		</div>
 
 		{/* Center Body: Navigation Links */}
@@ -400,21 +398,6 @@ const menuItems = rawItems.map((item) => {
 		opacity 0.2s ease,
 		transform 0.2s ease;
 	transition-delay: 0s;
-}
-
-.menu-badge {
-	display: inline-flex;
-	align-items: center;
-	gap: var(--space-2);
-	font-family: var(--font-mono);
-	font-size: var(--font-size-sm);
-	letter-spacing: var(--letter-spacing-wide);
-	color: var(--text-muted);
-}
-
-.badge-dot {
-	color: var(--accent);
-	font-size: var(--font-size-2xs);
 }
 
 /* Center Body */
