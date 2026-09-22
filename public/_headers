@@ -1,0 +1,27 @@
+# Security headers for all responses
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# Aggressive immutable caching for hashed Astro assets (CSS, JS, optimized images)
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Aggressive immutable caching for static web fonts
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Caching for static media, favicons, and metadata
+/favicon.svg
+  Cache-Control: public, max-age=604800
+/favicon.ico
+  Cache-Control: public, max-age=604800
+/favicon-96x96.png
+  Cache-Control: public, max-age=604800
+/apple-touch-icon.png
+  Cache-Control: public, max-age=604800
+/og-image.jpg
+  Cache-Control: public, max-age=604800
+/robots.txt
+  Cache-Control: public, max-age=86400
