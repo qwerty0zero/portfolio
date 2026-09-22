@@ -13,6 +13,7 @@ export type ButtonSize = "sm" | "md" | "lg";
 interface CommonProps {
 	variant?: ButtonVariant;
 	size?: ButtonSize;
+	block?: boolean;
 	class?: string;
 }
 
@@ -28,6 +29,7 @@ export type Props = CommonProps &
 const {
 	variant = "primary",
 	size = "md",
+	block = false,
 	class: className = "",
 	href,
 	...rest
@@ -39,7 +41,13 @@ const Element = isLink ? "a" : "button";
 
 <Element
 	href={href}
-	class:list={["btn", `btn--${variant}`, `btn--${size}`, className]}
+	class:list={[
+		"btn",
+		`btn--${variant}`,
+		`btn--${size}`,
+		{ "btn--block": block },
+		className,
+	]}
 	{...rest}
 >
 	<slot />
@@ -130,14 +138,19 @@ const Element = isLink ? "a" : "button";
 }
 
 .btn--ghost {
+	width: 44px;
+	height: 44px;
+	padding: 0;
 	background-color: transparent;
-	border-color: transparent;
-	color: var(--text-dim);
+	border: 1px solid transparent;
+	color: var(--text);
 }
 
 .btn--ghost:hover {
-	background-color: var(--background-secondary);
-	color: var(--text);
+	background-color: transparent;
+	border-color: transparent;
+	color: var(--accent);
+	transform: translateY(-2px);
 }
 
 .btn--icon {
@@ -148,19 +161,20 @@ const Element = isLink ? "a" : "button";
 	color: var(--text-dim);
 }
 
-.btn--icon.btn--sm {
-	width: 32px;
-	height: 32px;
-}
-
-.btn--icon.btn--lg {
-	width: 48px;
-	height: 48px;
-}
-
 .btn--icon:hover {
 	border-color: var(--accent);
 	color: var(--accent);
+}
+
+.btn--block {
+	width: 100%;
+}
+
+@media (max-width: 768px) {
+	.btn--icon {
+		width: 44px;
+		height: 44px;
+	}
 }
 
 /* Accessible Focus State */
