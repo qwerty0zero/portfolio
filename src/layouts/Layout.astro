@@ -17,33 +17,24 @@ const { title, description, ogImage, ogType, lang = defaultLang } = Astro.props;
 
 const fontsPreloadMap: Record<Lang, string[]> = {
 	en: [
-		"/fonts/DelaGothicOne-Regular-latin.woff2",
-		"/fonts/FiraSansExtraCondensed-Bold-latin.woff2",
-		"/fonts/FiraSansExtraCondensed-Regular-latin.woff2",
+		"/fonts/DelaGothicOne-Regular.woff2",
+		"/fonts/FiraSansExtraCondensed-Bold.woff2",
+		"/fonts/FiraSansExtraCondensed-Regular.woff2",
 	],
 	pl: [
-		"/fonts/DelaGothicOne-Regular-latin.woff2",
-		"/fonts/DelaGothicOne-Regular-latinext.woff2",
-		"/fonts/FiraSansExtraCondensed-Bold-latin.woff2",
-		"/fonts/FiraSansExtraCondensed-Bold-latinext.woff2",
-		"/fonts/FiraSansExtraCondensed-Regular-latin.woff2",
-		"/fonts/FiraSansExtraCondensed-Regular-latinext.woff2",
+		"/fonts/DelaGothicOne-Regular.woff2",
+		"/fonts/FiraSansExtraCondensed-Bold.woff2",
+		"/fonts/FiraSansExtraCondensed-Regular.woff2",
 	],
 	ru: [
 		"/fonts/DelaGothicOne-Regular-cyrillic.woff2",
-		"/fonts/DelaGothicOne-Regular-latin.woff2",
 		"/fonts/FiraSansExtraCondensed-Bold-cyrillic.woff2",
-		"/fonts/FiraSansExtraCondensed-Bold-latin.woff2",
 		"/fonts/FiraSansExtraCondensed-Regular-cyrillic.woff2",
-		"/fonts/FiraSansExtraCondensed-Regular-latin.woff2",
 	],
 	uk: [
 		"/fonts/DelaGothicOne-Regular-cyrillic.woff2",
-		"/fonts/DelaGothicOne-Regular-latin.woff2",
 		"/fonts/FiraSansExtraCondensed-Bold-cyrillic.woff2",
-		"/fonts/FiraSansExtraCondensed-Bold-latin.woff2",
 		"/fonts/FiraSansExtraCondensed-Regular-cyrillic.woff2",
-		"/fonts/FiraSansExtraCondensed-Regular-latin.woff2",
 	],
 };
 
